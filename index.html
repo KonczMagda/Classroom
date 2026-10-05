@@ -1,1 +1,155 @@
-Pszichológia órák
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pszichológia órák</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #d1d6dc;
+            color: #1a1a1a;
+            padding: 60px 40px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 45px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 14px;
+            letter-spacing: -1.5px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background-color: #e8ecf1;
+            border-radius: 20px;
+            padding: 30px 26px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 180px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            background-color: #e1e6eb;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .badge {
+            color: #800020; /* Bordó kiemelés */
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .card-desc {
+            font-size: 1.05rem;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 18px;
+            }
+            h1 {
+                font-size: 2.3rem;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Pszichológia órák</h1>
+            <p class="subtitle">Interaktív, kattintható diasorok – 10. osztály. Válaszd ki az órát.</p>
+        </header>
+
+        <main class="grid">
+            
+            <!-- 1. ÓRA -->
+            <a href="1-ora.html" class="card">
+                <div class="badge">1. ÓRA</div>
+                <h2 class="card-title">Mi zajlik a fejedben?</h2>
+                <p class="card-desc">Bevezetés a pszichológiába</p>
+            </a>
+
+            <!-- 2. ÓRA -->
+            <a href="2-ora.html" class="card">
+                <div class="badge">2. ÓRA</div>
+                <h2 class="card-title">Érzékelés</h2>
+                <p class="card-desc">Hogyan jut el a világ az agyunkig</p>
+            </a>
+
+            <!-- 3. ÓRA -->
+            <a href="3-ora.html" class="card">
+                <div class="badge">3. ÓRA</div>
+                <h2 class="card-title">Észlelés</h2>
+                <p class="card-desc">Érzékelés vs. észlelés, Gestalt-elvek</p>
+            </a>
+
+            <!-- 4. ÓRA -->
+            <a href="4-ora.html" class="card">
+                <div class="badge">4. ÓRA</div>
+                <h2 class="card-title">Képzetek</h2>
+                <p class="card-desc">Osztályozás, jellemzők, élénkségi önteszt</p>
+            </a>
+
+            <!-- 4. ÓRA - MASIK VALTOZAT -->
+            <a href="4-ora-alt.html" class="card">
+                <div class="badge">4. ÓRA – másik változat</div>
+                <h2 class="card-title">Képzetek (alternatív)</h2>
+                <p class="card-desc">Mentális rotáció, gondolatkísérlet</p>
+            </a>
+
+        </main>
+    </div>
+
+</body>
+</html>
