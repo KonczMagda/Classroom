@@ -1,0 +1,677 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Boldogsághormonok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap&subset=latin-ext">
+<style>
+/* Layout: sticky tab bar on top; one view at a time, jump anywhere from the bar, the home tiles or the pager. */
+:root {
+  --bg: #F6F4FA; --surface: #FFFFFF; --ink: #2A1A3A; --muted: #5E4F70; --line: #DDD5EA; --nav: #2A1A3A; --nav-ink: #F6F0FC;
+  --endo: #8B6FD6; --sero: #4CB782; --dopa: #F5A623; --oxi: #F26B8A;
+  --endo-t: #EEE9FB; --sero-t: #E3F5EB; --dopa-t: #FFF0D8; --oxi-t: #FDE6EE;
+  --endo-x: #5B3FB8; --sero-x: #17704A; --dopa-x: #9A4D00; --oxi-x: #B01E56;
+  --endo-on: #FFFFFF; --sero-on: #1E1030; --dopa-on: #1E1030; --oxi-on: #1E1030;
+  --face-ink: #2A1A3A; --focus: #2A6FDB;
+  --font-display: "Montserrat", "Segoe UI", Arial, sans-serif;
+  --font-body: "Open Sans", "Segoe UI", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1124; --surface: #271A36; --ink: #F3ECFA; --muted: #BBAAD0; --line: #43325A; --nav: #120B1B; --nav-ink: #F3ECFA;
+  --endo-t: #2E2446; --sero-t: #1D3328; --dopa-t: #3A2E17; --oxi-t: #3A1F2C;
+  --endo-x: #BBA8F5; --sero-x: #7DDBAA; --dopa-x: #FFC567; --oxi-x: #FF9DB9;
+  --focus: #7FB0FF; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1A1124; --surface: #271A36; --ink: #F3ECFA; --muted: #BBAAD0; --line: #43325A; --nav: #120B1B; --nav-ink: #F3ECFA;
+  --endo-t: #2E2446; --sero-t: #1D3328; --dopa-t: #3A2E17; --oxi-t: #3A1F2C;
+  --endo-x: #BBA8F5; --sero-x: #7DDBAA; --dopa-x: #FFC567; --oxi-x: #FF9DB9;
+  --focus: #7FB0FF; color-scheme: dark; }
+
+.h-endo { --h: var(--endo); --h-t: var(--endo-t); --h-x: var(--endo-x); --h-on: var(--endo-on); }
+.h-sero { --h: var(--sero); --h-t: var(--sero-t); --h-x: var(--sero-x); --h-on: var(--sero-on); }
+.h-dopa { --h: var(--dopa); --h-t: var(--dopa-t); --h-x: var(--dopa-x); --h-on: var(--dopa-on); }
+.h-oxi  { --h: var(--oxi);  --h-t: var(--oxi-t);  --h-x: var(--oxi-x);  --h-on: var(--oxi-on); }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 18px; line-height: 1.55; padding-inline: clamp(16px, 4vw, 48px); padding-block: 0 56px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 8px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+
+/* top bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; margin-inline: calc(-1 * clamp(16px, 4vw, 48px)); padding: 10px clamp(16px, 4vw, 48px); background: var(--nav); display: flex; align-items: center; gap: 20px; }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--nav-ink); white-space: nowrap; background: none; border: 0; padding: 6px 0; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; min-width: 0; scrollbar-width: thin; padding-block: 2px; }
+.tab { flex: none; border: 0; background: transparent; color: var(--nav-ink); font-family: var(--font-display); font-weight: 600; font-size: 15px; padding: 8px 14px; border-radius: 999px; opacity: .8; }
+.tab:hover { opacity: 1; background: rgba(255,255,255,.12); }
+.tab[aria-current="page"] { opacity: 1; background: var(--nav-ink); color: var(--nav); }
+
+main { max-width: 1180px; margin-inline: auto; padding-block: 36px 0; }
+.eyebrow { font-family: var(--font-display); font-weight: 700; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--h-x, var(--muted)); }
+.lead { font-size: clamp(18px, 2vw, 22px); color: var(--muted); max-width: 62ch; }
+.view { display: flex; flex-direction: column; gap: 28px; }
+h2.title { font-size: clamp(30px, 4.6vw, 52px); font-weight: 800; }
+
+/* home */
+.hero { display: flex; flex-direction: column; gap: 14px; }
+.hero h1 { font-size: clamp(38px, 7vw, 84px); font-weight: 800; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+.tile { text-align: left; display: flex; flex-direction: column; gap: 14px; background: var(--h-t); border: 2px solid transparent; border-radius: 26px; padding: 22px; transition: transform .15s, border-color .15s; }
+.tile:hover { transform: translateY(-4px); border-color: var(--h); }
+.tile .face { width: 96px; height: 96px; }
+.tile .name { font-family: var(--font-display); font-weight: 800; font-size: 26px; color: var(--h-x); }
+.tile .nick { color: var(--ink); font-weight: 600; }
+.tile .hint { color: var(--muted); font-size: 16px; }
+.shortcuts { display: flex; flex-wrap: wrap; gap: 12px; }
+.chip { font-family: var(--font-display); font-weight: 700; font-size: 16px; background: var(--surface); border: 2px solid var(--line); border-radius: 999px; padding: 10px 20px; }
+.chip:hover { border-color: var(--ink); }
+
+/* hormone view */
+.hhead { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: center; background: var(--h-t); border-radius: 30px; padding: clamp(22px, 4vw, 44px); }
+.hhead .face { width: clamp(110px, 18vw, 210px); height: auto; }
+.hhead-text { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.facts { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 64ch; }
+.reveal { align-self: flex-start; display: flex; flex-direction: column; gap: 10px; }
+.btn { font-family: var(--font-display); font-weight: 700; font-size: 16px; border: 0; border-radius: 999px; padding: 11px 22px; background: var(--h, var(--ink)); color: var(--h-on, var(--bg)); }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+.note { background: var(--surface); border-radius: 18px; padding: 16px 20px; max-width: 64ch; border: 2px solid var(--h); }
+.note b { color: var(--h-x); }
+.tips-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.tips-head h3 { font-size: 26px; font-weight: 800; }
+.tips { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; align-items: start; }
+.tip { background: var(--surface); border: 2px solid var(--line); border-radius: 22px; overflow: hidden; }
+.tip.open { border-color: var(--h); }
+.tip-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; background: transparent; border: 0; padding: 18px 20px; }
+.tip-title { font-family: var(--font-display); font-weight: 700; font-size: 19px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.tag { font-family: var(--font-body); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--h-x); }
+.plus { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--h); color: var(--h-on); display: grid; place-items: center; font-weight: 800; font-size: 20px; transition: transform .2s; }
+.tip.open .plus { transform: rotate(45deg); }
+.tip-body { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; font-size: 17px; }
+.aj b { color: var(--h-x); }
+.challenge { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: var(--h); color: var(--h-on); border-radius: 26px; padding: 22px 26px; }
+.challenge h3 { font-size: 22px; font-weight: 800; }
+.challenge p { font-weight: 600; }
+.challenge .btn { background: var(--surface); color: var(--ink); min-width: 140px; font-variant-numeric: tabular-nums; }
+
+/* warm-up and quiz */
+.rows { display: flex; flex-direction: column; gap: 14px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; justify-content: space-between; background: var(--surface); border: 2px solid var(--line); border-radius: 22px; padding: 18px 22px; }
+.row .q { font-family: var(--font-display); font-weight: 600; font-size: clamp(18px, 2.2vw, 24px); flex: 1 1 320px; min-width: 0; }
+.pill { font-family: var(--font-display); font-weight: 800; font-size: 20px; background: var(--h); color: var(--h-on); border-radius: 999px; padding: 10px 24px; }
+.opts { display: flex; flex-wrap: wrap; gap: 10px; }
+.opt { font-family: var(--font-display); font-weight: 700; font-size: 16px; background: var(--h-t); color: var(--h-x); border: 2px solid transparent; border-radius: 999px; padding: 9px 18px; }
+.opt:hover:not(:disabled) { border-color: var(--h); }
+.opt:disabled { cursor: default; opacity: .55; }
+.opt.right { opacity: 1; background: var(--h); color: var(--h-on); }
+.opt.wrong { opacity: 1; border-color: var(--ink); text-decoration: line-through; }
+.fb { flex-basis: 100%; font-size: 16px; color: var(--muted); }
+.score { font-family: var(--font-display); font-weight: 800; font-size: 22px; font-variant-numeric: tabular-nums; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+
+/* summary */
+.tablewrap { overflow-x: auto; border-radius: 22px; border: 2px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; }
+th, td { text-align: left; padding: 16px 20px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-display); font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td .go { background: none; border: 0; padding: 0; font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--h-x); text-decoration: underline; text-underline-offset: 4px; }
+.cards3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 2px solid var(--line); border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+.card h3 { font-size: 21px; font-weight: 800; }
+
+/* homework */
+.hw { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 22px; }
+.hwbox { background: var(--surface); border: 2px solid var(--line); border-radius: 26px; padding: 26px; display: flex; flex-direction: column; gap: 16px; }
+.badge { align-self: flex-start; font-family: var(--font-display); font-weight: 700; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; background: var(--dopa); color: #1E1030; padding: 6px 14px; border-radius: 999px; }
+.hwbox ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; counter-reset: n; }
+.hwbox li { counter-increment: n; display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; }
+.hwbox li::before { content: counter(n); width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; background: var(--h); color: var(--h-on); }
+.deadline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: var(--surface); border: 2px dashed var(--line); border-radius: 18px; padding: 14px 20px; }
+#deadline { font-family: var(--font-display); font-weight: 800; border-bottom: 2px solid var(--ink); padding-inline: 6px; min-width: 120px; }
+
+/* team contest, mood diary */
+.small { font-size: 16px; color: var(--muted); }
+.fgroup { display: flex; flex-direction: column; gap: 10px; }
+.btn.ghost[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.teambar { display: flex; flex-direction: column; gap: 14px; background: var(--surface); border: 2px solid var(--line); border-radius: 22px; padding: 18px 20px; }
+.flabel { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.team { display: flex; flex-direction: column; gap: 8px; border: 2px solid var(--line); border-radius: 18px; padding: 14px 16px; min-width: 0; }
+.team.top { border-color: var(--ink); background: var(--bg); }
+.tname { font-family: var(--font-display); font-weight: 700; border-bottom: 2px solid var(--line); padding-inline: 2px; overflow-wrap: anywhere; }
+.tscore { font-family: var(--font-display); font-weight: 800; font-size: 44px; line-height: 1; font-variant-numeric: tabular-nums; }
+.tbtns { display: flex; gap: 8px; }
+.mini { font-family: var(--font-display); font-weight: 800; font-size: 18px; min-width: 44px; min-height: 40px; border-radius: 12px; border: 2px solid var(--line); background: transparent; padding-inline: 10px; }
+.mini:hover { border-color: var(--ink); }
+.award { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.award > span { font-weight: 700; font-size: 15px; color: var(--muted); }
+.award .mini { font-size: 15px; }
+.award .mini.got { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.formbox { background: var(--surface); border: 2px solid var(--line); border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+.formbox input[type="date"], .formbox textarea { font: inherit; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; width: 100%; }
+.formbox input[type="date"] { max-width: 240px; }
+.formbox textarea { min-height: 84px; resize: vertical; }
+.moods { display: flex; flex-wrap: wrap; gap: 10px; }
+.mood { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 104px; padding: 10px 6px; border: 2px solid var(--line); border-radius: 18px; background: var(--surface); font-size: 14px; font-weight: 600; }
+.mood svg { width: 52px; height: 52px; }
+.mood:hover { border-color: var(--ink); }
+.mood[aria-pressed="true"] { border-color: var(--ink); background: var(--bg); box-shadow: inset 0 0 0 2px var(--ink); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.achip { font-family: var(--font-display); font-weight: 600; font-size: 15px; padding: 8px 14px; border-radius: 999px; border: 2px solid transparent; background: var(--h-t); color: var(--h-x); }
+.achip:hover { border-color: var(--h); }
+.achip[aria-pressed="true"] { background: var(--h); color: var(--h-on); }
+.entries { display: flex; flex-direction: column; gap: 12px; }
+.entry { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 16px; align-items: start; background: var(--surface); border: 2px solid var(--line); border-radius: 22px; padding: 16px 20px; }
+.entry > svg { width: 48px; height: 48px; }
+.edate { font-family: var(--font-display); font-weight: 700; }
+.entry-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.entry-chips span { font-size: 14px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--h-t); color: var(--h-x); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.statbox { background: var(--surface); border: 2px solid var(--line); border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.statbox h3 { font-size: 20px; font-weight: 800; }
+.bars { display: flex; align-items: flex-end; gap: 8px; height: 150px; }
+.bar-col { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; }
+.bar-col i { display: block; width: 100%; max-width: 38px; background: var(--sero); border-radius: 8px 8px 0 0; min-height: 6px; }
+.bar-col small { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.hbar { display: grid; grid-template-columns: 120px minmax(0, 1fr) 28px; gap: 10px; align-items: center; font-weight: 700; }
+.hbar i { display: block; height: 16px; border-radius: 8px; background: var(--h); min-width: 4px; }
+/* pager */
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 2px solid var(--line); }
+@media (max-width: 560px) { .hhead { grid-template-columns: 1fr; } .hhead .face { order: -1; width: 110px; } .brand { display: none; } body { font-size: 17px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="bar">
+  <button class="brand" data-go="home" type="button">Boldogsághormonok</button>
+  <nav class="tabs" id="tabs" aria-label="Fejezetek"></nav>
+</header>
+<main id="main"></main>
+
+<script>
+(function () {
+  var VIEWS = [
+    { id: "home", label: "Kezdőlap" },
+    { id: "warmup", label: "Ráhangolódás" },
+    { id: "endo", label: "Endorfin", cls: "h-endo" },
+    { id: "sero", label: "Szerotonin", cls: "h-sero" },
+    { id: "dopa", label: "Dopamin", cls: "h-dopa" },
+    { id: "oxi", label: "Oxitocin", cls: "h-oxi" },
+    { id: "summary", label: "Összefoglaló" },
+    { id: "quiz", label: "Kvíz" },
+    { id: "diary", label: "Hangulatnapló" },
+    { id: "homework", label: "Házi feladat" }
+  ];
+
+  var H = {
+    endo: {
+      name: "Endorfin", nick: "A fájdalomcsillapító", lead: "Természetes fájdalomcsillapító és hangulatjavító.",
+      facts: ["Nevetés, edzés, zenehallgatás és csokoládéevés közben szabadul fel.", "Az agy opioid receptoraira hat, így csökkenti a fájdalmat, és energikus, izgatott érzést ad.", "Fizikai fájdalomnál is felszabadul: rövid pillanatnyi izgalmat nyújt, mint túlélési mechanizmus."],
+      tudtad: "A futók „eufóriája” (runner’s high) részben az endorfinoknak köszönhető. A nevetés és a sírás is kis endorfinkitöréseket szabadít fel.",
+      tips: [
+        { t: "Egyél fűszeres ételeket!", d: "A fűszer ingerli a szájunk és az orrunk receptorait, a tested pedig endorfinnal válaszol az „égető” érzésre és az izzadásra.", a: "próbálj ki egy indiai éttermet, válassz új fűszeres ételt az étlapról." },
+        { t: "Akupunktúra", d: "Bizonyítékok vannak rá, hogy segíthet az endorfinok növelésében, mert a fájdalomreceptorokat is stimulálja. Ezt szakemberre bízd, ne otthon gyakorold!", a: "értékeld a hangulatod előtte és utána: pozitív hatású?" },
+        { t: "Művészet", d: "Ha olyat csinálunk, amit szeretünk, nő az endorfin, enyhül a stressz, csökken a kortizolszint. Kifejezhetjük magunkat, ha szavakkal nem megy.", a: "festés, rajzolás, agyagozás." },
+        { t: "Tánc", d: "A tánc ugyanúgy mozgás, mint a testedzés, csak sokkal élvezetesebb. Az otthoni táncolás is növeli a pulzust és az endorfint.", a: "kedvenc szám, és táncolj egyet a szobádban!" },
+        { t: "Játék", d: "Kártya-, társas- vagy sportjáték, de akár csak a hülyéskedés is csökkenti a stresszt, megmozgatja az agyat, fejleszti a kreativitást és erősíti a kapcsolatokat.", a: "játssz napi szinten, tarts játékestet, csatlakozz a gyerekek játékába." },
+        { t: "Időutazás", d: "Fényképek és régi videók nézegetése felidézi a kedvenc emlékeket, feldobja a hangulatot, és újra átélhetjük az élményteli időket.", a: "nézz végig egy régi albumot, és keresd fel újra a kedves embert vagy helyet." },
+        { t: "Mozgás", extra: true, d: "A tempós séta, a kocogás vagy a bringázás 20–30 percen át jó eséllyel endorfinlöketet ad.", a: "menj barátokkal, vagy tegyél be zenét: így duplán működik." }
+      ],
+      challenge: "Tegyetek be egy dalt, és táncoljatok 30 másodpercig!"
+    },
+    sero: {
+      name: "Szerotonin", nick: "A hangulatstabilizátor", lead: "Nyugalom, elégedettség, optimizmus.",
+      facts: ["Az érzelmeinkkel és a hangulatunkkal kapcsolatos egyik legfontosabb hormon, a testi egészségünkre is hatással van.", "Akkor áramlik át az agyon, ha magabiztosnak érezzük magunkat, és büszkék vagyunk az eredményeinkre.", "A pozitív hangulat növeli a szintjét, a negatív attitűd az ellenkezőjét éri el."],
+      tudtad: "A szerotonin legnagyobb része nem az agyban, hanem a bélrendszerben termelődik, ezért az étkezés és az életmód is számít.",
+      tips: [
+        { t: "Áldás gyakorlat", d: "Annak megbecsülése, amink van, a jelen pillanatába horgonyoz, és megakadályozza, hogy a múlt vagy a jövő miatti szorongásban éljünk.", a: "egy héten át minden este írj fel három dolgot, amiért hálás vagy. Akár 6 hónapig javíthatja az általános boldogságot!" },
+        { t: "Emlékezés", d: "A pozitív emlékek felidézése segít, hogy ne a kellemetlen eseményekre gondoljunk, és növeli a szerotonintermelést is.", a: "le tudnád írni a 10 legjobb boldog emlékedet? (iskola, barátok, bulik, ünnepek, család…)" },
+        { t: "Tűzz ki célokat", d: "Ha elérjük a céljainkat, boldognak érezzük magunkat. A kisebb célok könnyebben elérhetők, és azok is szerotonint szabadítanak fel!", a: "írj listát a heti célokról, majd bontsd napi célokra." },
+        { t: "Új dolgok", d: "Valami új kipróbálása nagyszerű módja a szerotonin növelésének: minél kevésbé ismerjük a tevékenységet, annál inkább sikerélményt jelent.", a: "új recept, új hobbi, vagy gyakorolj egy számodra új készséget." },
+        { t: "Aromaterápia", d: "A szaglás működtetése szerotonin felszabadítására késztetheti az agyat: levendula a nyugalomért, bergamott és citrom a hangulatért.", a: "illóolaj diffúzorban vagy gyertyában, ha nem vagy érzékeny rá." },
+        { t: "Hála", d: "A hála érzése hatással van az agy jutalmazási rendszerére, szerotonint szabadít fel, és a boldogság növekedésével is összefügg.", a: "írj le naponta három dolgot. Például: „Hálás vagyok a szép/rossz időért, mert…”" },
+        { t: "Nevetés", d: "Bebizonyosodott, hogy a nevetés csökkenti a stresszt és a szorongást, javítja a hangulatot, relaxálja az izmokat és lelassítja a pulzust.", a: "humoros film, viccek, hangos nevetés. „Hamisítsd meg a mosolyod, amíg el nem éred a valódit”: pár perc mosoly is segíthet." },
+        { t: "Masszázs", d: "Egyes vizsgálatok szerint masszázs közben emelkedik a szerotoninszint, és csökken a kortizol, a stresszhormon szintje, ami enyhítheti a lehangoltságot.", a: "kérd meg anyukádat vagy a legjobb barátodat, hogy 15 percig dörzsölje a vállad; masszázshenger is jó." }
+      ],
+      challenge: "Mosolyogj 30 másodpercig, még ha nincs is kedved hozzá!"
+    },
+    dopa: {
+      name: "Dopamin", nick: "A jutalom hormonja", lead: "Az izgalmas érzés, amikor jutalomra várunk.",
+      facts: ["Gyakran jutalom- vagy élvezeti hormonként ismerik: kellemes tevékenységek, például testmozgás vagy evés közben szabadul fel.", "Számos agyterületen hat: a memóriát, a tanulást, a viselkedést és a mozgást is érintheti."],
+      tudtad: "A dopamin főleg a vágyakozást és a motivációt hajtja: a várakozás izgalma gyakran erősebb, mint maga a jutalom. Ezért olyan könnyű „rákapni” a gyors jutalmakra.",
+      tips: [
+        { t: "Mindfulness", d: "Egy tanulmány szerint a rendszeresen meditálók dopaminszintje akár 65%-kal is emelkedik, és utána is egészséges tartományban marad.", a: "figyelj a pillanatra, anélkül, hogy elkalandozna az elméd." },
+        { t: "Egyél csokoládét", d: "A csokoládé tirozint, a dopamin alapanyagát is tartalmazza, így aktiválhatja az agy jutalomközpontját.", a: "Figyelem! Egy kis csokoládé javítja a hangulatot, de hosszú távon nem tartja fenn." },
+        { t: "Napfény", d: "A napon töltött idő növelheti a dopaminszintet: a bőrünk elnyeli a napfényt és D-vitamint termel, ez beindítja a termelődést.", a: "séta, piknik, kutyasétáltatás vagy olvasás a szabadban." },
+        { t: "Étrend", d: "A fehérje az aminosavak építőköve, amelyek segítik a dopaminszint megfelelő szinten tartását.", a: "sajt, feldolgozatlan hús, joghurt, tojás, hal, tej." },
+        { t: "Alvás", d: "A megfelelő alvás segít az agynak a dopaminszintet ott tartani, ahol lennie kell: elegendő „dopamintartalékot” építünk.", a: "képernyők ki lefekvés előtt 30 perccel, minden este azonos időben ágyba." },
+        { t: "Zene", d: "Ismered a felemelő dal érzését? A kutatások szerint kellemes zenére nagyobb mértékben szabadul fel a dopamin (nem szomorúra vagy semlegesre).", a: "készíts jó hangulatú lejátszási listát." },
+        { t: "Kis győzelmek", d: "Amikor előre haladunk vagy elérünk valamit, az agyunk jutalmazási központja dopamint szabadít fel. Büszkeséget kelt, és újabb sikerre késztet.", a: "írj listát, mit értél el ma, akár ágyvetést is." },
+        { t: "Edzés", d: "A pulzusszám felgyorsítása futással, súlyemeléssel vagy kerékpározással azonnal növeli a dopaminszintet.", a: "séta, aerobik a nappaliban, és hangulatnapló edzés előtt és után." }
+      ],
+      challenge: "Írd fel 30 másodperc alatt, mit értél el ma, akár apróságot is!"
+    },
+    oxi: {
+      name: "Oxitocin", nick: "A szerelem hormonja", lead: "Szeretve érezzük magunkat, és kapcsolódunk másokhoz.",
+      facts: ["Emberi érintés közben szabadul fel: ölelésnél, csóknál. Akkor is, ha bizalmat érzünk.", "A társas közegben megélt bizalom jó érzés, mert a közösségek elősegítették a túlélésünket.", "Elszigeteltség és magány esetén az oxitocinszint és a hangulat is csökken."],
+      tudtad: "Az oxitocin a szülésnél és a szoptatásnál is fontos: erősíti a kötődést anya és gyermeke között.",
+      tips: [
+        { t: "Mondd: szeretlek!", d: "Amikor elmondjuk másoknak, hogy szeretjük őket, megemeli az oxitocinszintünket, és még jobban vágyunk a kapcsolódásra.", a: "mondd el személyesen, telefonon, levélben vagy SMS-ben." },
+        { t: "Csatlakozz online", d: "A közösségi média jó eszköz lehet arra, hogy kapcsolatban maradjunk régen nem látott barátokkal és a távol élő családtagokkal.", a: "keress meg valakit, akivel régóta nem beszéltél." },
+        { t: "Forró fürdő", d: "Kimutatták, hogy a hőmérséklet emelkedése és a meleg érintés növeli az oxitocinszintet, a meleg fürdő így „becsaphatja” az agyat.", a: "pihentető zene, illóolaj a fürdőben." },
+        { t: "Játssz egy kisállattal", d: "A házi kedvenccel vagy egy barát háziállatával töltött idő is sikeresen emelheti az oxitocinszintet.", a: "labdázás, séta, simogatás, ápolás." },
+        { t: "Légy kedves!", d: "Az altruista, önzetlen viselkedés elősegíti az oxitocin felszabadulását.", a: "légy véletlenszerűen kedves: segíts a szomszédnak, adakozz jótékony célra, főzz egy családtagnak." },
+        { t: "Oszd meg az érzéseidet!", d: "Ha megosztod a szeretetedet azokkal, akik a legtöbbet jelentenek neked, az növelheti az oxitocint, és gyakrabban kapsz kedves választ.", a: "mondd el egy barátodnak, hogy értékeled a barátságát." },
+        { t: "Ölelkezés", d: "A kézfogás, az ölelés és a puszi azonnal növeli az oxitocinszintet az agyban. Népszerű ajánlás szerint napi nyolc ölelés a „varázslatos szám”. Csak akkor jó, ha mindkét fél szívesen vállalja.", a: "ölelj meg naponta nyolcszor egy szeretett személyt." },
+        { t: "Barátok", d: "A barátokkal töltött idő támogatottnak érezteti magad. Elszigeteltség és magány esetén az oxitocin és a hangulat is csökken.", a: "szervezzetek közös programot: séta, vásárlás, szórakozás." }
+      ],
+      challenge: "Mondj valakinek egy kedves mondatot a következő 30 másodpercben!"
+    }
+  };
+
+  var WARMUP = [
+    { q: "Hallgatsz egy igazán jó, felemelő dalt.", k: "dopa" },
+    { q: "Megölelsz valakit, akit szeretsz.", k: "oxi" },
+    { q: "Jót nevetsz vagy táncolsz.", k: "endo" },
+    { q: "Büszke vagy, mert elértél egy célt.", k: "sero" }
+  ];
+
+  var QUIZ = [
+    { q: "Hangulatstabilizátor vagyok, és a nagy részem a bélrendszerben termelődik.", k: "sero" },
+    { q: "Én vagyok a jutalom hormonja: a várakozás izgalmát és a motivációt adom.", k: "dopa" },
+    { q: "Ölelésnél, bizalomnál és barátságnál szabadulok fel, én vagyok a szerelem hormonja.", k: "oxi" },
+    { q: "Természetes fájdalomcsillapító vagyok: nevetés, tánc, fűszeres étel.", k: "endo" },
+    { q: "Hosszú futás után eufóriát érzel. Melyik hormon dolgozik?", k: "endo" },
+    { q: "Meleg fürdő és ölelés után megnyugszol, kapcsolódva érzed magad.", k: "oxi" },
+    { q: "„Hamisítsd meg a mosolyod, amíg el nem éred a valódit.” Melyik hormon szintjét növelheti a mosoly?", k: "sero" },
+    { q: "Egy héten át minden este felírsz három dolgot, amiért hálás vagy. Melyik hormonnak segítesz ezzel?", k: "sero" },
+    { q: "A kedvenc dalod hallgatása közben nagyobb mértékben szabadul fel.", k: "dopa" },
+    { q: "Népszerű ajánlás szerint napi nyolc ölelés a „varázslatos szám”. Melyik hormonról van szó?", k: "oxi" },
+    { q: "A fűszeres étel égető érzésére és az izzadásra ezzel válaszol a tested.", k: "endo" },
+    { q: "Elértél egy kis célt, büszke vagy, és még többet szeretnél elérni. Melyik hormon hajtja a motivációt?", k: "dopa" },
+    { q: "Elszigeteltség és magány esetén ennek a hormonnak a szintje, és vele a hangulat is csökken.", k: "oxi" },
+    { q: "Új receptet próbálsz ki, és sikerélményed lesz. Melyik hormon szabadulhat fel?", k: "sero" }
+  ];
+
+  var SUMMARY = [
+    ["endo", "A fájdalomcsillapító", "nevetés, tánc, fűszeres étel, művészet, játék, mozgás"],
+    ["sero", "A hangulatstabilizátor", "hála, célok, új dolgok, aromaterápia, nevetés, masszázs"],
+    ["dopa", "A jutalom hormonja", "meditáció, napfény, alvás, zene, kis győzelmek, edzés"],
+    ["oxi", "A szerelem hormonja", "ölelés, barátok, kedvesség, kisállat, forró fürdő"]
+  ];
+
+  var HW = [
+    { title: "Önismereti / reflexiós kérdések", cls: "h-sero", items: [
+      "Mikor érezted legutóbb azt, hogy „boldogsághormonok dolgoznak” benned? Melyik lehetett az?",
+      "Melyik hormonhoz kapcsolódó tevékenységet végzel rendszeresen (pl. sport, baráti beszélgetés, sikerélmény)?",
+      "Melyik boldogsághormonból van szerinted a legkevesebb a mindennapjaidban, és miért?",
+      "Mit tudnál tenni azért, hogy természetes módon növeld valamelyik hormon szintjét a következő héten?" ] },
+    { title: "Kreatív feladatok", cls: "h-endo", items: [
+      "Képzeld el, hogy iskolai „boldogságnapot” szerveztek: milyen programokat tennél bele, hogy mind a négy hormon termelődését segítsd?",
+      "Hogyan befolyásolja szerinted a közösségi média használata a dopaminrendszerünket?",
+      "Milyen hatással lehet a stressz a boldogsághormonok működésére?",
+      "Miért fontos, hogy ne csak egyfajta „boldogságforrásra” támaszkodjunk (pl. csak dopaminos jutalmakra)?" ] }
+  ];
+
+  function face(cls) {
+    var cheeks = cls === "h-oxi" ? '<ellipse cx="38" cy="124" rx="17" ry="11" fill="#D93A64" opacity=".85"/><ellipse cx="162" cy="124" rx="17" ry="11" fill="#D93A64" opacity=".85"/>' : "";
+    return '<svg class="face" viewBox="0 0 200 200" role="img" aria-label="Mosolygó arc"><circle cx="100" cy="100" r="96" fill="var(--h)"/>' + cheeks +
+      '<ellipse cx="68" cy="82" rx="10" ry="14" fill="var(--face-ink)"/><ellipse cx="132" cy="82" rx="10" ry="14" fill="var(--face-ink)"/>' +
+      '<path d="M62 118 Q100 158 138 118" fill="none" stroke="var(--face-ink)" stroke-width="9" stroke-linecap="round"/></svg>';
+  }
+  function clsOf(k) { return "h-" + k; }
+  function idx(id) { for (var i = 0; i < VIEWS.length; i++) if (VIEWS[i].id === id) return i; return 0; }
+
+  function pager(id) {
+    var i = idx(id), p = VIEWS[i - 1], n = VIEWS[i + 1];
+    return '<div class="pager">' +
+      (p ? '<button class="btn ghost" data-go="' + p.id + '" type="button">← ' + p.label + '</button>' : '<span></span>') +
+      (n ? '<button class="btn ghost" data-go="' + n.id + '" type="button">' + n.label + ' →</button>' : '<span></span>') + '</div>';
+  }
+
+  function renderHome() {
+    var tiles = ["endo", "sero", "dopa", "oxi"].map(function (k) {
+      var h = H[k];
+      return '<button class="tile ' + clsOf(k) + '" data-go="' + k + '" type="button">' + face(clsOf(k)) +
+        '<span class="name">' + h.name + '</span><span class="nick">' + h.nick + '</span><span class="hint">' + h.lead + '</span></button>';
+    }).join("");
+    return '<section class="view" id="v-home">' +
+      '<div class="hero"><p class="eyebrow">Az öngondoskodás módjai</p><h1>Boldogsághormonok</h1>' +
+      '<p class="lead">A testben mirigyek és idegsejtek olyan anyagokat termelnek, amelyek hírvivőként működnek, és szerepet játszanak a hangulat szabályozásában. Négy hormon felel a napközben érzett jó érzésekért: dopamin, oxitocin, szerotonin és endorfin. Válassz egyet, és ugorj rá!</p></div>' +
+      '<div class="tiles">' + tiles + '</div>' +
+      '<div class="shortcuts"><button class="chip" data-go="warmup" type="button">Ráhangolódás</button><button class="chip" data-go="summary" type="button">Összefoglaló</button><button class="chip" data-go="quiz" type="button">Kvíz</button><button class="chip" data-go="diary" type="button">Hangulatnapló</button><button class="chip" data-go="homework" type="button">Házi feladat</button></div></section>';
+  }
+
+  function renderWarmup() {
+    var rows = WARMUP.map(function (w) {
+      return '<div class="row ' + clsOf(w.k) + '"><p class="q">Mi történik benned, amikor… ' + w.q.charAt(0).toLowerCase() + w.q.slice(1) + '</p>' +
+        '<span class="pill" hidden>' + H[w.k].name + '</span><button class="btn reveal-btn" type="button" data-reveal>Mutasd a választ</button></div>';
+    }).join("");
+    return '<section class="view" id="v-warmup"><div class="hero"><p class="eyebrow">Ráhangolódás</p><h2 class="title">Melyik hormon dolgozik benned?</h2><p class="lead">Tippeljetek, aztán kattints: a válasz előbukkan.</p></div>' +
+      '<div class="toolbar"><button class="btn ghost" type="button" data-showall>Mindet mutat</button><button class="btn ghost" type="button" data-hideall>Mindet elrejt</button></div>' +
+      '<div class="rows">' + rows + '</div>' + pager("warmup") + '</section>';
+  }
+
+  function renderHormone(k) {
+    var h = H[k], c = clsOf(k);
+    var tips = h.tips.map(function (t, i) {
+      return '<div class="tip"><button class="tip-head" type="button" aria-expanded="false" aria-controls="tb-' + k + i + '" data-tip>' +
+        '<span class="tip-title">' + (t.extra ? '<span class="tag">Kiegészítés</span>' : '') + t.t + '</span><span class="plus" aria-hidden="true">+</span></button>' +
+        '<div class="tip-body" id="tb-' + k + i + '" hidden><p>' + t.d + '</p><p class="aj"><b>Ajánlat:</b> ' + t.a + '</p></div></div>';
+    }).join("");
+    var facts = h.facts.map(function (f) { return "<li>" + f + "</li>"; }).join("");
+    return '<section class="view ' + c + '" id="v-' + k + '">' +
+      '<div class="hhead"><div class="hhead-text"><p class="eyebrow">' + h.name + ' · ' + h.nick + '</p><h2 class="title">' + h.lead.replace(/\.$/, "") + '</h2><ul class="facts">' + facts + '</ul>' +
+      '<div class="reveal"><button class="btn" type="button" data-note>Tudtad?</button><div class="note" hidden><b>Tudtad?</b> ' + h.tudtad + '</div></div></div>' + face(c) + '</div>' +
+      '<div class="tips-head"><h3>Hogyan segíthetsz neki?</h3><div class="toolbar"><button class="btn ghost" type="button" data-opentips>Mindet kinyit</button><button class="btn ghost" type="button" data-closetips>Mindet becsuk</button></div></div>' +
+      '<div class="tips">' + tips + '</div>' +
+      '<div class="challenge"><div><h3>Próbáld ki most!</h3><p>' + h.challenge + '</p></div><button class="btn" type="button" data-timer>Indítás: 30 mp</button></div>' +
+      pager(k) + '</section>';
+  }
+
+  function renderSummary() {
+    var rows = SUMMARY.map(function (r) {
+      return '<tr class="' + clsOf(r[0]) + '"><td><button class="go" type="button" data-go="' + r[0] + '">' + H[r[0]].name + '</button></td><td>' + r[1] + '</td><td>' + r[2] + '</td></tr>';
+    }).join("");
+    return '<section class="view" id="v-summary"><div class="hero"><p class="eyebrow">Összefoglalás</p><h2 class="title">Négy hormon, sok kis szokás</h2><p class="lead">A hormon nevére kattintva visszaugorhatsz a részletekhez.</p></div>' +
+      '<div class="tablewrap"><table><thead><tr><th>Hormon</th><th>Becenév</th><th>Mi segít neki?</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="hero"><p class="eyebrow">Fontos tudnivalók</p><h2 class="title" style="font-size:clamp(26px,3.4vw,38px)">Okosan a boldogsághormonokkal</h2></div>' +
+      '<div class="cards3"><div class="card"><h3>Nem varázsital</h3><p>A „boldogsághormon” leegyszerűsítő név: ezek az anyagok sok más feladatot is ellátnak, és a hatásuk összetett.</p></div>' +
+      '<div class="card"><h3>Kis szokások</h3><p>Egy-egy apró, rendszeres tevékenység többet ér, mint egyetlen nagy hajrá. A változatosság a titok.</p></div>' +
+      '<div class="card"><h3>Kérj segítséget!</h3><p>Ha hosszabb ideig nyomaszt a rossz hangulat, beszélj egy felnőttel, az iskolapszichológussal vagy az orvosoddal. Ez erő, nem gyengeség.</p></div></div>' +
+      pager("summary") + '</section>';
+  }
+
+  function renderQuiz() {
+    var qs = QUIZ.map(function (q, i) {
+      var opts = ["endo", "sero", "dopa", "oxi"].map(function (k) {
+        return '<button class="opt ' + clsOf(k) + '" type="button" data-opt="' + k + '">' + H[k].name + '</button>';
+      }).join("");
+      return '<div class="row" data-q="' + i + '" data-k="' + q.k + '"><p class="q">' + q.q + '</p><div class="opts">' + opts + '</div><p class="fb" hidden></p></div>';
+    }).join("");
+    return '<section class="view" id="v-quiz"><div class="hero"><p class="eyebrow">Kvíz</p><h2 class="title">Melyik hormon vagyok?</h2><p class="lead">Kattints a szerinted helyes hormonra. Pontozhattok párban vagy csapatban is.</p></div>' +
+      '<div class="toolbar"><span class="score" id="score">Pontszám: 0 / ' + QUIZ.length + '</span><button class="btn ghost" type="button" data-resetquiz>Újrakezdés</button></div>' +
+      '<div class="rows">' + qs + '</div>' + pager("quiz") + '</section>';
+  }
+
+  function renderHomework() {
+    var boxes = HW.map(function (b) {
+      return '<div class="hwbox ' + b.cls + '"><span class="badge">Otthoni feladat · jegyre</span><h3 style="font-size:26px;font-weight:800">' + b.title + '</h3><ol>' +
+        b.items.map(function (t) { return "<li><span>" + t + "</span></li>"; }).join("") + '</ol></div>';
+    }).join("");
+    return '<section class="view" id="v-homework"><div class="hero"><p class="eyebrow">Otthoni feladatok</p><h2 class="title">Két feladat, amire jegyet kapsz</h2></div>' +
+      '<div class="deadline"><span>Beadási határidő (kattints és írd át):</span><span id="deadline" contenteditable="true" spellcheck="false" role="textbox" aria-label="Beadási határidő">[dátum]</span></div>' +
+      '<div class="hw">' + boxes + '</div>' +
+      '<div class="hero"><p class="eyebrow">Heti kihívás</p><h2 class="title" style="font-size:clamp(26px,3.4vw,38px)">Légy kedves magadhoz!</h2><p class="lead">Válassz egy boldogsághormont, és a héten minden nap tegyél érte egy apró dolgot.</p></div>' +
+      pager("homework") + '</section>';
+  }
+
+  var MOODS = ["", "Nagyon rossz", "Rossz", "Közepes", "Jó", "Nagyon jó"];
+  var ACTS = [
+    ["Nevetés", "endo"], ["Tánc", "endo"], ["Mozgás, sport", "endo"], ["Játék", "endo"],
+    ["Zene", "dopa"], ["Sikerélmény, kis győzelem", "dopa"], ["Napfény, szabadban", "dopa"], ["Jó alvás", "dopa"],
+    ["Hála, szép emlékek", "sero"], ["Új dolog kipróbálása", "sero"], ["Célok kitűzése", "sero"],
+    ["Ölelés", "oxi"], ["Barátokkal töltött idő", "oxi"], ["Kisállat", "oxi"], ["Kedvesség másokhoz", "oxi"]
+  ];
+  function moodFace(n) {
+    var m = { 1: "M62 142 Q100 98 138 142", 2: "M64 134 Q100 112 136 134", 3: "M64 126 L136 126", 4: "M62 116 Q100 144 138 116", 5: "M58 108 Q100 164 142 108" }[n] || "M64 126 L136 126";
+    return '<svg viewBox="0 0 200 200" role="img" aria-label="' + MOODS[n] + '"><circle cx="100" cy="100" r="92" fill="var(--surface)" stroke="var(--ink)" stroke-width="8"/><ellipse cx="68" cy="80" rx="9" ry="13" fill="var(--ink)"/><ellipse cx="132" cy="80" rx="9" ry="13" fill="var(--ink)"/><path d="' + m + '" fill="none" stroke="var(--ink)" stroke-width="9" stroke-linecap="round"/></svg>';
+  }
+  function renderDiary() {
+    var moods = [1, 2, 3, 4, 5].map(function (n) {
+      return '<button class="mood" type="button" data-mood="' + n + '" aria-pressed="false">' + moodFace(n) + '<span>' + MOODS[n] + '</span></button>';
+    }).join("");
+    var chips = ACTS.map(function (a, i) {
+      return '<button class="achip ' + clsOf(a[1]) + '" type="button" data-act="' + i + '" aria-pressed="false">' + a[0] + '</button>';
+    }).join("");
+    return '<section class="view" id="v-diary"><div class="hero"><p class="eyebrow">Hangulatnapló</p><h2 class="title">Hogyan érezted magad ma?</h2>' +
+      '<p class="lead">Jegyezd fel a hangulatod, és jelöld meg, mi történt aznap. Néhány nap után látni fogod, melyik hormonhoz kapcsolódó szokásaid vannak. A bejegyzések csak ezen az eszközön, ebben a böngészőben maradnak meg, senki más nem látja őket.</p></div>' +
+      '<div class="formbox"><div class="fgroup"><span class="flabel" id="d-l1">Hangulat</span><div class="moods" role="group" aria-labelledby="d-l1">' + moods + '</div></div>' +
+      '<div class="fgroup"><span class="flabel" id="d-l2">Mi történt ma? (több is jelölhető)</span><div class="chips" role="group" aria-labelledby="d-l2">' + chips + '</div></div>' +
+      '<div class="fgroup"><label class="flabel" for="d-date">Dátum</label><input type="date" id="d-date"></div>' +
+      '<div class="fgroup"><label class="flabel" for="d-note">Megjegyzés (nem kötelező)</label><textarea id="d-note" maxlength="300"></textarea></div>' +
+      '<div class="toolbar"><button class="btn" type="button" data-savedia>Mentés</button><span class="small" id="d-msg" role="status"></span></div>' +
+      '<p class="small" id="d-store" hidden>Ebben a böngészőben a mentés nem érhető el, ezért a bejegyzések csak az oldal bezárásáig maradnak meg.</p></div>' +
+      '<div id="d-stats"></div><div class="entries" id="d-list"></div>' +
+      '<div class="toolbar"><button class="btn ghost" type="button" id="d-clear" data-cleardia hidden>Összes bejegyzés törlése</button></div>' + pager("diary") + '</section>';
+  }
+
+  var main = document.getElementById("main"), tabs = document.getElementById("tabs");
+  main.innerHTML = renderHome() + renderWarmup() + renderHormone("endo") + renderHormone("sero") + renderHormone("dopa") + renderHormone("oxi") + renderSummary() + renderQuiz() + renderDiary() + renderHomework();
+  tabs.innerHTML = VIEWS.map(function (v) { return '<button class="tab" type="button" data-go="' + v.id + '">' + v.label + '</button>'; }).join("");
+
+  function show(id, noScroll) {
+    var i = idx(id); id = VIEWS[i].id;
+    VIEWS.forEach(function (v) { document.getElementById("v-" + v.id).hidden = v.id !== id; });
+    Array.prototype.forEach.call(tabs.children, function (b) {
+      if (b.getAttribute("data-go") === id) { b.setAttribute("aria-current", "page"); try { b.scrollIntoView({ inline: "center", block: "nearest" }); } catch (e) {} }
+      else b.removeAttribute("aria-current");
+    });
+    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+    if (!noScroll) window.scrollTo(0, 0);
+  }
+
+  var score = 0;
+  function resetQuiz() {
+    score = 0;
+    Array.prototype.forEach.call(document.querySelectorAll("#v-quiz .row"), function (r) {
+      r.removeAttribute("data-done");
+      Array.prototype.forEach.call(r.querySelectorAll(".opt"), function (o) { o.disabled = false; o.classList.remove("right", "wrong"); });
+      var fb = r.querySelector(".fb"); fb.hidden = true; fb.textContent = "";
+    });
+    document.getElementById("score").textContent = "Pontszám: 0 / " + QUIZ.length;
+  }
+
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("button"); if (!t) return;
+    if (t.hasAttribute("data-go")) { show(t.getAttribute("data-go")); return; }
+    if (t.hasAttribute("data-tip")) {
+      var open = t.getAttribute("aria-expanded") !== "true";
+      t.setAttribute("aria-expanded", open ? "true" : "false");
+      t.parentNode.classList.toggle("open", open);
+      t.parentNode.querySelector(".tip-body").hidden = !open; return;
+    }
+    if (t.hasAttribute("data-opentips") || t.hasAttribute("data-closetips")) {
+      var want = t.hasAttribute("data-opentips");
+      Array.prototype.forEach.call(t.closest(".view").querySelectorAll(".tip"), function (tp) {
+        tp.classList.toggle("open", want);
+        tp.querySelector(".tip-head").setAttribute("aria-expanded", want ? "true" : "false");
+        tp.querySelector(".tip-body").hidden = !want;
+      }); return;
+    }
+    if (t.hasAttribute("data-note")) { var n = t.parentNode.querySelector(".note"); n.hidden = !n.hidden; return; }
+    if (t.hasAttribute("data-reveal")) { var p = t.parentNode.querySelector(".pill"); p.hidden = !p.hidden; t.textContent = p.hidden ? "Mutasd a választ" : "Elrejt"; return; }
+    if (t.hasAttribute("data-showall") || t.hasAttribute("data-hideall")) {
+      var sh = t.hasAttribute("data-showall");
+      Array.prototype.forEach.call(document.querySelectorAll("#v-warmup .row"), function (r) {
+        r.querySelector(".pill").hidden = !sh; r.querySelector("[data-reveal]").textContent = sh ? "Elrejt" : "Mutasd a választ";
+      }); return;
+    }
+    if (t.hasAttribute("data-timer")) {
+      clearInterval(t._t); var s = 30; t.textContent = s + " mp";
+      t._t = setInterval(function () { s--; if (s <= 0) { clearInterval(t._t); t.textContent = "Kész! Újra?"; } else t.textContent = s + " mp"; }, 1000); return;
+    }
+    if (t.hasAttribute("data-opt")) {
+      var row = t.closest(".row"); if (row.getAttribute("data-done")) return;
+      row.setAttribute("data-done", "1");
+      var right = row.getAttribute("data-k"), chosen = t.getAttribute("data-opt"), fb = row.querySelector(".fb");
+      Array.prototype.forEach.call(row.querySelectorAll(".opt"), function (o) {
+        o.disabled = true; if (o.getAttribute("data-opt") === right) o.classList.add("right");
+      });
+      if (chosen === right) { score++; fb.textContent = "Helyes! " + H[right].name + ": " + H[right].nick.toLowerCase() + "."; }
+      else { t.classList.add("wrong"); fb.textContent = "Nem egészen. A helyes válasz: " + H[right].name + " (" + H[right].nick.toLowerCase() + ")."; }
+      fb.hidden = false;
+      document.getElementById("score").textContent = "Pontszám: " + score + " / " + QUIZ.length; return;
+    }
+    if (t.hasAttribute("data-resetquiz")) { resetQuiz(); return; }
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.target.closest && e.target.closest("[contenteditable], input, textarea")) return;
+    var cur = 0; for (var i = 0; i < VIEWS.length; i++) if (!document.getElementById("v-" + VIEWS[i].id).hidden) cur = i;
+    if (e.key === "ArrowRight" && cur < VIEWS.length - 1) show(VIEWS[cur + 1].id);
+    if (e.key === "ArrowLeft" && cur > 0) show(VIEWS[cur - 1].id);
+  });
+
+  var dl = document.getElementById("deadline");
+  try { var sv = localStorage.getItem("bh-deadline"); if (sv) dl.textContent = sv; } catch (e) {}
+  dl.addEventListener("input", function () { try { localStorage.setItem("bh-deadline", dl.textContent); } catch (e) {} });
+
+  /* ---------- quiz: team contest (optional) ---------- */
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  var teamMode = false, teams = [{ name: "1. csapat", adj: 0 }, { name: "2. csapat", adj: 0 }, { name: "3. csapat", adj: 0 }];
+  var quizView = document.getElementById("v-quiz"), qrows = quizView.querySelector(".rows"), qtool = quizView.querySelector(".toolbar");
+  Array.prototype.forEach.call(qrows.querySelectorAll(".row"), function (r) { var a = document.createElement("div"); a.className = "award"; a.hidden = true; r.appendChild(a); });
+  var panel = document.createElement("div"); panel.className = "teambar"; panel.hidden = true;
+  quizView.insertBefore(panel, qrows);
+  qtool.insertAdjacentHTML("beforeend", '<button class="btn ghost" type="button" data-shuffle>Kérdések keverése</button><button class="btn ghost" type="button" data-teammode aria-pressed="false">Csapatverseny</button>');
+
+  function teamScore(i) {
+    var n = teams[i].adj;
+    Array.prototype.forEach.call(qrows.querySelectorAll(".row"), function (r) { if (r.getAttribute("data-award") === String(i)) n++; });
+    return n;
+  }
+  function renderTeams() {
+    var sc = teams.map(function (t, i) { return teamScore(i); }), max = Math.max.apply(null, sc);
+    panel.innerHTML = '<div class="toolbar"><span class="flabel">Csapatok</span>' +
+      '<button class="mini" type="button" data-teamcount="-1" aria-label="Eggyel kevesebb csapat">−</button><span class="score">' + teams.length + '</span>' +
+      '<button class="mini" type="button" data-teamcount="1" aria-label="Eggyel több csapat">+</button>' +
+      '<button class="btn ghost" type="button" data-teamreset>Pontok nullázása</button></div>' +
+      '<div class="teams">' + teams.map(function (t, i) {
+        return '<div class="team' + (max > 0 && sc[i] === max ? " top" : "") + '"><span class="tname" contenteditable="true" spellcheck="false" role="textbox" aria-label="Csapat neve" data-tname="' + i + '">' + esc(t.name) + '</span>' +
+          '<span class="tscore">' + sc[i] + '</span><div class="tbtns"><button class="mini" type="button" data-tadj="' + i + ':-1" aria-label="Pont levonása">−</button><button class="mini" type="button" data-tadj="' + i + ':1" aria-label="Pont hozzáadása">+</button></div></div>';
+      }).join("") + '</div><p class="small">Miután egy kérdésre válaszoltatok, kattints arra a csapatra, amelyik a pontot kapja. A pontokat kézzel is állíthatod. A csapatok nevére kattintva átírhatod őket.</p>';
+  }
+  function refreshAwards() {
+    Array.prototype.forEach.call(qrows.querySelectorAll(".row"), function (r) {
+      var a = r.querySelector(".award");
+      if (!teamMode || !r.getAttribute("data-done")) { a.hidden = true; return; }
+      a.hidden = false;
+      a.innerHTML = '<span>Pontot kap:</span>' + teams.map(function (t, i) {
+        return '<button class="mini' + (r.getAttribute("data-award") === String(i) ? " got" : "") + '" type="button" data-award="' + i + '">' + esc(t.name) + '</button>';
+      }).join("");
+    });
+  }
+  function clearAwards(zeroAdj) {
+    Array.prototype.forEach.call(qrows.querySelectorAll(".row"), function (r) { r.removeAttribute("data-award"); });
+    if (zeroAdj) teams.forEach(function (t) { t.adj = 0; });
+  }
+
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("button"); if (!t) return;
+    if (t.hasAttribute("data-opt")) { refreshAwards(); return; }
+    if (t.hasAttribute("data-resetquiz")) { clearAwards(true); renderTeams(); refreshAwards(); return; }
+    if (t.hasAttribute("data-shuffle")) {
+      var rs = Array.prototype.slice.call(qrows.querySelectorAll(".row"));
+      for (var i = rs.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), x = rs[i]; rs[i] = rs[j]; rs[j] = x; }
+      rs.forEach(function (r) { qrows.appendChild(r); });
+      resetQuiz(); clearAwards(true); renderTeams(); refreshAwards(); return;
+    }
+    if (t.hasAttribute("data-teammode")) {
+      teamMode = !teamMode; t.setAttribute("aria-pressed", teamMode ? "true" : "false");
+      panel.hidden = !teamMode; document.getElementById("score").hidden = teamMode;
+      renderTeams(); refreshAwards(); return;
+    }
+    if (t.hasAttribute("data-teamcount")) {
+      var d = parseInt(t.getAttribute("data-teamcount"), 10);
+      if (d > 0 && teams.length < 6) teams.push({ name: (teams.length + 1) + ". csapat", adj: 0 });
+      if (d < 0 && teams.length > 2) {
+        teams.pop();
+        Array.prototype.forEach.call(qrows.querySelectorAll(".row"), function (r) { if (parseInt(r.getAttribute("data-award"), 10) >= teams.length) r.removeAttribute("data-award"); });
+      }
+      renderTeams(); refreshAwards(); return;
+    }
+    if (t.hasAttribute("data-tadj")) { var pr = t.getAttribute("data-tadj").split(":"); teams[+pr[0]].adj += parseInt(pr[1], 10); renderTeams(); return; }
+    if (t.hasAttribute("data-teamreset")) { clearAwards(true); renderTeams(); refreshAwards(); return; }
+    if (t.hasAttribute("data-award")) {
+      var row = t.closest(".row"), idx = t.getAttribute("data-award");
+      if (row.getAttribute("data-award") === idx) row.removeAttribute("data-award"); else row.setAttribute("data-award", idx);
+      renderTeams(); refreshAwards(); return;
+    }
+  });
+  document.addEventListener("input", function (e) {
+    var n = e.target; if (n.hasAttribute && n.hasAttribute("data-tname")) teams[+n.getAttribute("data-tname")].name = n.textContent;
+  });
+  document.addEventListener("focusout", function (e) {
+    if (e.target.hasAttribute && e.target.hasAttribute("data-tname")) refreshAwards();
+  });
+
+  /* ---------- mood diary ---------- */
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function todayISO() { var d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function fmtDate(iso) { var p = String(iso).split("-"); return p.length === 3 ? p[0] + ". " + p[1] + ". " + p[2] + "." : iso; }
+  function shortDate(iso) { var p = String(iso).split("-"); return p.length === 3 ? p[1] + "." + p[2] + "." : iso; }
+
+  var diary = [], diaryOk = true, curMood = 0, curActs = {}, clearArmed = false;
+  try { diary = JSON.parse(localStorage.getItem("bh-diary") || "[]"); if (!Array.isArray(diary)) diary = []; } catch (e) { diary = []; diaryOk = false; }
+  function saveDiary() {
+    try { localStorage.setItem("bh-diary", JSON.stringify(diary)); diaryOk = true; } catch (e) { diaryOk = false; }
+    document.getElementById("d-store").hidden = diaryOk;
+  }
+  var dDate = document.getElementById("d-date"), dNote = document.getElementById("d-note"), dMsg = document.getElementById("d-msg");
+  dDate.value = todayISO();
+  document.getElementById("d-store").hidden = diaryOk;
+
+  function renderDiaryList() {
+    var list = document.getElementById("d-list"), stats = document.getElementById("d-stats"), clr = document.getElementById("d-clear");
+    clr.hidden = diary.length === 0;
+    if (!diary.length) { stats.innerHTML = ""; list.innerHTML = '<p class="lead">Még nincs bejegyzés. Válassz hangulatot, jelöld meg, mi történt, és kattints a Mentésre.</p>'; return; }
+    var desc = diary.slice().sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : b.id - a.id; });
+    list.innerHTML = desc.map(function (e) {
+      var chips = (e.acts || []).map(function (i) { var a = ACTS[i]; return a ? '<span class="' + clsOf(a[1]) + '">' + a[0] + '</span>' : ""; }).join("");
+      return '<div class="entry">' + moodFace(e.mood) + '<div><p class="edate">' + fmtDate(e.date) + ' · ' + MOODS[e.mood] + '</p><div class="entry-chips">' + chips + '</div>' +
+        (e.note ? '<p class="small" style="margin-top:8px">' + esc(e.note) + '</p>' : '') + '</div>' +
+        '<button class="mini" type="button" data-delentry="' + e.id + '" aria-label="Bejegyzés törlése">×</button></div>';
+    }).join("");
+    var asc = diary.slice().sort(function (a, b) { return a.date > b.date ? 1 : a.date < b.date ? -1 : a.id - b.id; }).slice(-10);
+    var sum = 0; diary.forEach(function (e) { sum += e.mood; });
+    var avg = (sum / diary.length).toFixed(1).replace(".", ",");
+    var bars = asc.map(function (e) { return '<div class="bar-col" title="' + MOODS[e.mood] + '"><i style="height:' + (e.mood * 20) + '%"></i><small>' + shortDate(e.date) + '</small></div>'; }).join("");
+    var counts = { endo: 0, sero: 0, dopa: 0, oxi: 0 };
+    diary.forEach(function (e) { (e.acts || []).forEach(function (i) { if (ACTS[i]) counts[ACTS[i][1]]++; }); });
+    var max = Math.max(1, counts.endo, counts.sero, counts.dopa, counts.oxi);
+    var hb = ["endo", "sero", "dopa", "oxi"].map(function (k) {
+      return '<div class="hbar ' + clsOf(k) + '"><span>' + H[k].name + '</span><i style="width:' + Math.round(counts[k] / max * 100) + '%"></i><span>' + counts[k] + '</span></div>';
+    }).join("");
+    stats.innerHTML = '<div class="stats"><div class="statbox"><h3>Hangulat az utolsó bejegyzések alapján</h3><div class="bars">' + bars + '</div><p class="small">Átlag: ' + avg + ' / 5 (' + diary.length + ' bejegyzés)</p></div>' +
+      '<div class="statbox"><h3>Melyik hormonhoz kapcsolódó szokásaid vannak?</h3>' + hb + '<p class="small">A jelölt tevékenységek száma hormononként.</p></div></div>';
+  }
+  renderDiaryList();
+
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("button"); if (!t) return;
+    if (t.hasAttribute("data-mood")) {
+      curMood = parseInt(t.getAttribute("data-mood"), 10);
+      Array.prototype.forEach.call(document.querySelectorAll("#v-diary [data-mood]"), function (b) { b.setAttribute("aria-pressed", b === t ? "true" : "false"); });
+      return;
+    }
+    if (t.hasAttribute("data-act")) {
+      var k = t.getAttribute("data-act"), on = !curActs[k];
+      if (on) curActs[k] = true; else delete curActs[k];
+      t.setAttribute("aria-pressed", on ? "true" : "false"); return;
+    }
+    if (t.hasAttribute("data-savedia")) {
+      if (!curMood) { dMsg.textContent = "Előbb válassz egy hangulatot!"; return; }
+      diary.push({ id: Date.now(), date: dDate.value || todayISO(), mood: curMood, acts: Object.keys(curActs).map(Number).sort(function (a, b) { return a - b; }), note: dNote.value.trim() });
+      saveDiary(); renderDiaryList();
+      curMood = 0; curActs = {}; dNote.value = ""; dDate.value = todayISO();
+      Array.prototype.forEach.call(document.querySelectorAll("#v-diary [aria-pressed]"), function (b) { b.setAttribute("aria-pressed", "false"); });
+      dMsg.textContent = "Elmentve."; return;
+    }
+    if (t.hasAttribute("data-delentry")) {
+      var id = t.getAttribute("data-delentry");
+      diary = diary.filter(function (en) { return String(en.id) !== id; });
+      saveDiary(); renderDiaryList(); return;
+    }
+    if (t.hasAttribute("data-cleardia")) {
+      if (!clearArmed) { clearArmed = true; t.textContent = "Biztos? Kattints még egyszer"; setTimeout(function () { clearArmed = false; t.textContent = "Összes bejegyzés törlése"; }, 4000); return; }
+      diary = []; clearArmed = false; t.textContent = "Összes bejegyzés törlése"; saveDiary(); renderDiaryList(); return;
+    }
+  });
+
+  var start = (location.hash || "").replace("#", "");
+  show(start || "home", true);
+})();
+</script>
+
+</body></html>
