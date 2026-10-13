@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Érzékelés</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F4FB; --ink:#16163A; --muted:#4F5279; --card:#FFFFFF; --line:#D5D8EE;
+  --accent:#D42A68; --blue:#3550F5; --teal:#0B7F72; --sun:#FFC533; --sun-ink:#33240A;
+  --good:#0B7A4E; --bad:#B8263F;
+  --display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --body:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12122B; --ink:#EEEFFC; --muted:#A9ACD6; --card:#1D1E42; --line:#34376B;
+    --accent:#FF5C93; --blue:#6F86FF; --teal:#2CC7B4; --sun:#FFC533; --sun-ink:#33240A;
+    --good:#4BD99A; --bad:#FF7A90;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12122B; --ink:#EEEFFC; --muted:#A9ACD6; --card:#1D1E42; --line:#34376B;
+  --accent:#FF5C93; --blue:#6F86FF; --teal:#2CC7B4; --sun:#FFC533; --sun-ink:#33240A;
+  --good:#4BD99A; --bad:#FF7A90;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:clamp(1.02rem,1.5vw,1.28rem);line-height:1.5;overflow:hidden}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em;line-height:1.06;margin:0 0 .45em}
+h1{font-size:clamp(2.6rem,7.5vw,5.6rem)}
+h2{font-size:clamp(1.9rem,4.2vw,3.2rem)}
+h3{font-size:clamp(1.15rem,2vw,1.5rem);font-weight:600;letter-spacing:-.01em}
+h1:focus,h2:focus{outline:none}
+p{margin:0 0 .8em}
+.lead{color:var(--muted);max-width:60ch;font-size:1.08em}
+.small{font-size:.86em;color:var(--muted)}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+.deck{height:100%;display:flex;flex-direction:column}
+.stage{flex:1;min-height:0;position:relative}
+.slide{position:absolute;inset:0;overflow-y:auto;display:flex;padding:clamp(18px,3.5vw,48px) clamp(18px,6vw,88px)}
+.slide[hidden]{display:none!important}
+.slide-inner{width:100%;max-width:1120px;margin:auto}
+
+.bar{display:flex;align-items:center;gap:12px;padding:10px clamp(12px,3vw,32px);border-top:1px solid var(--line);background:var(--bg)}
+.nav{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none}
+.nav:disabled{opacity:.35;cursor:default}
+.nav svg{width:22px;height:22px}
+.track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.fill{height:100%;width:0;background:var(--accent);border-radius:inherit;transition:width .3s}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:500;min-width:4.2em;text-align:right}
+.pill{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.5em 1em;min-height:46px;cursor:pointer;font-weight:500;flex:none}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.btn{font-weight:700;padding:.7em 1.35em;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer;min-height:46px;font-size:1rem}
+.btn.hot{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.55;cursor:default}
+
+.notes{display:none;margin-top:1.6em;padding:14px 18px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);font-size:.9rem}
+.notes b{color:var(--ink)}
+body.notes-on .notes{display:block}
+
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:20px 22px}
+.card h3{margin-bottom:.3em}
+.card p{margin:0;color:var(--muted)}
+
+.flip{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px 20px;min-height:132px;cursor:pointer}
+.flip .back{display:none}
+.flip.is-open{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.flip.is-open .front{display:none}
+.flip.is-open .back{display:block}
+.flip .hint{display:block;margin-top:.7em;font-size:.82em;color:var(--muted)}
+.flip .t{font-family:var(--display);font-weight:600;font-size:1.25em;line-height:1.2;display:block}
+.flip .back b{display:block;font-family:var(--display);font-size:1.2em;margin-bottom:.25em}
+
+.box{border-left:6px solid var(--sun);background:var(--card);border-radius:0 16px 16px 0;padding:16px 20px;margin-top:20px}
+.box p{margin:0 0 .5em}
+ul.plain{margin:0;padding-left:1.1em}
+ul.plain li{margin-bottom:.35em}
+.big-say{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.02em;max-width:26ch;margin:0 0 .6em}
+
+/* stimulus->brain chain */
+.chain{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0}
+.chain .step{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:14px 18px;min-width:150px;text-align:center;opacity:.35;transition:opacity .3s, transform .3s, border-color .3s}
+.chain .step.on{opacity:1;border-color:var(--accent);transform:translateY(-3px)}
+.chain .step b{display:block;font-family:var(--display);font-size:1.05em;margin-bottom:.2em}
+.chain .step span{font-size:.82em;color:var(--muted)}
+.chain .arrow{color:var(--line);font-size:1.4em}
+.chain .arrow.on{color:var(--accent)}
+.chain-desc{min-height:2.6em;font-size:.98em;color:var(--muted)}
+
+/* necker cube */
+.cube-wrap{display:flex;gap:32px;align-items:center;flex-wrap:wrap}
+.cube-svg{width:min(320px,80vw);height:auto}
+.cube-face{cursor:pointer;transition:fill .2s}
+
+/* threshold slider */
+.thresh{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:24px 26px}
+.vol-row{display:flex;align-items:center;gap:16px;margin:18px 0 8px}
+.vol-row input[type=range]{flex:1;accent-color:var(--accent);height:6px}
+.vol-icon{font-size:1.6em;width:1.4em;text-align:center}
+
+/* brightness compare */
+.swatch-row{display:flex;gap:26px;justify-content:center;margin:20px 0}
+.swatch{width:150px;height:150px;border-radius:20px;border:1.5px solid var(--line)}
+.swatch-pick{display:flex;gap:12px;justify-content:center;margin-top:10px}
+
+/* illusions */
+.illus-wrap{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.illus-svg{width:min(520px,90vw);height:auto}
+.guide{opacity:0;transition:opacity .3s}
+.guide.on{opacity:1}
+
+.hero{display:grid;gap:32px;align-items:center}
+@media (min-width:900px){.hero{grid-template-columns:1.05fr .95fr}}
+.cloud{display:flex;flex-wrap:wrap;gap:12px 10px;align-items:center;justify-content:center}
+.chip{display:inline-block;padding:.45em 1em;border-radius:999px;font-weight:700;font-size:var(--s,1.1rem);transform:rotate(var(--r,0deg));animation:rise .7s both;animation-delay:var(--d,0s);border:2px solid transparent}
+.c1{background:var(--accent);color:#fff}
+.c2{background:var(--blue);color:#fff}
+.c3{background:var(--teal);color:#fff}
+.c4{background:var(--sun);color:var(--sun-ink)}
+.c5{border-color:var(--ink);color:var(--ink)}
+@keyframes rise{from{opacity:0;transform:translateY(28px) rotate(var(--r,0deg))}to{opacity:1;transform:translateY(0) rotate(var(--r,0deg))}}
+.panel{background:#1A1A2E;color:#F2F3FF;border-radius:24px;padding:24px 26px}
+.panel p{color:#DADCF5}
+.panel h3{color:#fff}
+.panel .btn.light{background:#F2F3FF;color:#1A1A2E;border-color:#F2F3FF}
+.panel .small{color:#A9ACD6}
+.panel input[type=range]{accent-color:var(--sun)}
+
+.stmt{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.stmt.ok{border-color:var(--good);border-width:2.5px}
+.stmt.no{border-color:var(--bad);border-width:2.5px}
+.stmt-t{font-weight:700;margin:0;font-size:1.05em}
+.ans{display:flex;gap:10px}
+.fb{margin:0;font-size:.95em;color:var(--muted)}
+.stmt.ok .fb strong{color:var(--good)}
+.stmt.no .fb strong{color:var(--bad)}
+
+/* --- új elemek --- */
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.status{color:var(--muted);min-height:1.5em;margin:10px 0 0}
+.panel .status{color:#DADCF5}
+.panel .btn[aria-pressed="true"]{outline:3px solid #FFC533;outline-offset:2px}
+.lamp-room{width:100%;max-width:440px;height:190px;border-radius:18px;border:1.5px solid var(--line);display:grid;place-items:center;text-align:center;transition:background .5s,color .5s;font-weight:700;background:#080808;color:#fff}
+.lamp-room .bulb{font-size:3rem;display:block}
+.rate{display:grid;gap:8px;margin:14px 0;max-width:520px}
+.rate input[type=range]{flex:1;min-width:180px;accent-color:var(--accent)}
+.bars{display:grid;gap:10px;margin:14px 0;max-width:620px}
+.barrow{display:grid;grid-template-columns:minmax(120px,170px) 1fr;gap:12px;align-items:center;font-size:.92em}
+.barfill{height:20px;border-radius:10px;background:var(--accent);min-width:3px;transition:width .5s}
+.sdt-canvas{width:min(220px,100%);height:auto;border-radius:14px;border:2px solid #44447a;image-rendering:pixelated;background:#777;display:block;margin:12px 0}
+.matrix{display:grid;grid-template-columns:minmax(90px,auto) 1fr 1fr;gap:6px;margin:12px 0;max-width:560px}
+.matrix>div{padding:.55em .8em;border-radius:10px;background:var(--card);border:1.5px solid var(--line);font-size:.9em;color:var(--ink)}
+.matrix>.h{background:transparent;border:none;font-weight:700;color:var(--muted);display:flex;align-items:center}
+.matrix .n{font-family:var(--display);font-weight:800;font-size:1.3em}
+.afterimg{width:min(300px,100%);aspect-ratio:3/2;border-radius:12px;border:1.5px solid var(--line);position:relative;overflow:hidden;display:flex;flex-direction:column;background:#fff}
+.afterimg .band{flex:1}
+.afterimg .dot{position:absolute;left:50%;top:50%;width:12px;height:12px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);box-shadow:0 0 0 2px #00000055}
+.afterimg.white .band{display:none}
+.afterimg.white .dot{background:#222;box-shadow:none}
+.timer2{font-family:var(--display);font-weight:800;font-size:1.8rem;color:var(--accent);min-height:1.3em;margin:6px 0 0}
+.plate{width:min(300px,100%);height:auto;border-radius:50%;border:1.5px solid var(--line);display:block}
+.opt-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.gate-svg{width:min(420px,100%);height:auto;background:var(--card);border:1.5px solid var(--line);border-radius:18px}
+.toggles{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin:14px 0}
+.toggles button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:.7em 1em;cursor:pointer;font-weight:600;text-align:left;font-size:.95em}
+.toggles button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pain-meter{height:24px;border-radius:12px;background:var(--line);overflow:hidden;max-width:520px}
+.pain-fill{height:100%;background:linear-gradient(90deg,#0B7F72,#FFC533,#D42A68);transition:width .35s}
+.troxler{width:min(360px,100%);height:auto;border-radius:16px;border:1.5px solid var(--line);display:block}
+
+@media (prefers-reduced-motion:reduce){
+  .chain .step{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+<main class="stage" id="stage">
+
+<!-- 1. Cím -->
+<section class="slide" aria-label="Cím">
+  <div class="slide-inner hero">
+    <div>
+      <h1 tabindex="-1">Érzékelés</h1>
+      <p class="lead">Hogyan jut el a világ – a fény, a hang, az illat – az agyunkig? Ma megvizsgáljuk, mit és hogyan érzékelünk, és hol csal meg minket a saját testünk.</p>
+      <button class="btn hot" data-next>Kezdjük</button>
+      <aside class="notes"><b>Tanári jegyzet (kb. 1 perc).</b> A lecke Zimbardo Pszichológia c. tankönyve és a X. osztályos román pszichológia tankönyv „Senzații” fejezete alapján épül fel: fogalom, jellemzők, osztályozás, küszöbök (Weber–Fechner), adaptáció, illúziók, szinesztézia, szubliminális percepció.</aside>
+    </div>
+    <div class="cloud" aria-hidden="true">
+      <span class="chip c1" style="--d:.05s;--r:-4deg;--s:1.7rem">fény</span>
+      <span class="chip c5" style="--d:.15s;--r:3deg;--s:1.15rem">egyensúly</span>
+      <span class="chip c2" style="--d:.25s;--r:-2deg;--s:1.4rem">hang</span>
+      <span class="chip c4" style="--d:.35s;--r:4deg;--s:1.9rem">illat</span>
+      <span class="chip c3" style="--d:.45s;--r:-3deg;--s:1.2rem">íz</span>
+      <span class="chip c5" style="--d:.55s;--r:2deg;--s:1.5rem">tapintás</span>
+      <span class="chip c1" style="--d:.65s;--r:-5deg;--s:1.15rem">fájdalom</span>
+      <span class="chip c2" style="--d:.75s;--r:3deg;--s:1.7rem">mozgás</span>
+      <span class="chip c4" style="--d:.85s;--r:-2deg;--s:1.2rem">hőmérséklet</span>
+      <span class="chip c3" style="--d:.95s;--r:2deg;--s:1.4rem">nyomás</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Necker-kocka -->
+<section class="slide" aria-label="Kétértelmű ábra" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Mit látsz? Kattints, és nézd meg másképp</h2>
+    <p class="lead">Ugyanaz a rajz, mégis kétféleképpen "olvasható" – attól függően, melyik lapját tekinted elölre.</p>
+    <div class="cube-wrap">
+      <svg class="cube-svg" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg" id="cube">
+        <polygon class="cube-face" data-face="a" points="40,80 40,220 180,260 180,120" fill="#EEF0FF" stroke="#16163A" stroke-width="3"/>
+        <polygon class="cube-face" data-face="b" points="40,80 180,120 260,60 120,20" fill="#D9DEFF" stroke="#16163A" stroke-width="3"/>
+        <polygon class="cube-face" data-face="c" points="180,120 180,260 260,200 260,60" fill="#FFFFFF" stroke="#16163A" stroke-width="3"/>
+      </svg>
+      <div style="max-width:340px">
+        <p id="cube-msg" class="lead" style="min-height:5.5em">Ez egy <strong>Necker-kocka</strong>: az agyunk nem tudja eldönteni, melyik négyzet van elöl, ezért időnként "átugrik" a két értelmezés között. Kattints egy lapra, hogy azt hozd előre!</p>
+        <button class="btn ghost" id="cube-explain">Miért történik ez?</button>
+      </div>
+    </div>
+    <p class="box" id="cube-answer" hidden>Az <strong>érzékelés</strong> (a szem recehártyájára eső fény) ugyanaz marad, de az <strong>észlelés</strong> – vagyis ahogyan az agy értelmezi ezt az információt – változhat. Ez a mai óra fő különbsége: nem a szemünk "hibázik", hanem az agyunk dönt a kétértelmű inger értelmezéséről.</p>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Ez az érzékelés (sensation) és az észlelés (perception) közti különbség bevezetője. A mai óra magára az érzékelésre fókuszál, de érdemes jelezni, hogy a kettő szorosan összefügg.</aside>
+  </div>
+</section>
+
+<!-- 3. Fogalom -->
+<section class="slide" aria-label="Mi az érzékelés?" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Mi az érzékelés?</h2>
+    <p class="lead">Kattints sorban a lépésekre, és kövesd végig az utat az ingertől az agyig.</p>
+    <div class="chain" id="chain">
+      <div class="step" data-i="0"><b>Inger</b><span>fény, hang, szag…</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="1"><b>Receptor</b><span>érzékszervi sejt</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="2"><b>Transzdukció</b><span>inger → ideg­impulzus</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="3"><b>Agy</b><span>feldolgozás, tudatosulás</span></div>
+    </div>
+    <p class="chain-desc" id="chain-desc"></p>
+    <div class="box">
+      <p><strong>Zimbardo meghatározása:</strong> az érzékelés az a folyamat, amelynek során az érzékszervi receptorok és az idegrendszer fogadják és képviselik a környezetből érkező ingerenergiákat.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> Kattintsatok végig együtt a négy lépésen. Emeld ki: transzdukció = az inger fizikai energiájának (fény, hanghullám) átalakítása ideg­impulzussá – ez minden érzékszervben megtörténik, csak más-más receptorral.</aside>
+  </div>
+</section>
+
+<!-- 4. Jellemzők -->
+<section class="slide" aria-label="Az érzékelés jellemzői" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Minden érzékelésnek vannak jellemzői</h2>
+    <p class="lead">A tankönyv négy fő minőségi jellemzőt különböztet meg – kattints mindegyikre a példáért.</p>
+    <div class="grid">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Módozat (minőség)</span><span class="hint">Kattints a példáért</span></span><span class="back"><b>Módozat</b>Milyen fajta érzékelésről van szó: látás, hallás, szaglás, ízlelés, tapintás. Ez határozza meg, milyen receptor és milyen agyi terület dolgozza fel.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Intenzitás</span><span class="hint">Kattints a példáért</span></span><span class="back"><b>Intenzitás</b>Az inger erőssége: egy suttogás és egy koncert hangereje ugyanaz a módozat (hallás), de más intenzitás. Arányos az inger fizikai erősségével, de függ a szervezet állapotától is.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Időtartam</span><span class="hint">Kattints a példáért</span></span><span class="back"><b>Időtartam</b>Meddig tart az inger. Egy villanás és egy folyamatos fény ugyanazt a receptort ingerli, de más időtartamban. Érdekesség: az érzékelés nem azonnal jelenik meg (kb. 0,1–0,15 másodperc késéssel), és az inger megszűnése után is eltart még egy pillanatig – ezt hívják <strong>utóhatásnak (post­effektus)</strong>.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Érzelmi töltet</span><span class="hint">Kattints a példáért</span></span><span class="back"><b>Érzelmi töltet (tonalitate afectivă)</b>Az érzékleteket gyakran öröm, feszültség vagy kellemetlenség kíséri – pl. egy kellemes illat vagy egy éles, fájdalmas hang. Ez egyszerre függ az ingertől és a saját korábbi tapasztalatunktól.</span></button>
+    </div>
+    <div class="box">
+      <p><strong>Tudtad?</strong> A pszichológiában régóta vitatott kérdés, hogy az érzékletek önmagukban is léteznek-e. Az <strong>asszociacionizmus</strong> szerint az érzéklet az alapegység, amiből minden más felépül; a <strong>Gestalt-pszichológia</strong> szerint viszont önálló érzékletek nincsenek is, csak egy már eleve szervezett egész részeként értelmezhetők.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Kérj a diákoktól saját példát mindegyikre – pl. „Mondj egy inger­párt, ami csak intenzitásban különbözik.” Az utóhatásra jó példa, amikor egy fényes ablakra nézünk, majd becsukjuk a szemünket, és még látjuk pár pillanatig a foltot.</aside>
+  </div>
+</section>
+
+<!-- 5. Osztályozás -->
+<section class="slide" aria-label="Érzékszervek osztályozása" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Nem csak öt érzékünk van</h2>
+    <p class="lead">A hagyományos „öt érzék” csak a felszín. Kattints a három csoportra.</p>
+    <div class="grid">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Exteroceptív</span><span class="hint">A külvilágról szól</span></span><span class="back"><b>Exteroceptív</b>Látás, hallás, szaglás, ízlelés, tapintás – a külső világ ingereit érzékelik.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Proprioceptív</span><span class="hint">A testhelyzetről szól</span></span><span class="back"><b>Proprioceptív</b>Az izmokból és ízületekből érkező jelek, amelyek megmondják, hol van a testrészed – ezért tudod csukott szemmel is megérinteni az orrod.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Interoceptív</span><span class="hint">A belső szervekről szól</span></span><span class="back"><b>Interoceptív</b>A belső szervekből jövő jelek: éhség, szomjúság, teli hólyag, szívverés – ezek is érzékelések, csak ritkán gondolunk rájuk így.</span></button>
+    </div>
+    <div class="box">
+      <p>Van egy negyedik, kevésbé ismert is: a <strong>vestibuláris (egyensúly-) érzékelés</strong> a belső fülben, ami megmondja, merre "lent" a lent, és mikor forogsz.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5b. Érzékleti módozatok -->
+<section class="slide" aria-label="Érzékleti módozatok" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Egy kis betekintés minden érzékbe</h2>
+    <p class="lead">Kattints mindegyikre egy-egy tankönyvi érdekességért.</p>
+    <div class="grid">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Látás</span><span class="hint">Kattints</span></span><span class="back"><b>Látás</b>A látható fény hullámhossza kb. 400–700 nanométer között van. A színeket a fényesség, a színtónus és a telítettség jellemzi.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Hallás</span><span class="hint">Kattints</span></span><span class="back"><b>Hallás</b>A hallható hangok kb. 16–20 000 Hz közöttiek. Érdekesség a Doppler-hatás: amikor egy hangot kibocsátó tárgy közeledik felénk, a hangja magasabbnak hangzik, távolodva pedig mélyebbnek.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Bőrérzékletek</span><span class="hint">Kattints</span></span><span class="back"><b>Bőrérzékletek</b>A tapintási és hőérzékletek közül a legérzékenyebb testrészek a nyelv felszíne, az ajkak és az ujjbegyek – a legkevésbé érzékeny a homlok és a hát.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Ízlelés</span><span class="hint">Kattints</span></span><span class="back"><b>Ízlelés</b>Négy alapízt különböztetünk meg: édes, savanyú, sós és keserű – minden más íz ezek kombinációjából születik.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Szaglás</span><span class="hint">Kattints</span></span><span class="back"><b>Szaglás</b>Az illatanyagok illékony vegyi anyagok. A szaglás fontos szerepet játszik az étvágy szabályozásában, és erős érzelmi töltete van.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Egyensúly</span><span class="hint">Kattints</span></span><span class="back"><b>Egyensúly</b>A belső fül nem-hallási része (a labirintus és a félkörös ívjáratok) tájékoztat a fej helyzetéről és a forgó mozgásokról.</span></button>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Ha van rá idő, kérdezd meg, ki tudja megnevezni mind a négy alapízt kapásból, vagy próbáljátok ki a Doppler-hatást egy közelgő/távolodó autó hangjának felidézésével.</aside>
+  </div>
+</section>
+
+<!-- 6. Abszolút küszöb -->
+<section class="slide" aria-label="Abszolút küszöb kísérlet" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Kísérlet: hol az abszolút küszöböd?</h2>
+    <p class="lead">Az <strong>abszolút küszöb</strong> a legkisebb ingererősség, amit még képesek vagyunk érzékelni (az esetek 50%-ában). Indítsd el a nagyon halk hangot, és lassan told feljebb, amíg meghallod.</p>
+    <div class="panel">
+      <h3>Élő kísérlet</h3>
+      <div class="vol-row"><span class="vol-icon">🔈</span><input type="range" id="vol" min="0" max="100" value="0"><span class="vol-icon">🔊</span></div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <button class="btn light" id="vol-play">Hang indítása</button>
+        <button class="btn ghost" id="vol-heard" disabled style="border-color:#F2F3FF;color:#F2F3FF">Most hallottam meg!</button>
+        <span class="small" id="vol-status"></span>
+      </div>
+    </div>
+    <div class="box">
+      <p><strong>Tudtad? Klasszikus küszöbpéldák a szakirodalomból</strong> (nagyjából ekkora ingert veszünk még észre):</p>
+      <ul class="plain">
+        <li>egy gyertyaláng egy sötét, tiszta éjszakán kb. 30 mérföldről (~48 km) még látható</li>
+        <li>egy óra ketyegése csendes szobában kb. 6 méterről még hallható</li>
+        <li>egy teáskanál cukor kb. 7,5 liter vízben feloldva még kiérezhető</li>
+        <li>egy méh szárnyának érintése kb. 1 cm távolságból az arcunkon még érezhető</li>
+      </ul>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> Kérj néhány önkéntest, próbálják ki fejhallgatóval vagy csendben, és mondják be, hányas csúszka-értéknél hallották meg. Beszéljétek meg: miért más ez mindenkinél? (Egyéni különbségek, halláskárosodás, háttérzaj.) Fontos: ez nem tudományosan pontos mérés, csak élményszerű bemutató. A klasszikus példák (Galanter nyomán) sok bevezető pszichológia tankönyvben, így Zimbardóéhoz hasonlókban is visszaköszönnek.</aside>
+  </div>
+</section>
+
+<!-- 7. Különbségi küszöb / Weber-Fechner -->
+<section class="slide" aria-label="Különbségi küszöb" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Melyik négyzet sötétebb?</h2>
+    <p class="lead">Nézd meg a két négyzetet, és tippelj – utána megmutatjuk, mit jelent ez a Weber–Fechner-törvény szempontjából.</p>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#8890B0"></div>
+      <div class="swatch" style="background:#828AAA"></div>
+    </div>
+    <div class="swatch-pick">
+      <button class="btn ghost" data-p="1">Bal sötétebb</button>
+      <button class="btn ghost" data-p="2">Jobb sötétebb</button>
+      <button class="btn ghost" data-p="0">Nem tudom eldönteni</button>
+    </div>
+    <p class="box" id="weber-answer" hidden>A két négyzet valóban csak nagyon kicsit különbözik – ez a <strong>különbségi küszöb (JND – just noticeable difference)</strong> határa: a legkisebb különbség, amit még észreveszünk. A <strong>Weber–Fechner-törvény</strong> szerint ez nem állandó mennyiség, hanem az eredeti inger erősségéhez arányos: egy gyertyaláng jól látszik egy sötét szobában, de egy kivilágított teremben szinte észrevehetetlen – pedig a fényereje ugyanaz. A törvény matematikai alakja: <strong>S = K × log E + C</strong> (S = az érzéklet erőssége, E = az inger fizikai erőssége, K és C állandók) – vagyis az érzéklet nem egyenes arányban, hanem az inger erősségének logaritmusával arányosan nő.</p>
+  </div>
+</section>
+
+<!-- 7a. Relatív érzékelés: a három lámpa -->
+<section class="slide" aria-label="Relatív érzékelés" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Próbáljuk ki magunk: a három lámpa</h2>
+    <p class="lead">Sötét szobában vagy, és egymás után felkapcsolnak három, egyre erősebb lámpát: 50, 100 és 150 wattosat. Kattints a gombra, és minden lépés után értékeld, mekkora változást érzékeltél.</p>
+    <div class="lamp-room" id="lamp-room"><div><span class="bulb" aria-hidden="true">💡</span><div id="lamp-w">sötét szoba</div></div></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn hot" id="lamp-next">Kapcsold fel: 50 W</button>
+      <button class="btn ghost" id="lamp-reset">Újra</button>
+    </div>
+    <div class="rate" id="lamp-rate" hidden>
+      <label for="lamp-slider" id="lamp-ratelabel">Mekkora volt a változás?</label>
+      <div class="row"><input type="range" id="lamp-slider" min="0" max="10" value="5"><output id="lamp-out">5</output><button class="btn ghost" id="lamp-save">Rögzítem</button></div>
+      <span class="small">0 = alig változott, 10 = óriási volt a változás</span>
+    </div>
+    <div id="lamp-result" hidden>
+      <div class="bars" id="lamp-bars"></div>
+      <div class="box">
+        <p>A watt-szám minden lépésnél ugyanannyival (50 W-tal) nőtt, a változás mégis egyre kisebbnek tűnik. A 100-ról 150-re ugrás csak <strong>50%-os</strong> növekedés, az 50-ről 100-ra viszont <strong>100%-os</strong> volt. A látásunk <strong>relatív viszonylatok</strong> mentén működik, nem abszolút mennyiségekkel dolgozik: a fényerősség abszolút értékét nem tudjuk észlelni, csak a változás relatív mértékét. Ez lényegében minden érzékszervünkre érvényes.</p>
+      </div>
+    </div>
+    <div class="box">
+      <p><strong>Fogalmak:</strong> a <em>különbségi küszöb</em> az a legkisebb ingerintenzitás-változás, amit az esetek felében érzékelünk. Weber alapelve szerint a különbségi küszöb nagysága az inger intenzitásával arányos: nagy, ha az inger erős, és kicsi, ha gyenge.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A feltöltött tankönyv „Próbáljuk ki magunk! A relatív érzékelés felvillanyozó demonstrációja” szövege nyomán, átfogalmazva. A képernyős változat a fényerőt a wattszámmal arányosan állítja, az eszközök eltérő beállításai miatt csak közelítés; valódi lámpákkal, sötét szobában még meggyőzőbb.</aside>
+  </div>
+</section>
+
+<!-- 7b. További küszöbtörvények -->
+<section class="slide" aria-label="További küszöbtörvények" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Két további érdekes törvény</h2>
+    <p class="lead">Az adaptációt és a szinesztéziát már megnéztük – van még két érdekes törvény, ami a mindennapi életedben is megfigyelhető.</p>
+    <div class="grid two">
+      <div class="card"><h3>A kontraszt törvénye</h3><p>Két egyidejűleg ható inger felerősítheti egymás hatását. A legismertebb példa a sárga-fekete szín­pár, amely a legerősebb vizuális kontrasztot adja – ezért használják annyi figyelmeztető táblán.</p></div>
+      <div class="card"><h3>A jelentőség törvénye</h3><p>Minél fontosabb számunkra egy inger, annál érzékenyebbek vagyunk rá. Egy zsúfolt pályaudvaron könnyebben kiszűröd egy általad várt ismerős hangját vagy alakját, mint egy számodra közömbös emberét.</p></div>
+    </div>
+    <div class="box">
+      <p><strong>Érdekesség:</strong> a <em>Luscher-féle színteszt</em> szerint a sötétkék és a sárga szín nem véletlenül kötődik ősidők óta az éjszakához és a nappalhoz: a kék a nyugalom és a passzivitás, a sárga a remény és az aktivitás színe, míg a piros a támadást, a zöld pedig az önvédelmi ösztönt szimbolizálja.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7c. Szignáldetekciós elmélet -->
+<section class="slide" aria-label="Szignáldetekciós elmélet" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Észreveszed? A szignáldetekciós elmélet</h2>
+    <p class="lead">A klasszikus pszichofizika szerint egy inger vagy meghaladja az abszolút küszöböt (akkor érzékeljük), vagy nem. A <strong>szignáldetekciós elmélet</strong> (Green és Swets, 1966) szerint az érzékelés <em>valószínűség</em> kérdése, és három dologtól függ.</p>
+    <div class="grid three">
+      <div class="card"><h3>Az inger</h3><p>Mennyire erős, mennyire kiugró a „jel”.</p></div>
+      <div class="card"><h3>A háttéringer (zaj)</h3><p>Más ingerek versengenek a figyelmünkért: egy zavaró billentyűkopogás vagy a szerelmes fantáziálásunk elnyomhatja a tanár szavait.</p></div>
+      <div class="card"><h3>A detektor állapota</h3><p>Az agyunk: kávéval frissen figyelünk, kialvatlanul vagy egy buli utáni fáradtsággal alig. Az elvárásaink is számítanak.</p></div>
+    </div>
+    <h3 style="margin-top:22px">Kísérlet: jel van, vagy nincs?</h3>
+    <div class="panel">
+      <p>Minden képen vagy van egy halvány, világosabb kör középen (a „jel”), vagy nincs. Válaszd ki a zajszintet, aztán dönts, 10 próbán át.</p>
+      <div class="row">
+        <span>Zajszint:</span>
+        <button class="btn light" data-noise="low" aria-pressed="true">Alacsony</button>
+        <button class="btn light" data-noise="high" aria-pressed="false">Magas</button>
+        <button class="btn hot" id="sdt-start">Indítás</button>
+      </div>
+      <canvas class="sdt-canvas" id="sdt-canvas" width="160" height="160" role="img" aria-label="Zajos kép, benne esetleg egy halvány kör"></canvas>
+      <div class="row">
+        <button class="btn light" id="sdt-yes" disabled>Van jel</button>
+        <button class="btn light" id="sdt-no" disabled>Nincs jel</button>
+        <span id="sdt-prog" class="small"></span>
+      </div>
+      <p class="status" id="sdt-log"></p>
+    </div>
+    <div id="sdt-result" hidden>
+      <h3 style="margin-top:16px">Az eredményed</h3>
+      <div class="matrix" id="sdt-matrix"></div>
+      <p class="lead" id="sdt-text"></p>
+    </div>
+    <div class="box">
+      <p><strong>Hétköznapi példa:</strong> egy zsúfolt utcán kisebb eséllyel veszed észre, hogy valaki a nevedet kiáltja, mint egy csendes parkban, mert a zavaró ingerek (zaj) nagyobbak. Éjszaka zajra riadsz: macskabunyó, betörő, vagy csak a képzeleted? A döntés a hallásod élességén, az előfeltevéseden és a háttérzajokon is múlik.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 7 perc).</b> A feltöltött tankönyv szignáldetekciós fejezete nyomán, átfogalmazva. A feladatban a jel erőssége végig ugyanaz, csak a zaj változik: pont ez az elmélet lényege. A négy kimenetel: találat (jel van, jelzi), mellé (jel van, nem jelzi), téves riasztás (nincs jel, de jelzi), helyes elutasítás (nincs jel, nem jelzi). A képek véletlenszerűek, ezért két játék eredménye eltérhet.</aside>
+  </div>
+</section>
+
+<!-- 8. Adaptáció -->
+<section class="slide" aria-label="Érzékszervi alkalmazkodás" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Érzed most a ruhád a bőrödön?</h2>
+    <p class="lead">Valószínűleg csak most, hogy szóba került. Ez az <strong>érzékszervi alkalmazkodás (adaptáció)</strong>: az állandó, változatlan ingerre egyre kevésbé figyelünk.</p>
+    <div class="grid two">
+      <div class="card"><h3>Klasszikus kísérlet</h3><p>Három tál víz: hideg, langyos, meleg. Az egyik kezed a hidegbe, a másikat a melegbe teszed 1 percre, utána mindkettőt a langyosba. Ugyanaz a langyos víz az egyik kezednek melegnek, a másiknak hidegnek fog tűnni.</p></div>
+      <div class="card"><h3>A másik irány: érzékenyítés</h3><p>Van ennek az ellentéte is: <strong>sensibilizare (érzékenyítés)</strong>, amikor egy gyenge inger felerősíti egy másik érzékelését – pl. egy halk zaj sötétben ijesztőbbnek tűnik, mint fényes nappal.</p></div>
+    </div>
+    <div class="box">
+      <p><strong>Az érzékszerveink változásdetektorok.</strong> Aki beugrott már egy hideg vizű medencébe egy kánikulai napon, jól tudja, hogy az érzékelést milyen nagy mértékben befolyásolja a <em>változás</em> foka. Az érzékeink legfőbb feladata a külvilág változásainak (fényvillanás, vízcsobbanás, az oroszlán közeledése, a tüske szúrása) felfogása. A változatlan stimuláció lassan beleolvad a háttérbe, az agyunk egyre kevésbé vesz tudomást róla, hacsak nem nagy fájdalmat okozó vagy nagyon erős ingerről van szó. Bármilyen változás viszont azonnal felkelti a figyelmünket, például egy hirtelen megszólaló éles csengő.</p>
+    </div>
+    <h3 style="margin-top:20px">Kísérlet: tűnjön el a folt</h3>
+    <p class="lead">Nézd 25 másodpercig a keresztet, és ne mozdítsd el a szemed. A halvány foltot csak a szemed sarkából látod: figyeld, mi történik vele.</p>
+    <svg class="troxler" viewBox="0 0 360 200" role="img" aria-label="Fixációs kereszt és mellette egy halvány folt">
+      <defs><radialGradient id="tx-g"><stop offset="0%" stop-color="#E7A0B8" stop-opacity=".7"/><stop offset="100%" stop-color="#E7A0B8" stop-opacity="0"/></radialGradient></defs>
+      <rect width="360" height="200" fill="#CFCFCF"/>
+      <circle cx="270" cy="100" r="44" fill="url(#tx-g)"/>
+      <path d="M90 100h28M104 86v28" stroke="#16163A" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div class="row" style="margin-top:10px"><button class="btn hot" id="tx-start">Indítás</button><span class="timer2" id="tx-timer"></span></div>
+    <p class="status" id="tx-status"></p>
+    <div class="grid" style="margin-top:14px">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Mit gondolsz: jó ötlet tanuláshoz a kedvenc zenédet hallgatni?</span><span class="hint">Kattints a magyarázatért</span></span><span class="back"><b>A boltok tudják</b>A boltokban szóló háttérzenét szándékosan úgy válogatják össze, hogy ne legyenek benne hirtelen, nagy fokú változások, mert azok elterelhetik a vásárlók figyelmét az áruról. Ugyanezért nem jó ötlet a kedvenc zenéinket hallgatni tanulás vagy koncentrációt igénylő munka közben: a számok tele vannak figyelmet felkeltő változásokkal.</span></button>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A „Pszichoügyek: A szenzoros adaptáció” rész nyomán, átfogalmazva. A foltos kísérlet az adaptáció látási változata (Troxler-jelenség): nem mindenkinél, és nem azonos idő alatt működik. Ha van rá mód, végezzétek el élőben a három tálas kísérletet. Ha nincs, kérdezd meg: kinek van hasonló élménye (pl. parfüm szagát a viselője már nem érzi, de más igen)?</aside>
+  </div>
+</section>
+
+<!-- 8c. Színlátás -->
+<section class="slide" aria-label="Színlátás" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Látsz benne számot?</h2>
+    <p class="lead">A pontokból álló tábla közepén egy szám bújik meg. Az ilyen táblák (Ishihara-féle színlátási tesztek) a piros és a zöld árnyalatainak megkülönböztetését vizsgálják. Melyik számot látod?</p>
+    <div class="row" style="align-items:flex-start;gap:26px">
+      <canvas class="plate" id="plate" width="300" height="300" role="img" aria-label="Színes pontokból álló tábla, benne egy szám"></canvas>
+      <div style="flex:1;min-width:240px">
+        <div class="opt-row" id="plate-opts"></div>
+        <p class="status" id="plate-fb"></p>
+      </div>
+    </div>
+    <div class="box">
+      <p>Aki nem képes a piros és a zöld árnyalatainak megkülönböztetésére, az nem fogja látni a sok pötty között megbúvó számot. Ha a pontokból kirajzolódik a szám, a színlátásunk (ezen a próbán) rendben van; ha nem, valószínűleg legalább részlegesen színtévesztők vagyunk.</p>
+      <p class="small"><strong>Fontos:</strong> ez a tábla csak szemléltetés, saját készítésű illusztráció, nem hiteles vizsgálat, és képernyőn a színek eszközönként eltérnek. Ha tartós problémát észlelsz a színek megkülönböztetésénél, érdemes szemorvoshoz fordulni.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> A tankönyv Ishihara-féle tesztjét (3.6. ábra) szemlélteti, saját generált táblával; minden betöltéskor más szám jelenik meg. Óvatosan kezeld, ha egy diák nem lát számot: ez nem diagnózis, és ne okozzon feszélyezettséget. A piros–zöld színtévesztés meglehetősen gyakori, férfiaknál sokkal gyakoribb, mint nőknél.</aside>
+  </div>
+</section>
+
+<!-- 8d. Hallás -->
+<section class="slide" aria-label="Hallás" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Hallás: ha az erdőben kidől egy fa…</h2>
+    <p class="lead">Képzeld el, hogyan változna meg a világod, ha hirtelen elveszítenéd a hallásod. Valószínűleg gyorsan rádöbbennél, hogy a látáshoz hasonlóan a hallás is fontos érzékünk. Kattints mindegyik szerepre.</p>
+    <div class="grid three">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Hol van?</span><span class="hint">Térbeli elhelyezés</span></span><span class="back"><b>A tárgyak helye</b>A hallás fontos a tárgyak, objektumok térbeli elhelyezkedésének meghatározásakor, például hogy honnan halljuk, hogy valaki a nevünkön szólított bennünket.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Ami messze van</span><span class="hint">Látás helyett</span></span><span class="back"><b>A látás pótlása</b>A hallás akár még fontosabb is lehet a látásnál olyankor, amikor távoli dolgok helyét próbáljuk „belőni”.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Előre szól</span><span class="hint">Előrejelzés</span></span><span class="back"><b>Eseményekről tájékoztat</b>Megelőzően értesülünk bizonyos eseményekről, mielőtt látnánk azokat: a hátunk mögött haladó ember lépteiről, vagy egy közeledő autóról, beszélgető emberekről, zeneszóról, amelyeket még nem látunk.</span></button>
+    </div>
+    <h3 style="margin-top:22px">Kísérlet: honnan jön a hang?</h3>
+    <div class="panel">
+      <p>Fejhallgatóval működik igazán. Egy rövid hang szólal meg a bal oldalon, a közepén, vagy a jobb oldalon. Találd ki, honnan jön! (6 próba)</p>
+      <div class="row">
+        <button class="btn hot" id="loc-start">Indítás</button>
+        <button class="btn light" id="loc-L" disabled>Bal</button>
+        <button class="btn light" id="loc-C" disabled>Közép</button>
+        <button class="btn light" id="loc-R" disabled>Jobb</button>
+        <button class="btn ghost" id="loc-again" disabled style="border-color:#F2F3FF;color:#F2F3FF">Újra lejátszom</button>
+      </div>
+      <p class="status" id="loc-status"></p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A „Hallás: ha az erdőben kidől egy fa…” rész nyomán, átfogalmazva. A hang a böngészőben, sztereó panorámázással szól; hangszóróval a hatás gyengébb. A címadó kérdés („hallatszik-e, ha a fa kidől, de nincs ott senki?”) jó vitaindító.</aside>
+  </div>
+</section>
+
+<!-- 8e. Fájdalom: védelmi jel -->
+<section class="slide" aria-label="A fájdalom" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">A fájdalom: amiért hálásak lehetünk</h2>
+    <p class="lead">Ha erős fájdalom gyötör, minden más lényegtelenné válik. Pedig a fájdalom a szervezet egyik legfontosabb védelmi mechanizmusa. Kattints a kártyákra.</p>
+    <div class="grid two">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Miért fáj?</span><span class="hint">Kattints</span></span><span class="back"><b>Védelmi jelzés</b>A fájdalom a szervezet adaptív mechanizmusa: a testet sérüléssel, károsodással fenyegető helyzetek ellen alakult ki. Figyelmeztet a veszélyre, segíti a túlélést, és arra ösztönöz, hogy gyógyírt keressünk.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Csak az inger számít?</span><span class="hint">Kattints</span></span><span class="back"><b>A fájdalom az agy műve</b>Bár úgy tűnik, hogy a fájdalmat az érintett testrészünkben tapasztaljuk, az érzet valójában az agy terméke. Ezért befolyásolja a hangulatunk és az előfeltételezéseink is: például fájdalmasabbnak érzünk valamit, ha idegesek vagyunk a ránk váró fogorvosi látogatás miatt.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Érdekesség: fantomfájdalom</span><span class="hint">Kattints</span></span><span class="back"><b>Fájdalom a hiányzó végtagban</b>Aki elveszíti egy végtagját, mégis úgy érezheti, mintha ott lenne, akár erős fájdalmat is. Ez nem teljesen képzelt, de nem is a hiányzó végtagból jön: az agy önállóan teremti meg a fájdalomérzetet.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Érdekesség: és ha nem éreznénk?</span><span class="hint">Kattints</span></span><span class="back"><b>Védelem nélkül</b>Egyesek úgy születnek, hogy nem éreznek fájdalmat. Ez nem áldás: nem veszik észre a sérüléseiket, ezért a testük tele lehet hegekkel, és általában fiatalon meghalnak. A fájdalom életvédelmi jelzés.</span></button>
+    </div>
+    <p class="lead" style="margin-top:20px">Gyors teszt:</p>
+    <div class="grid two" id="pain1-quiz"></div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> A feltöltött tankönyv fájdalomról szóló részei nyomán, átfogalmazva. Kezeld érzékenyen: a diákok között lehet krónikus beteg is. A hangsúly a fájdalom védő szerepén van.</aside>
+  </div>
+</section>
+
+<!-- 8f. Mit tehetsz, ha fáj? -->
+<section class="slide" aria-label="Mit tehetsz, ha fáj?" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Mit tehetsz, ha fáj? A kapu és a placebo</h2>
+    <p class="lead">Melzack és Wall kapuelmélete szerint a gerincvelőben „kapu” van: megnyithatja vagy lezárhatja az utat a fájdalom ingerületei előtt, mielőtt azok az agyba jutnának. A kaput tapintás is, és az agyunk állapota is zárhatja. Képzeld el: kalapáccsal rácsaptál az ujjadra. Kapcsold be a tényezőket!</p>
+    <svg class="gate-svg" id="gate-svg" viewBox="0 0 320 150" role="img" aria-label="A fájdalomjel útja az ujjtól az agyig, a gerincvelői kapun át"></svg>
+    <div class="pain-meter" aria-hidden="true"><div class="pain-fill" id="pain-fill" style="width:70%"></div></div>
+    <p class="status" id="gate-txt"></p>
+    <div class="toggles" id="gate-toggles"></div>
+    <div class="box">
+      <p>Ezért rázzuk erőteljesen a kezünket, ha rácsapunk az ujjunkra: a tapintásban részt vevő idegrostok képesek gátolni a fájdalmat. A fontos események figyelemelterelő hatása is számít: katonák és atléták súlyos sérüléseket is elszenvedhetnek úgy, hogy a csata vagy a verseny hevében alig éreznek fájdalmat.</p>
+      <p class="small">A tényezők hatása itt csak szemléltető modell, nem mérés.</p>
+    </div>
+    <div class="grid three" style="margin-top:14px">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Érdekesség: a placebo</span><span class="hint">Kattints</span></span><span class="back"><b>Placebo</b>Valódi gyógyszernek tűnő, de nem gyógyhatású készítmény (pl. egy kis cukorka). Mégis hathat, mert az emberek elhiszik, hogy valódi gyógyszert kapnak: az agy szinte úgy reagál rá, mint a fájdalomcsillapítókra, és lezárja a gerincvelői kaput.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Érdekesség: az orvos viselkedése</span><span class="hint">Kattints</span></span><span class="back"><b>Már a bánásmód is segít</b>Kontrollált kísérletekben kimutatták (Benedetti és munkatársai, 2005), hogy már az orvos viselkedése is képes enyhíteni a fájdalmat, anélkül hogy bármilyen gyógyszert adna.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Gyógyszer nélkül</span><span class="hint">Kattints</span></span><span class="back"><b>Pszichológiai módszerek</b>A relaxáció, a gondolatelterelés vagy a hipnózis is csillapíthatja a fájdalmat. Ezért kéri az orvos is sokszor, hogy vegyél néhány mély levegőt, és nézz másfelé.</span></button>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A tankönyv kapuelméletről, placebóról és pszichológiai módszerekről szóló részei nyomán, átfogalmazva (Melzack és Wall, 1965, 1983). A kapcsolók értékei saját, szemléltető egyszerűsítések. Kérdezd meg: milyen saját „trükköd” van, amikor fáj valami? Gyógyszerekről a diákoknak általános ismeretet sem adunk, használati utasítást főleg nem.</aside>
+  </div>
+</section>
+
+<!-- 9. Illúziók -->
+<section class="slide" aria-label="Optikai illúziók" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Ha az érzékelés jó, miért csalódunk mégis?</h2>
+    <p class="lead">Két klasszikus illúzió. Kattints a gombra, és nézd meg a "mérővonalzót" – meglepődsz.</p>
+    <div class="grid two">
+      <div class="illus-wrap">
+        <h3>Müller–Lyer-illúzió</h3>
+        <svg class="illus-svg" viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg">
+          <line x1="40" y1="40" x2="140" y2="40" stroke="#16163A" stroke-width="4"/>
+          <line x1="40" y1="40" x2="55" y2="25" stroke="#16163A" stroke-width="4"/>
+          <line x1="40" y1="40" x2="55" y2="55" stroke="#16163A" stroke-width="4"/>
+          <line x1="140" y1="40" x2="125" y2="25" stroke="#16163A" stroke-width="4"/>
+          <line x1="140" y1="40" x2="125" y2="55" stroke="#16163A" stroke-width="4"/>
+          <line x1="180" y1="40" x2="280" y2="40" stroke="#16163A" stroke-width="4"/>
+          <line x1="180" y1="40" x2="165" y2="25" stroke="#16163A" stroke-width="4"/>
+          <line x1="180" y1="40" x2="165" y2="55" stroke="#16163A" stroke-width="4"/>
+          <line x1="280" y1="40" x2="295" y2="25" stroke="#16163A" stroke-width="4"/>
+          <line x1="280" y1="40" x2="295" y2="55" stroke="#16163A" stroke-width="4"/>
+          <g class="guide" id="ml-guide">
+            <rect x="40" y="70" width="100" height="14" fill="#D42A68" opacity=".25"/>
+            <rect x="180" y="70" width="100" height="14" fill="#D42A68" opacity=".25"/>
+            <text x="90" y="105" font-size="13" fill="#4F5279" text-anchor="middle">egyenlő hosszú</text>
+            <text x="230" y="105" font-size="13" fill="#4F5279" text-anchor="middle">egyenlő hosszú</text>
+          </g>
+        </svg>
+        <button class="btn ghost" id="ml-btn">Mutasd a mérővonalzót</button>
+        <p class="small">A két vízszintes vonal pontosan egyenlő hosszú – a nyílhegyek iránya csapja be az agyunkat, ami mélységi jelzésnek értelmezi őket.</p>
+      </div>
+      <div class="illus-wrap">
+        <h3>Ebbinghaus-illúzió</h3>
+        <svg class="illus-svg" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="80" cy="80" r="26" fill="#3550F5"/>
+          <circle cx="80" cy="20" r="12" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <circle cx="34" cy="50" r="12" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <circle cx="126" cy="50" r="12" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <circle cx="34" cy="110" r="12" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <circle cx="126" cy="110" r="12" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <circle cx="80" cy="140" r="12" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <circle cx="240" cy="80" r="26" fill="#3550F5"/>
+          <circle cx="240" cy="10" r="42" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <circle cx="180" cy="140" r="42" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <circle cx="300" cy="140" r="42" fill="none" stroke="#C9CCEA" stroke-width="2"/>
+          <g class="guide" id="eb-guide">
+            <circle cx="80" cy="80" r="27" fill="none" stroke="#D42A68" stroke-width="3"/>
+            <circle cx="240" cy="80" r="27" fill="none" stroke="#D42A68" stroke-width="3"/>
+          </g>
+        </svg>
+        <button class="btn ghost" id="eb-btn">Mutasd a mérővonalzót</button>
+        <p class="small">A két kék kör pontosan ugyanakkora – a körülöttük lévő nagy vagy kicsi körök miatt tűnik az egyik nagyobbnak.</p>
+      </div>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> Kérdezd meg előbb a benyomást (melyik tűnik hosszabbnak/nagyobbnak?), csak utána mutasd a mérővonalzót. Ez remek átvezetés az érzékelés–észlelés különbséghez, amit a 2. dián már érintettünk.</aside>
+  </div>
+</section>
+
+<!-- 10. Szinesztézia -->
+<section class="slide" aria-label="Szinesztézia" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Amikor az érzékszervek "összekapcsolódnak"</h2>
+    <p class="lead">Néhány embernél a receptorok szokatlanul kapcsolódnak össze: egy inger automatikusan egy másik érzékelést is kivált.</p>
+    <div class="card" style="max-width:760px">
+      <h3>Szinesztézia</h3>
+      <p>Egy szinesztéziás ember számára a hét napjainak, a betűknek vagy a számoknak lehet színük, vagy egy zenei hang íz-érzetet válthat ki. Ez nem betegség és nem képzelgés: agyi képalkotó vizsgálatok is kimutatták, hogy náluk ténylegesen aktiválódik a másik érzékszervi terület is.</p>
+    </div>
+    <p class="small" style="margin-top:14px">Gondolkodtató kérdés: neked van-e olyan élményed, hogy egy szám, betű vagy nap "színesnek" érződik?</p>
+  </div>
+</section>
+
+<!-- 10b. Érdekességek -->
+<section class="slide" aria-label="Érdekességek" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Tudtad? Néhány érdekesség</h2>
+    <p class="lead">Olyan tények, amelyek szinte minden bevezető pszichológia-tankönyvben (Zimbardóéhoz hasonlókban is) visszatérnek.</p>
+    <div class="grid two">
+      <div class="card"><h3>Hányféle illatot érzékelünk?</h3><p>Sokáig kb. tízezerre becsülték, egy 2014-es kutatás szerint viszont akár több billió illatárnyalatot is meg tudunk különböztetni – a pontos szám a mai napig vitatott a kutatók között.</p></div>
+      <div class="card"><h3>120 millió pálcika, 6 millió csap</h3><p>Ennyi fényérzékeny sejt található a szemed recehártyáján: a pálcikák a gyenge fényt és a mozgást, a csapok a színeket érzékelik.</p></div>
+      <div class="card"><h3>20–20 000 Hz</h3><p>Nagyjából ekkora egy egészséges, fiatal fül hallástartománya. A felső határ életkorral csökken – ezért hallanak a fiatalok olyan magas hangokat, amit a felnőttek már nem.</p></div>
+      <div class="card"><h3>McGurk-hatás</h3><p>Ha "ba" hangot hallasz, miközben egy száj "ga" ajakmozgást mutat, sokan "da"-t hallanak. A látvány szó szerint megváltoztatja, amit hallani vélünk – ez is mutatja, hogy az érzékszerveink együtt dolgoznak.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. Szubliminális ingerek -->
+<section class="slide" aria-label="Szubliminális ingerek" data-quiz="sub" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Igaz vagy hamis? Szubliminális üzenetek</h2>
+    <p class="lead">A küszöb alatti (szubliminális) ingerek azok, amelyek túl gyengék ahhoz, hogy tudatosan észrevegyük őket. De hatnak-e ránk?</p>
+    <div class="grid two" id="sub-quiz"></div>
+  </div>
+</section>
+
+<!-- 11b. Igaz/hamis: az új témák -->
+<section class="slide" aria-label="Igaz vagy hamis, új témák" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Igaz vagy hamis? Összefoglaló</h2>
+    <div class="grid two" id="new-tf"></div>
+  </div>
+</section>
+
+<!-- 12. Záró -->
+<section class="slide" aria-label="Összegzés" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Amit ma megtanultunk</h2>
+    <p class="big-say">Az érzékelés a folyamat, ahogyan a receptoraink a világ energiáit ideg­jelekké alakítják – de amit végül "megélünk", azt már az agyunk is formálja.</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>Kilépőjegy (füzetbe, 2 perc)</h3>
+        <ul class="plain">
+          <li>Egy dolog, ami ma meglepett.</li>
+          <li>Melyik ma kipróbált jelenség lepett meg a legjobban (lámpák, zajban a jel, fájdalomkapu)?</li>
+          <li>Egy kérdés, amit még feltennél a témáról.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Házi feladat</h3>
+        <p>Figyeld meg egy nap során, mikor tapasztalsz érzékszervi alkalmazkodást (pl. zaj, szag, hőmérséklet) vagy egy illúziót. Írd le 3–4 mondatban, mi történt, és melyik fogalommal magyaráznád.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="bar" aria-label="Diák közötti lépegetés">
+  <button class="nav" id="prev" aria-label="Előző dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+  <span class="count" id="count">1 / 22</span>
+  <button class="pill" id="notes-btn" aria-pressed="false">Jegyzetek</button>
+  <button class="nav" id="next" aria-label="Következő dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+</nav>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var cur=0;
+  var prevBtn=document.getElementById('prev'), nextBtn=document.getElementById('next');
+  var fill=document.getElementById('fill'), count=document.getElementById('count');
+
+  function show(n){
+    n=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,k){ s.hidden=(k!==n); });
+    cur=n;
+    slides[cur].scrollTop=0;
+    var h=slides[cur].querySelector('h1,h2');
+    if(h&&n>0) h.focus({preventScroll:true});
+    fill.style.width=((cur/(slides.length-1))*100)+'%';
+    count.textContent=(cur+1)+' / '+slides.length;
+    prevBtn.disabled=cur===0; nextBtn.disabled=cur===slides.length-1;
+  }
+  prevBtn.addEventListener('click',function(){show(cur-1)});
+  nextBtn.addEventListener('click',function(){show(cur+1)});
+  document.querySelectorAll('[data-next]').forEach(function(b){b.addEventListener('click',function(){show(cur+1)})});
+
+  var notesBtn=document.getElementById('notes-btn');
+  notesBtn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('notes-on');
+    notesBtn.setAttribute('aria-pressed',on);
+  });
+
+  document.addEventListener('keydown',function(e){
+    var t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return;
+    if(e.ctrlKey||e.metaKey||e.altKey) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();show(cur+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1)}
+    else if(e.key==='Home'){show(0)}
+    else if(e.key==='End'){show(slides.length-1)}
+    else if(e.key==='n'||e.key==='N'){notesBtn.click()}
+  });
+
+  var sx=0, sy=0, tracking=false;
+  var stage=document.getElementById('stage');
+  stage.addEventListener('touchstart',function(e){
+    if(e.target.closest('button,a,input,textarea')){tracking=false;return}
+    tracking=true; sx=e.touches[0].clientX; sy=e.touches[0].clientY;
+  },{passive:true});
+  stage.addEventListener('touchend',function(e){
+    if(!tracking) return; tracking=false;
+    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){ show(dx<0?cur+1:cur-1); }
+  },{passive:true});
+
+  document.querySelectorAll('.flip').forEach(function(b){
+    b.addEventListener('click',function(){
+      var o=b.classList.toggle('is-open');
+      b.setAttribute('aria-expanded',o?'true':'false');
+    });
+  });
+
+  /* ---- Necker cube ---- */
+  (function(){
+    var faces=document.querySelectorAll('#cube .cube-face');
+    var msg=document.getElementById('cube-msg');
+    var texts={
+      a:'Most a bal-alsó lap tűnik elöl lévőnek – mintha egy dobozba néznél lefelé.',
+      b:'Most a felső lap tűnik elöl lévőnek – mintha egy dobozra néznél felülről.',
+      c:'Most a jobb oldali lap tűnik elöl lévőnek – próbáld megint másképp nézni!'
+    };
+    faces.forEach(function(f){
+      f.addEventListener('click',function(){
+        faces.forEach(function(x){x.style.fill='';});
+        var face=f.getAttribute('data-face');
+        f.style.fill='#FFC533';
+        msg.textContent=texts[face];
+      });
+    });
+    document.getElementById('cube-explain').addEventListener('click',function(){
+      document.getElementById('cube-answer').hidden=false;
+    });
+  })();
+
+  /* ---- ingerlánc ---- */
+  (function(){
+    var steps=[].slice.call(document.querySelectorAll('#chain .step'));
+    var arrows=[].slice.call(document.querySelectorAll('#chain .arrow'));
+    var desc=document.getElementById('chain-desc');
+    var texts=[
+      'Egy fizikai energia éri a testet: fényhullám, hanghullám, illatmolekula, nyomás.',
+      'A megfelelő érzékszervben egy specializált sejt (receptor) érzékeli ezt az energiát.',
+      'A receptor a fizikai ingert elektromos ideg­impulzussá alakítja – ez a transzdukció.',
+      'Az ideg­impulzus eljut az agy megfelelő területére, ahol feldolgozzuk és tudatosul.'
+    ];
+    var i=-1;
+    function step(){
+      i++; if(i>=steps.length){ i=0; steps.forEach(function(s){s.classList.remove('on')}); arrows.forEach(function(a){a.classList.remove('on')}); desc.textContent=''; return; }
+      steps[i].classList.add('on');
+      if(arrows[i-1]) arrows[i-1].classList.add('on');
+      desc.textContent=texts[i];
+    }
+    steps.forEach(function(s){ s.addEventListener('click', step); });
+  })();
+
+  /* ---- abszolút küszöb (Web Audio) ---- */
+  (function(){
+    var vol=document.getElementById('vol'), playBtn=document.getElementById('vol-play'), heardBtn=document.getElementById('vol-heard'), status=document.getElementById('vol-status');
+    var ctx=null, osc=null, gain=null, playing=false;
+    function ensureCtx(){ if(!ctx){ ctx=new (window.AudioContext||window.webkitAudioContext)(); } }
+    function setGain(){
+      if(!gain) return;
+      var v=parseInt(vol.value,10);
+      var g=Math.pow(v/100,3)*0.35;
+      gain.gain.setTargetAtTime(g, ctx.currentTime, 0.05);
+    }
+    playBtn.addEventListener('click',function(){
+      ensureCtx();
+      if(playing){ osc.stop(); playing=false; playBtn.textContent='Hang indítása'; heardBtn.disabled=true; status.textContent=''; return; }
+      osc=ctx.createOscillator(); gain=ctx.createGain();
+      osc.type='sine'; osc.frequency.value=440;
+      gain.gain.value=0;
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      playing=true; playBtn.textContent='Hang leállítása';
+      heardBtn.disabled=false;
+      status.textContent='Told lassan feljebb a csúszkát, amíg épphogy meghallod.';
+      setGain();
+    });
+    vol.addEventListener('input', setGain);
+    heardBtn.addEventListener('click',function(){
+      status.textContent='Nálad kb. '+vol.value+'/100 csúszka-értéknél volt az abszolút küszöb.';
+    });
+  })();
+
+  /* ---- Weber-Fechner ---- */
+  document.querySelectorAll('.swatch-pick button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.getElementById('weber-answer').hidden=false;
+    });
+  });
+
+  /* ---- illúziók ---- */
+  document.getElementById('ml-btn').addEventListener('click',function(){
+    document.getElementById('ml-guide').classList.toggle('on');
+  });
+  document.getElementById('eb-btn').addEventListener('click',function(){
+    document.getElementById('eb-guide').classList.toggle('on');
+  });
+
+  /* ---------- általános kvíz-építő ---------- */
+  function buildQuiz(wrapId, data){
+    var wrap=document.getElementById(wrapId);
+    if(!wrap) return;
+    data.forEach(function(d){
+      var el=document.createElement('div'); el.className='stmt';
+      var p=document.createElement('p'); p.className='stmt-t'; p.textContent=d.t; el.appendChild(p);
+      var ans=document.createElement('div'); ans.className='ans'; el.appendChild(ans);
+      var fb=document.createElement('p'); fb.className='fb'; fb.hidden=true; el.appendChild(fb);
+      var btns=[];
+      d.opts.forEach(function(o){
+        var b=document.createElement('button'); b.className='btn ghost'; b.textContent=o;
+        b.addEventListener('click',function(){
+          var ok=(o===d.a);
+          el.classList.add(ok?'ok':'no');
+          btns.forEach(function(x){x.disabled=true});
+          fb.hidden=false;
+          fb.innerHTML='<strong>'+(ok?'Jó válasz.':'Nem egészen.')+'</strong> '+(ok?'':'A helyes válasz: <strong>'+d.a+'</strong>. ')+d.e;
+        });
+        btns.push(b); ans.appendChild(b);
+      });
+      wrap.appendChild(el);
+    });
+  }
+
+  /* ---------- a három lámpa ---------- */
+  (function(){
+    var room=document.getElementById('lamp-room'), wEl=document.getElementById('lamp-w');
+    var nextBtn=document.getElementById('lamp-next'), resetBtn=document.getElementById('lamp-reset');
+    var rate=document.getElementById('lamp-rate'), result=document.getElementById('lamp-result'), bars=document.getElementById('lamp-bars');
+    var slider=document.getElementById('lamp-slider'), out=document.getElementById('lamp-out'), save=document.getElementById('lamp-save'), lab=document.getElementById('lamp-ratelabel');
+    var W=[0,50,100,150], names=['sötétből 50 W-ra','50 W-ról 100 W-ra','100 W-ról 150 W-ra'], pct=['a sötétből induló ugrás','+100%','+50%'];
+    var stage=0, ratings=[];
+    function shade(w){ var L=Math.max(w/150,0.01); var v=Math.round(255*Math.pow(L,1/2.2)); return 'rgb('+v+','+v+','+Math.round(v*0.94)+')'; }
+    function paint(){
+      room.style.background=shade(W[stage]);
+      room.style.color=stage>=2?'#16163A':'#ffffff';
+      wEl.textContent=stage===0?'sötét szoba':W[stage]+' wattos lámpa';
+    }
+    function label(){
+      if(stage<3){ nextBtn.textContent='Kapcsold fel: '+W[stage+1]+' W'; nextBtn.disabled=false; }
+      else { nextBtn.textContent='Mind a három lámpa fel van kapcsolva'; nextBtn.disabled=true; }
+    }
+    function reset(){ stage=0; ratings=[]; paint(); label(); rate.hidden=true; result.hidden=true; bars.innerHTML=''; slider.value=5; out.textContent='5'; }
+    nextBtn.addEventListener('click',function(){
+      if(stage>=3) return;
+      stage++; paint(); nextBtn.disabled=true;
+      lab.textContent='Mekkora volt a változás ('+names[stage-1]+')?';
+      slider.value=5; out.textContent='5'; rate.hidden=false;
+    });
+    slider.addEventListener('input',function(){ out.textContent=slider.value; });
+    save.addEventListener('click',function(){
+      ratings.push(+slider.value); rate.hidden=true;
+      if(stage<3){ label(); }
+      else{
+        nextBtn.disabled=true; label();
+        bars.innerHTML='';
+        ratings.forEach(function(r,i){
+          var row=document.createElement('div'); row.className='barrow';
+          row.innerHTML='<span>'+names[i]+'<br><span class="small">('+pct[i]+')</span></span><div class="barfill" style="width:'+Math.max(3,r*10)+'%" title="'+r+'/10"></div>';
+          bars.appendChild(row);
+        });
+        result.hidden=false;
+      }
+    });
+    resetBtn.addEventListener('click',reset);
+    reset();
+  })();
+
+  /* ---------- szignáldetekciós játék ---------- */
+  (function(){
+    var cv=document.getElementById('sdt-canvas'), g=cv.getContext('2d');
+    var startBtn=document.getElementById('sdt-start'), yes=document.getElementById('sdt-yes'), no=document.getElementById('sdt-no');
+    var prog=document.getElementById('sdt-prog'), log=document.getElementById('sdt-log');
+    var resBox=document.getElementById('sdt-result'), matrix=document.getElementById('sdt-matrix'), txt=document.getElementById('sdt-text');
+    var noiseBtns=[].slice.call(document.querySelectorAll('[data-noise]'));
+    var level='low', trials=[], idx=0, c, running=false, history={};
+    var AMP={low:10, high:100}, SIGNAL=24, N=10;
+    noiseBtns.forEach(function(b){
+      b.addEventListener('click',function(){
+        if(running) return;
+        level=b.getAttribute('data-noise');
+        noiseBtns.forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false'); });
+      });
+    });
+    function draw(signal){
+      var W=cv.width, H=cv.height, img=g.createImageData(W,H), d=img.data, A=AMP[level], cx=W/2, cy=H/2, r=26;
+      for(var y=0;y<H;y++){
+        for(var x=0;x<W;x++){
+          var v=120+(Math.random()*2-1)*A;
+          if(signal){ var dx=x-cx, dy=y-cy; if(dx*dx+dy*dy<r*r) v+=SIGNAL; }
+          v=Math.max(0,Math.min(255,v));
+          var i=(y*W+x)*4; d[i]=d[i+1]=d[i+2]=v; d[i+3]=255;
+        }
+      }
+      g.putImageData(img,0,0);
+    }
+    function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+    function nextTrial(){
+      if(idx>=N){ finish(); return; }
+      prog.textContent='Próba: '+(idx+1)+' / '+N;
+      draw(trials[idx]);
+    }
+    function answer(said){
+      if(!running) return;
+      var sig=trials[idx];
+      if(sig && said) c.hit++; else if(sig && !said) c.miss++; else if(!sig && said) c.fa++; else c.cr++;
+      idx++; nextTrial();
+    }
+    function finish(){
+      running=false; yes.disabled=true; no.disabled=true; startBtn.disabled=false; prog.textContent='Kész!';
+      history[level]={hit:c.hit,miss:c.miss,fa:c.fa,cr:c.cr};
+      matrix.innerHTML='<div class="h"></div><div class="h">Azt mondtad: van jel</div><div class="h">Azt mondtad: nincs jel</div>'
+        +'<div class="h">Jel volt</div><div><span class="n">'+c.hit+'</span> találat</div><div><span class="n">'+c.miss+'</span> mellé</div>'
+        +'<div class="h">Nem volt jel</div><div><span class="n">'+c.fa+'</span> téves riasztás</div><div><span class="n">'+c.cr+'</span> helyes elutasítás</div>';
+      var t='Zajszint: <strong>'+(level==='low'?'alacsony':'magas')+'</strong>. ';
+      var lo=history.low, hi=history.high;
+      if(lo && hi){
+        t+='Összehasonlítás: alacsony zajnál '+lo.hit+' találat és '+lo.fa+' téves riasztás, magas zajnál '+hi.hit+' találat és '+hi.fa+' téves riasztás. ';
+      }
+      t+='A jel erőssége végig ugyanakkora volt, csak a zaj változott: minél több a zaj, annál nehezebb a döntés, és annál több a tévedés. Az is számít, mennyire vagy óvatos: ha mindig „van jel”-t mondasz, kevés a mellé, de sok a téves riasztás.';
+      txt.innerHTML=t; resBox.hidden=false;
+    }
+    startBtn.addEventListener('click',function(){
+      var arr=[]; for(var i=0;i<N;i++) arr.push(i<N/2);
+      trials=shuffle(arr); idx=0; c={hit:0,miss:0,fa:0,cr:0}; running=true;
+      startBtn.disabled=true; yes.disabled=false; no.disabled=false; resBox.hidden=true;
+      log.textContent='';
+      nextTrial();
+    });
+    yes.addEventListener('click',function(){ answer(true); });
+    no.addEventListener('click',function(){ answer(false); });
+    g.fillStyle='#777'; g.fillRect(0,0,cv.width,cv.height);
+  })();
+
+  /* ---------- Troxler: tűnjön el a folt ---------- */
+  (function(){
+    var btn=document.getElementById('tx-start'), tm=document.getElementById('tx-timer'), st=document.getElementById('tx-status');
+    var timer=null;
+    btn.addEventListener('click',function(){
+      clearInterval(timer); var left=25; btn.disabled=true;
+      tm.textContent=left; st.textContent='Nézd a keresztet, ne mozdítsd a szemed!';
+      timer=setInterval(function(){
+        left--; tm.textContent=left;
+        if(left<=0){
+          clearInterval(timer); tm.textContent='Vége!'; btn.disabled=false; btn.textContent='Újra';
+          st.textContent='Eltűnt vagy elhalványult a folt? Ez a látás adaptációja: az állandó, változatlan inger elhalványul. Ha most elmozdítod a szemed, a folt visszatér.';
+        }
+      },1000);
+    });
+  })();
+
+  /* ---------- színlátó tábla ---------- */
+  (function(){
+    function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+    var digits=['29','74','45'][Math.floor(Math.random()*3)];
+    var cv=document.getElementById('plate'); if(!cv) return;
+    var S=300, g=cv.getContext('2d');
+    var m=document.createElement('canvas'); m.width=S; m.height=S;
+    var mg=m.getContext('2d',{willReadFrequently:true});
+    mg.fillStyle='#000'; mg.fillRect(0,0,S,S); mg.fillStyle='#fff';
+    mg.font='bold 210px Arial, Helvetica, sans-serif'; mg.textAlign='center'; mg.textBaseline='middle';
+    mg.fillText(digits,S/2,S/2+8);
+    var md=mg.getImageData(0,0,S,S).data;
+    var rnd=mulberry32(digits.charCodeAt(0)*131+digits.charCodeAt(1)*7+11);
+    var circles=[], tries=0;
+    while(tries<9000){
+      tries++;
+      var r=3+rnd()*5.5, x=rnd()*S, y=rnd()*S, dx=x-S/2, dy=y-S/2;
+      if(Math.sqrt(dx*dx+dy*dy)>S/2-r-2) continue;
+      var ok=true;
+      for(var i=0;i<circles.length;i++){ var c=circles[i], ddx=c.x-x, ddy=c.y-y, rr=c.r+r+0.8; if(ddx*ddx+ddy*ddy<rr*rr){ ok=false; break; } }
+      if(ok) circles.push({x:x,y:y,r:r});
+    }
+    g.fillStyle='#EDE9DF'; g.fillRect(0,0,S,S);
+    circles.forEach(function(c){
+      var fig=md[(Math.floor(c.y)*S+Math.floor(c.x))*4]>128, h,sat,l;
+      if(fig){ h=10+rnd()*24; sat=55+rnd()*20; l=42+rnd()*24; } else { h=66+rnd()*34; sat=38+rnd()*20; l=38+rnd()*24; }
+      g.fillStyle='hsl('+h.toFixed(0)+','+sat.toFixed(0)+'%,'+l.toFixed(0)+'%)';
+      g.beginPath(); g.arc(c.x,c.y,c.r,0,Math.PI*2); g.fill();
+    });
+    var optsEl=document.getElementById('plate-opts'), fb=document.getElementById('plate-fb');
+    var choices=['29','74','45'];
+    function add(label,val){
+      var b=document.createElement('button'); b.className='btn ghost'; b.textContent=label;
+      b.addEventListener('click',function(){
+        if(val===digits) fb.textContent='A(z) '+digits+' valóban a megoldás. Ha ezt tényleg látni lehetett, a piros és a zöld megkülönböztetése ezen a szemléltető táblán sikerült.';
+        else if(val==='none') fb.textContent='Nem látsz számot? Ez önmagában nem diagnózis: a tábla csak szemléltetés, képernyőn a színek is eltérnek. A megoldás: '+digits+'. Ha a színek megkülönböztetése a mindennapokban is gondot okoz, érdemes szemorvoshoz fordulni.';
+        else fb.textContent='Nem ezt a számot rejti a tábla: a megoldás '+digits+'. A piros és a zöld árnyalatait könnyű összekeverni, ezért olyan nehéz egy ilyen táblán a számot észrevenni.';
+      });
+      optsEl.appendChild(b);
+    }
+    choices.forEach(function(v){ add(v,v); });
+    add('Nem látok számot','none');
+  })();
+
+  /* ---------- honnan jön a hang? ---------- */
+  (function(){
+    var start=document.getElementById('loc-start'); if(!start) return;
+    var L=document.getElementById('loc-L'), C=document.getElementById('loc-C'), R=document.getElementById('loc-R'), again=document.getElementById('loc-again');
+    var st=document.getElementById('loc-status');
+    var ctx=null, trials=[], idx=0, score=0, N=6, running=false;
+    var pans=[-1,-0.6,0,0.6,1];
+    function side(p){ return p<-0.3?'L':(p>0.3?'R':'C'); }
+    function beep(p){
+      if(!ctx) ctx=new (window.AudioContext||window.webkitAudioContext)();
+      if(!ctx.createStereoPanner){ st.textContent='A böngésződ nem támogatja a sztereó hangot.'; return false; }
+      var o=ctx.createOscillator(), g=ctx.createGain(), pn=ctx.createStereoPanner();
+      o.type='sine'; o.frequency.value=520; pn.pan.value=p;
+      g.gain.setValueAtTime(0.0001,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.35,ctx.currentTime+0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.5);
+      o.connect(g).connect(pn).connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime+0.55);
+      return true;
+    }
+    function setBtns(on){ [L,C,R,again].forEach(function(b){ b.disabled=!on; }); }
+    function play(){ if(!beep(trials[idx])){ running=false; setBtns(false); } }
+    function pick(ch){
+      if(!running) return;
+      var ok=(side(trials[idx])===ch); if(ok) score++;
+      st.textContent=(ok?'Helyes! ':'Nem talált. ')+'('+(idx+1)+'/'+N+')';
+      idx++;
+      if(idx>=N){
+        running=false; setBtns(false); start.disabled=false; start.textContent='Újra';
+        st.textContent='Kész: '+score+' / '+N+' helyes. Két füllel a hang helyét a két fülbe érkező jelek apró különbségéből találja ki az agyunk.';
+      } else { setTimeout(play,500); }
+    }
+    start.addEventListener('click',function(){
+      trials=[]; for(var i=0;i<N;i++) trials.push(pans[Math.floor(Math.random()*pans.length)]);
+      idx=0; score=0; running=true; start.disabled=true; setBtns(true); st.textContent='Figyelj! Honnan szól a hang?';
+      play();
+    });
+    L.addEventListener('click',function(){ pick('L'); });
+    C.addEventListener('click',function(){ pick('C'); });
+    R.addEventListener('click',function(){ pick('R'); });
+    again.addEventListener('click',function(){ if(running) play(); });
+    setBtns(false);
+  })();
+
+  /* ---------- fájdalom kvíz ---------- */
+  buildQuiz('pain1-quiz',[
+    { t:'Annak jobb az élete, aki nem érez fájdalmat.', opts:['Igaz','Hamis'], a:'Hamis',
+      e:'A fájdalom védelmi szignál: aki nem érez fájdalmat, nem veszi észre a sérüléseit, és ez veszélyes.' },
+    { t:'A fájdalmat csak fizikai ingerek (pl. szúrás, hő) válthatják ki, a hangulatunk nem számít.', opts:['Igaz','Hamis'], a:'Hamis',
+      e:'A fájdalom az agy terméke, ezért a hangulatunk és az előfeltételezéseink (pl. a fogorvostól való félelem) is befolyásolják.' }
+  ]);
+
+  /* ---------- kapuelmélet ---------- */
+  (function(){
+    var svg=document.getElementById('gate-svg'); if(!svg) return;
+    var tog=document.getElementById('gate-toggles'), fill=document.getElementById('pain-fill'), txt=document.getElementById('gate-txt');
+    var F=[
+      { n:'✋ Megdörzsölöd az ujjad (tapintás)', v:-3 },
+      { n:'🎯 Valami lekötötte a figyelmed', v:-2 },
+      { n:'🧘 Mély levegőt veszel, relaxálsz', v:-2 },
+      { n:'😰 Ideges, ijedt vagy', v:2 },
+      { n:'💊 Hiszel a kezelésben (placebo)', v:-2 }
+    ];
+    var on=F.map(function(){return false;});
+    function level(){ var p=7; F.forEach(function(f,i){ if(on[i]) p+=f.v; }); return Math.max(0,Math.min(10,p)); }
+    function draw(){
+      var p=level(), gap=6+(p/10)*56, cy=75, top=cy-gap/2, bot=cy+gap/2;
+      var s='<rect width="320" height="150" fill="none"/>'
+        +'<text x="34" y="72" text-anchor="middle" font-size="34">🖐️</text><text x="34" y="108" text-anchor="middle" font-size="12" fill="#5A5D86">ujj</text>'
+        +'<text x="286" y="72" text-anchor="middle" font-size="34">🧠</text><text x="286" y="108" text-anchor="middle" font-size="12" fill="#5A5D86">agy</text>'
+        +'<rect x="156" y="8" width="8" height="'+(top-8).toFixed(1)+'" rx="3" fill="#16163A"/>'
+        +'<rect x="156" y="'+bot.toFixed(1)+'" width="8" height="'+(130-bot).toFixed(1)+'" rx="3" fill="#16163A"/>'
+        +'<text x="160" y="146" text-anchor="middle" font-size="11" fill="#5A5D86">kapu (gerincvelő)</text>'
+        +'<line x1="62" y1="'+cy+'" x2="258" y2="'+cy+'" stroke="#D42A68" stroke-width="'+(1+p*0.8).toFixed(1)+'" stroke-linecap="round" stroke-dasharray="'+(p<=0?'2 8':'none')+'" opacity="'+(0.25+p*0.075).toFixed(2)+'"/>';
+      svg.innerHTML=s;
+      fill.style.width=(p*10)+'%';
+      var msg=p<=2?'A kapu szinte zárva: alig jut át fájdalomjel.':(p<=5?'A kapu félig nyitott: a fájdalom mérsékelt.':(p<=8?'A kapu nyitva: erős fájdalom jut az agyba.':'A kapu tárva-nyitva: nagyon erős fájdalom.'));
+      txt.textContent='Fájdalom: '+p+' / 10. '+msg;
+    }
+    F.forEach(function(f,i){
+      var b=document.createElement('button'); b.textContent=f.n; b.setAttribute('aria-pressed','false');
+      b.addEventListener('click',function(){ on[i]=!on[i]; b.setAttribute('aria-pressed',on[i]?'true':'false'); draw(); });
+      tog.appendChild(b);
+    });
+    draw();
+  })();
+
+  /* ---------- összefoglaló igaz/hamis ---------- */
+  buildQuiz('new-tf',[
+    { t:'A fájdalmat mindig az érintett testrészben keletkező inger okozza, az agy csak továbbítja.', opts:['Igaz','Hamis'], a:'Hamis',
+      e:'A fájdalomérzet az agy terméke: ezt mutatja a fantomfájdalom, és a kapuelmélet szerint a mentális állapotunk is nyithatja vagy zárhatja a kaput.' },
+    { t:'A placebónak azért nincs hatása, mert nem tartalmaz hatóanyagot.', opts:['Igaz','Hamis'], a:'Hamis',
+      e:'A placebo hat: az agy szinte úgy reagál rá, mint a fájdalomcsillapítókra (lezárul a gerincvelői kapu).' },
+    { t:'A szignáldetekciós elmélet szerint az, hogy észreveszünk-e egy ingert, nem csak az inger erősségén múlik.', opts:['Igaz','Hamis'], a:'Igaz',
+      e:'A zaj (háttéringerek) és a detektor, vagyis az agyunk állapota is számít.' },
+    { t:'A szenzoros adaptáció miatt a hirtelen megváltozó ingerek kevésbé tűnnek fel, mint az állandóak.', opts:['Igaz','Hamis'], a:'Hamis',
+      e:'Pont fordítva: az állandó, változatlan inger beleolvad a háttérbe, a változás viszont azonnal felkelti a figyelmet.' }
+  ]);
+
+  /* ---- szubliminális igaz/hamis ---- */
+  (function(){
+    var data=[
+      { t:'Egy 1957-es híres kísérlet szerint a moziban felvillantott „egyél popcornt” felirat hatására tömegesen nőtt a popcorn-eladás.', a:false,
+        e:'Hamis. Ez a legendás kísérlet utólag kiderült, hogy kitaláció volt – soha nem végezték el úgy, ahogy állították. Sokáig ez táplálta a szubliminális reklám mítoszát.' },
+      { t:'A szubliminális ingerek (amiket nem veszünk tudatosan észre) mérhetnek ki nagyon gyenge, rövid távú hatást, de nem irányítják a viselkedésünket.', a:true,
+        e:'Igaz. A kutatások gyenge, rövid ideig tartó hatásokat mutatnak ki (pl. egy szó felismerésének gyorsulása), de semmi bizonyíték nincs arra, hogy vásárlási vagy egyéb döntéseinket irányítanák.' },
+      { t:'Ha egy inger a küszöbünk alatt van, az azt jelenti, hogy az idegrendszerünk egyáltalán nem reagál rá.', a:false,
+        e:'Hamis. Az idegrendszer gyakran reagál mérhetően (pl. agyi aktivitásban), csak a tudatos észleléshez nem elég erős az inger.' }
+    ];
+    var wrap=document.getElementById('sub-quiz');
+    data.forEach(function(d){
+      var el=document.createElement('div'); el.className='stmt';
+      el.innerHTML='<p class="stmt-t">'+d.t+'</p><div class="ans"><button class="btn ghost" data-v="1">Igaz</button><button class="btn ghost" data-v="0">Hamis</button></div><p class="fb" hidden></p>';
+      var btns=[].slice.call(el.querySelectorAll('button')), fb=el.querySelector('.fb');
+      btns.forEach(function(b){
+        b.addEventListener('click',function(){
+          var v=b.getAttribute('data-v')==='1', ok=(v===d.a);
+          el.classList.add(ok?'ok':'no');
+          btns.forEach(function(x){x.disabled=true}); 
+          fb.hidden=false;
+          fb.innerHTML='<strong>'+(ok?'Jól tippeltél.':'Ez most nem jött be.')+'</strong> '+d.e;
+        });
+      });
+      wrap.appendChild(el);
+    });
+  })();
+
+  show(0);
+})();
+</script>
+</body>
+</html>
