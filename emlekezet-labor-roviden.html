@@ -1,0 +1,1236 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Emlékezet-labor röviden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Elrendezés: bal oldali fejezetsáv (laborjegyzet-lapfülek) + egyetlen olvasási oszlop. Kiemelő-sárga csak a kulcsfogalmakon és az érdekességeken. */
+:root{
+  --bg:#EDF2F0; --surface:#FAFCFB; --sunk:#E0E9E6; --fg:#12201E; --muted:#4A5E5A; --line:#C3D1CD;
+  --accent:#0A7C74; --accent-ink:#FFFFFF; --hl:#FFD84A; --hl-ink:#33290A;
+  --good:#17754A; --good-bg:#D9F0E2; --bad:#B03520; --bad-bg:#F9DCD5;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'Atkinson Hyperlegible','Segoe UI',system-ui,-apple-system,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1514; --surface:#152120; --sunk:#1D2D2B; --fg:#E3EEEB; --muted:#9DB2AD; --line:#2C3F3C;
+    --accent:#4CC9BC; --accent-ink:#06201D; --hl:#E6C443; --hl-ink:#2A2100;
+    --good:#5ED092; --good-bg:#173628; --bad:#FF8F78; --bad-bg:#3D211B; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1514; --surface:#152120; --sunk:#1D2D2B; --fg:#E3EEEB; --muted:#9DB2AD; --line:#2C3F3C;
+  --accent:#4CC9BC; --accent-ink:#06201D; --hl:#E6C443; --hl-ink:#2A2100;
+  --good:#5ED092; --good-bg:#173628; --bad:#FF8F78; --bad-bg:#3D211B; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1.0625rem/1.6 var(--f-body);-webkit-text-size-adjust:100%}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;line-height:1.15;margin:0}
+p{margin:0 0 .9em}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+mark{background:var(--hl);color:var(--hl-ink);padding:0 .18em;border-radius:3px}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:16px}
+.top{display:flex;flex-wrap:wrap;gap:14px 32px;align-items:flex-end;justify-content:space-between;padding-block:22px 12px;border-bottom:1px solid var(--line)}
+.eyebrow{font:700 .72rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.top h1{font-size:clamp(1.9rem,5vw,2.8rem);font-weight:800;letter-spacing:-.025em}
+.prog{flex:1 1 220px;max-width:340px;min-width:0}
+.prog-t{font:600 .8rem var(--f-mono);color:var(--muted);margin-bottom:6px}
+.bar{height:10px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .5s ease}
+
+.shell{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;padding-block:22px 72px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 14px)}
+.rail ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.nav-i{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:0;background:transparent;padding:9px 10px;border-radius:10px;font-weight:700;font-size:.95rem}
+.nav-i:hover{background:var(--sunk)}
+.nav-i .nn{flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font:700 .78rem var(--f-mono);background:var(--sunk);color:var(--fg)}
+.nav-i .nl{flex:1;min-width:0}
+.nav-i .nk{font:700 .85rem var(--f-mono);color:var(--good);width:1.1em}
+.nav-i.on{background:var(--accent);color:var(--accent-ink)}
+.nav-i.on .nn{background:color-mix(in srgb,var(--accent-ink) 20%,transparent);color:inherit}
+.nav-i.on .nk{color:inherit}
+.nav-i.cdone .nk::after{content:"✓"}
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:14px}
+  .rail{position:static}
+  .rail ul{flex-direction:row;overflow-x:auto;padding-bottom:6px;gap:6px;scrollbar-width:thin}
+  .nav-i{width:auto;white-space:nowrap;flex:none;background:var(--surface);border:1px solid var(--line)}
+  .nav-i.on{border-color:var(--accent)}
+}
+
+main{min-width:0;outline:none}
+.kicker{font:700 .74rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+.chead h2{font-size:clamp(2rem,6vw,3.1rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem}
+.lead{font-size:1.18rem;color:var(--muted);max-width:60ch}
+.blk{margin-top:40px}
+.blk>h3,.panel h3,.fact h3{font-size:1.45rem;font-weight:700;letter-spacing:-.01em;margin:.5rem 0 .7rem}
+.tag{display:inline-block;font:700 .7rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
+.t-el{border:1px solid var(--line);color:var(--muted)}
+.t-er{background:var(--hl);color:var(--hl-ink)}
+.t-gy{background:var(--accent);color:var(--accent-ink)}
+.t-fe{background:var(--fg);color:var(--bg)}
+.theory{max-width:68ch}
+.theory ul{padding-left:1.2em;margin:0 0 .9em}
+.theory li{margin-bottom:.35em}
+.note{font-size:.9rem;color:var(--muted)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:40px}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.donebadge{font:700 .72rem var(--f-mono);color:var(--good);background:var(--good-bg);padding:3px 8px;border-radius:5px}
+.intro{color:var(--muted);max-width:64ch}
+.fact{margin-top:40px;padding:22px;border-radius:16px;background:color-mix(in srgb,var(--hl) 16%,var(--surface));border:1px solid color-mix(in srgb,var(--hl) 55%,var(--line))}
+.fact-b{margin-top:14px;max-width:68ch}
+
+.btn{display:inline-block;border:0;border-radius:10px;padding:10px 18px;background:var(--accent);color:var(--accent-ink);font-weight:700;margin:4px 8px 4px 0}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--fg)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.opts.stack{flex-direction:column;align-items:stretch}
+.opt{background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;text-align:left;font-weight:600}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt.ok{background:var(--good-bg);border-color:var(--good)}
+.opt.no{background:var(--bad-bg);border-color:var(--bad)}
+.opt[disabled]{cursor:default}
+.qmeta{font:700 .75rem var(--f-mono);letter-spacing:.1em;color:var(--muted)}
+.qtext{font-size:1.15rem;font-weight:700;margin:.4em 0}
+.fb{margin-top:8px}
+.result{font:800 2.4rem var(--f-display);letter-spacing:-.02em}
+details.missed{margin:12px 0;border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--bg)}
+summary{cursor:pointer;font-weight:700}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;align-items:start;margin:14px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card.open{grid-column:1/-1;border-color:var(--accent)}
+.card-h{width:100%;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:center;text-align:left;border:0;background:transparent;padding:14px}
+.cn{grid-row:1/3;font:700 .9rem var(--f-mono);width:30px;height:30px;border-radius:8px;background:var(--sunk);display:grid;place-items:center}
+.card.open .cn{background:var(--hl);color:var(--hl-ink)}
+.ct{font:700 1.08rem var(--f-display)}
+.chint{font-size:.88rem;color:var(--muted);line-height:1.35}
+.card-b{padding:2px 16px 16px;max-width:68ch}
+
+.tablist{display:flex;gap:6px;flex-wrap:wrap;margin-top:28px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.tab{border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 16px;font-weight:700}
+.tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:14px 0}
+.stg{flex:1 1 160px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;text-align:left}
+.stg b{display:block;font:700 1.1rem var(--f-display)}
+.stg span{font-size:.88rem;color:var(--muted)}
+.stg[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
+.arrow{align-self:center;font:700 .75rem var(--f-mono);color:var(--muted);text-align:center;flex:0 0 auto;max-width:96px}
+.detail{background:var(--sunk);border-radius:12px;padding:16px;margin-top:6px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+.stage{min-height:150px;display:grid;place-items:center;text-align:center;background:var(--sunk);border-radius:14px;padding:16px;margin:12px 0}
+.big{font:800 clamp(2rem,9vw,3.6rem) var(--f-display);letter-spacing:.02em}
+.timer{font:700 .95rem var(--f-mono);color:var(--muted)}
+.wordgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin:14px 0}
+.w{background:var(--sunk);border-radius:10px;padding:12px 8px;text-align:center;font:700 1.1rem var(--f-display)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.col{background:var(--sunk);border-radius:12px;padding:12px}
+.col h4{font:700 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.col .w{background:var(--surface);margin-bottom:6px;padding:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{position:relative;cursor:pointer}
+.chip input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.chip span{display:block;padding:8px 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--bg);font-weight:600}
+.chip input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.ta,.inp,.sel{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px}
+.inp{max-width:280px}
+.sel{max-width:220px;width:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.quote{white-space:pre-wrap;background:var(--bg);padding:12px;border-radius:10px;border:1px solid var(--line)}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.row label{font-weight:700}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:6px 0}
+.chk input{margin-top:.45em}
+
+.sgrid{display:flex;flex-direction:column;gap:10px;align-items:center;background:var(--sunk);border-radius:14px;padding:20px 12px;margin:12px 0}
+.srow{display:flex;align-items:center;gap:12px}
+.cue{width:1.4em;font-size:1.4rem;color:var(--accent);text-align:right}
+.sl{font:800 clamp(1.6rem,8vw,2.6rem) var(--f-mono);letter-spacing:.2em;min-width:5.5em}
+.strip{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:3px;margin:12px 0}
+.cell{height:38px;border-radius:5px;background:var(--sunk);display:grid;place-items:center;font:700 .7rem var(--f-mono);color:var(--muted)}
+.cell.on{background:var(--accent);color:var(--accent-ink)}
+.hbar{display:grid;grid-template-columns:120px 1fr 46px;gap:10px;align-items:center;margin:6px 0;font-size:.92rem}
+.hbar .tr{height:14px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.hbar .tr i{display:block;height:100%;background:var(--accent)}
+.hbar b{font-family:var(--f-mono);text-align:right}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;min-width:520px;height:auto}
+svg .ax{stroke:var(--line);stroke-width:1}
+svg .gr{stroke:var(--line);stroke-width:1;stroke-dasharray:2 4}
+svg text{fill:var(--muted);font:11px var(--f-mono)}
+svg .ln{fill:none;stroke:var(--accent);stroke-width:3;stroke-linejoin:round}
+svg .pt{fill:var(--surface);stroke:var(--accent);stroke-width:3;cursor:pointer}
+svg .pt.sel{fill:var(--hl);stroke:var(--fg)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.9rem;margin:8px 0}
+.legend i{display:inline-block;width:26px;height:0;border-top:3px solid;vertical-align:middle;margin-right:6px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font-weight:700;min-height:3em}
+
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:16px}
+.hc{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.hc:hover{border-color:var(--accent)}
+.hc .hn{font:700 .72rem var(--f-mono);letter-spacing:.12em;color:var(--accent)}
+.hc b{font:700 1.2rem var(--f-display)}
+.hc span{font-size:.92rem;color:var(--muted)}
+.foot{margin-top:56px;font-size:.88rem;color:var(--muted);max-width:68ch}
+.lbox{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.lbox div{flex:1 1 90px;background:var(--sunk);border-radius:10px;padding:8px 10px;text-align:center;font-weight:700}
+.lbox small{display:block;font:600 .68rem var(--f-mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.sched{list-style:none;padding:0;margin:12px 0}
+.sched li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.sched .d{font:700 .85rem var(--f-mono);color:var(--accent)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{transition:none}}
+</style>
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="brand"><p class="eyebrow">Pszichológia · 10. évfolyam</p><h1>Emlékezet-labor röviden</h1></div>
+    <div class="prog"><div class="prog-t"><span id="pcount">0 / 0</span> feladat kész</div><div class="bar"><i id="pbar"></i></div></div>
+  </header>
+  <div class="shell">
+    <nav class="rail" aria-label="Fejezetek"><ul id="nav"></ul></nav>
+    <main id="main" tabindex="-1"></main>
+  </div>
+</div>
+
+<script>
+/* ---------- alapok ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function node(html){const t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstElementChild;}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const sample=(a,n)=>shuffle(a).slice(0,n);
+const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
+const LAST={};
+const POOL=['alma','kulcs','hajó','ablak','szék','tükör','madár','óra','híd','kenyér','tűz','könyv','felhő','tej','cipő','lámpa','tányér','bicikli','medve','torony','ecset','kanál','szoba','farkas','zokni','sapka','busz','tál','kert','dob','toll','tó','hegy','sziget','virág','zászló','kalap','villa','csillag','kosár','ajtó','falu','labda','gyertya','pad','tehén','répa','szőnyeg','csónak','kard','harang','hold','kés','szemüveg','táska','narancs','bögre','sál','pók','létra'];
+
+const K={el:{c:'el',l:'Elmélet'},er:{c:'er',l:'Érdekesség'},gy:{c:'gy',l:'Gyakorlat'},fe:{c:'fe',l:'Feladat'}};
+
+/* időzítők: minden gyakorlat saját készletet kap, fejezetváltáskor mind leáll */
+const ALL=new Set();
+function timers(){
+  const s=new Set();
+  const r={
+    after(ms,fn){const id=setTimeout(()=>{s.delete(id);fn();},ms);s.add(id);return id;},
+    every(ms,fn){const id=setInterval(fn,ms);s.add(id);return id;},
+    clear(){s.forEach(i=>{clearTimeout(i);clearInterval(i);});s.clear();}
+  };
+  ALL.add(r);return r;
+}
+function clearAll(){ALL.forEach(r=>r.clear());ALL.clear();}
+
+/* ---------- haladás ---------- */
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem('emlekezet-rovid-done')||'[]'));}catch(e){}
+const CH=[];
+function saveDone(){try{localStorage.setItem('emlekezet-rovid-done',JSON.stringify([...done]));}catch(e){}}
+function totalActs(){return CH.reduce((n,c)=>n+(c.acts?c.acts.length:0),0);}
+function updateProgress(){
+  const t=totalActs(), d=CH.reduce((n,c)=>n+(c.acts?c.acts.filter(a=>done.has(a)).length:0),0);
+  $('#pcount').textContent=d+' / '+t;
+  $('#pbar').style.width=(t?d/t*100:0)+'%';
+  CH.forEach((c,i)=>{
+    const b=$('.nav-i[data-i="'+i+'"]');
+    if(b&&c.acts&&c.acts.length)b.classList.toggle('cdone',c.acts.every(a=>done.has(a)));
+  });
+}
+function finish(id){
+  done.add(id);saveDone();updateProgress();
+  $$('[data-act="'+id+'"] .donebadge').forEach(b=>{b.hidden=false;});
+}
+
+/* ---------- építőelemek ---------- */
+function panel(id,k,title,intro){
+  const root=node('<section class="panel act" data-act="'+id+'"><div class="ph"><span class="tag t-'+k.c+'">'+k.l+'</span><span class="donebadge"'+(done.has(id)?'':' hidden')+'>✓ kész</span></div><h3>'+title+'</h3>'+(intro?'<p class="intro">'+intro+'</p>':'')+'<div class="pb"></div></section>');
+  return {root,body:$('.pb',root)};
+}
+function blk(k,title,...kids){
+  const b=node('<section class="blk"><span class="tag t-'+k.c+'">'+k.l+'</span>'+(title?'<h3>'+title+'</h3>':'')+'</section>');
+  kids.forEach(x=>b.append(typeof x==='string'?node('<div class="theory">'+x+'</div>'):x));
+  return b;
+}
+function fact(title,html){
+  const r=node('<aside class="fact"><span class="tag t-er">Érdekesség</span><h3>'+title+'</h3><button class="btn ghost">Kattints, és megtudod</button><div class="fact-b theory" hidden>'+html+'</div></aside>');
+  const b=$('button',r), body=$('.fact-b',r);
+  b.onclick=()=>{body.hidden=!body.hidden;b.textContent=body.hidden?'Kattints, és megtudod':'Elrejtem';};
+  return r;
+}
+function cards(items){
+  const root=node('<div class="cards"></div>');
+  items.forEach(it=>{
+    const c=node('<div class="card"><button class="card-h" aria-expanded="false"><span class="cn">'+(it.n||'+')+'</span><span class="ct">'+it.t+'</span><span class="chint">'+(it.hint||'')+'</span></button><div class="card-b" hidden>'+it.d+'</div></div>');
+    const b=$('button',c), body=$('.card-b',c), cn=$('.cn',c);
+    b.onclick=()=>{
+      const open=b.getAttribute('aria-expanded')==='true';
+      b.setAttribute('aria-expanded',String(!open));body.hidden=open;c.classList.toggle('open',!open);
+      if(!it.n)cn.textContent=open?'+':'–';
+    };
+    root.append(c);
+  });
+  return root;
+}
+function flow(items,arrows){
+  const root=node('<div><div class="flow"></div><div class="detail" aria-live="polite"></div></div>');
+  const fl=$('.flow',root), det=$('.detail',root);
+  function sel(i){
+    $$('.stg',fl).forEach((b,k)=>b.setAttribute('aria-pressed',String(k===i)));
+    det.innerHTML=items[i].d;
+  }
+  items.forEach((it,i)=>{
+    const b=node('<button class="stg" aria-pressed="false"><b>'+it.t+'</b><span>'+(it.sub||'')+'</span></button>');
+    b.onclick=()=>sel(i);fl.append(b);
+    if(i<items.length-1)fl.append(node('<div class="arrow">'+(arrows&&arrows[i]?arrows[i]+' ':'')+'→</div>'));
+  });
+  sel(0);
+  return root;
+}
+function tabs(defs){
+  const root=node('<div class="tabs"><div class="tablist" role="tablist"></div><div class="tabpanel"></div></div>');
+  const list=$('.tablist',root), pan=$('.tabpanel',root);
+  function sel(i){
+    $$('.tab',list).forEach((b,k)=>b.setAttribute('aria-selected',String(k===i)));
+    pan.replaceChildren(defs[i].build());
+  }
+  defs.forEach((d,i)=>{
+    const b=node('<button class="tab" role="tab" aria-selected="false">'+d.l+'</button>');
+    b.onclick=()=>sel(i);list.append(b);
+  });
+  sel(0);
+  return root;
+}
+function chead(n,title,lead){
+  return node('<header class="chead"><p class="kicker">'+(n?n+'. fejezet':'Kezdőlap')+'</p><h2>'+title+'</h2><p class="lead">'+lead+'</p></header>');
+}
+
+/* kvíz és besorolás: egy közös motor */
+function quiz(id,title,intro,qs,o){
+  o=o||{};
+  const {root,body}=panel(id,o.kind||K.fe,title,intro);
+  let order,idx,score,missed,per;
+  function start(){order=o.shuffleQ===false?qs.slice():shuffle(qs);idx=0;score=0;missed=[];per={};ask();}
+  function ask(){
+    if(idx>=order.length)return end();
+    const q=order[idx];
+    const opts=q.o.map((t,j)=>({t,j}));
+    const list=o.shuffleOpts?shuffle(opts):opts;
+    body.innerHTML='<div class="qmeta">'+(idx+1)+' / '+order.length+'</div><p class="qtext">'+q.q+'</p><div class="opts'+(o.stack?' stack':'')+'">'+list.map(x=>'<button class="opt" data-j="'+x.j+'">'+x.t+'</button>').join('')+'</div><div class="fb" aria-live="polite"></div>';
+    let locked=false;
+    $$('.opt',body).forEach(b=>{b.onclick=()=>{
+      if(locked)return;locked=true;
+      const j=+b.dataset.j, ok=j===q.a;
+      if(ok)score++;else missed.push(q);
+      if(q.ch){per[q.ch]=per[q.ch]||[0,0];per[q.ch][1]++;if(ok)per[q.ch][0]++;}
+      $$('.opt',body).forEach(x=>{x.disabled=true;if(+x.dataset.j===q.a)x.classList.add('ok');});
+      if(!ok)b.classList.add('no');
+      const fb=$('.fb',body);
+      fb.innerHTML='<p><b>'+(ok?'Helyes.':'Nem egészen.')+'</b> '+(q.why||'')+'</p><button class="btn">'+(idx+1<order.length?'Tovább':'Eredmény')+'</button>';
+      const nb=$('.btn',fb);nb.onclick=()=>{idx++;ask();};nb.focus({preventScroll:true});
+    };});
+  }
+  function end(){
+    const pct=score/order.length;
+    const msg=pct>=.85?'Kiváló munka!':pct>=.6?'Jó eredmény. Nézd át a hibás válaszokat.':'Érdemes még egyszer átolvasni a fejezetet, aztán próbáld újra.';
+    let html='<div class="result">'+score+' / '+order.length+'</div><p>'+msg+'</p>';
+    if(o.final){
+      html+='<div>'+Object.keys(per).map(k=>{const p=per[k],pc=Math.round(p[0]/p[1]*100);return '<div class="hbar"><span>'+esc(FINAL_NAMES[k]||k)+'</span><div class="tr"><i style="width:'+pc+'%"></i></div><b>'+p[0]+'/'+p[1]+'</b></div>';}).join('')+'</div>';
+      const weak=Object.keys(per).filter(k=>per[k][0]/per[k][1]<.6);
+      if(weak.length)html+='<p>Ezeket érdemes átnézned: '+weak.map(k=>'<button class="btn ghost go" data-go="'+k+'">'+esc(FINAL_NAMES[k])+'</button>').join('')+'</p>';
+    }
+    if(missed.length)html+='<details class="missed"><summary>Hibás válaszok átnézése ('+missed.length+')</summary>'+missed.map(q=>'<p><b>'+q.q+'</b><br>Helyes: '+q.o[q.a]+'. '+(q.why||'')+'</p>').join('')+'</details>';
+    html+='<button class="btn again">Újra</button>';
+    body.innerHTML=html;
+    $('.again',body).onclick=start;
+    $$('.go',body).forEach(b=>{b.onclick=()=>render(+b.dataset.go);});
+    finish(id);
+  }
+  start();
+  return root;
+}
+function classify(id,title,intro,cats,items){
+  return quiz(id,title,intro,items.map(it=>({q:it.q,o:cats,a:it.a,why:it.why})),{kind:K.fe});
+}
+const FINAL_NAMES={1:'Alapvető vonások',2:'Szakaszok',3:'Formák',4:'Tulajdonságok',5:'Optimalizálás',6:'Felejtés',7:'Ismétlés'};
+
+/* ---------- navigáció ---------- */
+let cur=0;
+function render(i){
+  clearAll();cur=i;
+  const main=$('#main');main.replaceChildren(CH[i].build());
+  $$('.nav-i').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+  try{history.replaceState(null,'','#k'+i);}catch(e){}
+  window.scrollTo(0,0);
+  main.focus({preventScroll:true});
+}
+function buildNav(){
+  const ul=$('#nav');
+  CH.forEach((c,i)=>{
+    const li=document.createElement('li');
+    li.innerHTML='<button class="nav-i" data-i="'+i+'"><span class="nn">'+(i>0&&i<8?i:(i===0?'•':'✓'))+'</span><span class="nl">'+c.short+'</span><span class="nk"></span></button>';
+    li.firstChild.onclick=()=>render(i);
+    ul.append(li);
+  });
+}
+
+/* ---------- gyakorlatok ---------- */
+
+/* 1. fejezet: szelektív figyelem */
+function actSelective(){
+  const {root,body}=panel('a1',K.gy,'Figyelmi szűrő: mit jegyzel meg?','Két oszlop szavait látod 15 másodpercig. A feladatod csak a bal oldali oszlophoz kapcsolódik. Utána kiderül, mi maradt meg a másikból is.');
+  const tm=timers();
+  const W=sample(['kulcs','tó','szék','alma','híd','toll','cipő','lámpa','kenyér','felhő','tükör','busz','sapka','tál','kert','dob','hajó','kanál','szoba','farkas','zokni','torony','bicikli','ecset'],24);
+  const L=W.slice(0,8),R=W.slice(8,16),N=W.slice(16);
+  const cnt=L.reduce((n,w)=>n+(w.match(/a/g)||[]).length,0);
+  body.innerHTML='<button class="btn go">Indítom</button>';
+  $('.go',body).onclick=show;
+  function show(){
+    let t=15;
+    body.innerHTML='<div class="cols2"><div class="col"><h4>Bal oszlop: ezt figyeld</h4>'+L.map(w=>'<div class="w">'+w+'</div>').join('')+'</div><div class="col"><h4>Jobb oszlop</h4>'+R.map(w=>'<div class="w">'+w+'</div>').join('')+'</div></div><p><b>Feladat:</b> számold meg, hány „a” betű van összesen a bal oszlop szavaiban (az „á” nem számít).</p><p class="timer"><b class="tn">15</b> mp</p>';
+    tm.every(1000,()=>{t--;const e=$('.tn',body);if(e)e.textContent=t;if(t<=0){tm.clear();test();}});
+  }
+  function test(){
+    const all=shuffle(W);
+    body.innerHTML='<p>Hány „a” betűt számoltál a bal oszlopban? <input class="inp" id="cnt" type="number" min="0" max="60" inputmode="numeric" style="max-width:100px"></p><p>Most jelöld meg az összes szót, amire emlékszel (bal és jobb oszlopból is, de olyanok is vannak, amelyek nem szerepeltek):</p><div class="chips">'+all.map(w=>'<label class="chip"><input type="checkbox" value="'+w+'"><span>'+w+'</span></label>').join('')+'</div><button class="btn ok">Kiértékelés</button>';
+    $('.ok',body).onclick=result;
+  }
+  function result(){
+    const ch=$$('input[type=checkbox]:checked',body).map(x=>x.value);
+    const a=ch.filter(w=>L.includes(w)).length, b=ch.filter(w=>R.includes(w)).length, f=ch.filter(w=>N.includes(w)).length;
+    const mine=parseInt($('#cnt',body).value,10);
+    body.innerHTML='<div class="lbox"><div><small>Bal oszlop</small>'+a+' / 8</div><div><small>Jobb oszlop</small>'+b+' / 8</div><div><small>Téves jelölés</small>'+f+'</div></div><p>A bal oldali oszlopban összesen <b>'+cnt+'</b> „a” betű volt'+(isNaN(mine)?'.':', te '+mine+'-t írtál.')+'</p><p>'+(a>b?'A figyelmed a bal oszlopra irányult, ezért onnan több szó rögzült. Az emlékezet <mark>szelektív</mark>: azt jegyezzük meg, amire a figyelmünk, a céljaink és az érdeklődésünk irányul.':'Nálad nem a várt minta jött ki. Egyetlen próbából ez még nem sokat mond, de a kutatásokban általában az a jellemző, hogy a figyelt anyagból több marad meg. Próbáld újra!')+'</p><button class="btn again">Újra</button>';
+    $('.again',body).onclick=()=>{tm.clear();actRestart(root,actSelective);};
+    finish('a1');
+  }
+  return root;
+}
+function actRestart(old,fn){old.replaceWith(fn());}
+
+/* 2. fejezet: reprodukálás és felismerés */
+function actRecall(){
+  const {root,body}=panel('a2',K.gy,'Reprodukálás és felismerés: melyik könnyebb?','Megnézel 12 szót, majd kétféleképpen próbálod felidézni őket. Előbb szabadon felidézed (reprodukálás), utána listából választasz (felismerés).');
+  const tm=timers();
+  const targets=sample(POOL,12), fresh=sample(POOL.filter(w=>!targets.includes(w)),12);
+  body.innerHTML='<button class="btn go">Indítom a tanulási szakaszt</button>';
+  $('.go',body).onclick=learn;
+  function learn(){
+    let t=25;
+    body.innerHTML='<div class="wordgrid">'+targets.map(w=>'<span class="w">'+w+'</span>').join('')+'</div><p class="timer">Hátralévő idő: <b class="tn">25</b> mp</p><button class="btn ghost skip">Kész vagyok</button>';
+    $('.skip',body).onclick=()=>{tm.clear();recall();};
+    tm.every(1000,()=>{t--;const e=$('.tn',body);if(e)e.textContent=t;if(t<=0){tm.clear();recall();}});
+  }
+  function recall(){
+    body.innerHTML='<p><b>1. lépés – reprodukálás.</b> Írd le a szavakat, amikre emlékszel (soronként egyet, vagy vesszővel elválasztva). Ne nézz vissza!</p><textarea class="ta" rows="6" aria-label="Felidézett szavak"></textarea><button class="btn next">Kész, jöhet a felismerés</button>';
+    $('.next',body).onclick=()=>{
+      const set=new Set($('.ta',body).value.split(/[\s,;.]+/).filter(Boolean).map(norm));
+      const r=targets.filter(w=>set.has(norm(w))).length;
+      recog(r);
+    };
+  }
+  function recog(r){
+    const all=shuffle([...targets,...fresh]);
+    body.innerHTML='<p><b>2. lépés – felismerés.</b> Itt van 24 szó. Jelöld meg azokat, amelyek szerepeltek a listán.</p><div class="chips">'+all.map(w=>'<label class="chip"><input type="checkbox" value="'+w+'"><span>'+w+'</span></label>').join('')+'</div><button class="btn ok">Kiértékelés</button>';
+    $('.ok',body).onclick=()=>{
+      const ch=$$('input:checked',body).map(x=>x.value);
+      const hits=ch.filter(w=>targets.includes(w)).length, fa=ch.filter(w=>fresh.includes(w)).length;
+      LAST.recall=r;
+      body.innerHTML='<div class="lbox"><div><small>Reprodukálás</small>'+r+' / 12</div><div><small>Felismerés (találat)</small>'+hits+' / 12</div><div><small>Téves jelölés</small>'+fa+'</div></div><p>'+(hits>r?'Nálad is a <mark>felismerés</mark> volt a könnyebb: ha a szó újra elénk kerül, az emléknyom könnyebben aktiválódik. A <mark>reprodukálásnál</mark> magadnak kellett előhívnod.':'Nálad a két érték közel esik egymáshoz. A legtöbb embernél a felismerés jobb, mert a szó maga az emlékeztető inger.')+' Ezért van az, hogy a feleletválasztós teszt általában könnyebb, mint a kifejtős.</p><button class="btn again">Újra</button>';
+      $('.again',body).onclick=()=>{tm.clear();actRestart(root,actRecall);};
+      finish('a2');
+    };
+  }
+  return root;
+}
+
+/* 3. fejezet: szenzoros memória (Sperling-féle villanó rács) */
+function actIconic(){
+  const {root,body}=panel('a3',K.gy,'Szenzoros memória: villanó betűrács','Egy 3×4-es betűrács a másodperc töredékéig látszik. Négy próba lesz: az elsőben bármit leírhatsz, a másik háromban egy nyíl jelzi, melyik sor betűit kell megmondanod.');
+  const tm=timers();
+  const LET='BCDFGHJKLMNPRSTVZ'.split('');
+  const trials=[{t:'A'},...shuffle([0,1,2]).map(r=>({t:'B',row:r}))];
+  let ti=0;const resA=[],resB=[];
+  body.innerHTML='<div class="sgrid"><div class="srow"><span class="cue"></span><span class="sl">· · · ·</span></div><div class="srow"><span class="cue"></span><span class="sl">· · · ·</span></div><div class="srow"><span class="cue"></span><span class="sl">· · · ·</span></div></div><div class="sctl"></div><p class="note">A böngésző időzítése nem tökéletesen pontos, ezért az eredmény csak szemléltetés.</p>';
+  const ctl=$('.sctl',body), rows=$$('.srow',body);
+  const setRow=(r,txt)=>{$('.sl',rows[r]).textContent=txt;};
+  const cue=r=>rows.forEach((x,k)=>{$('.cue',x).textContent=k===r?'▶':'';});
+  const blank='· · · ·';
+  function ready(){
+    const t=trials[ti];
+    ctl.innerHTML='<p>'+(t.t==='A'?'<b>1. próba – teljes jelentés.</b> Próbálj minél több betűt megjegyezni a rácsról.':'<b>'+(ti+1)+'. próba – részleges jelentés.</b> A rács eltűnése után egy nyíl mutatja, melyik sor betűit kell leírnod.')+'</p><button class="btn go">Mehet</button>';
+    $('.go',ctl).onclick=run;
+  }
+  function run(){
+    const g=sample(LET,12);
+    ctl.innerHTML='<p class="timer">Nézd a rács közepét…</p>';
+    [0,1,2].forEach(r=>setRow(r,blank));cue(-1);
+    tm.after(900,()=>{
+      [0,1,2].forEach(r=>setRow(r,g.slice(r*4,r*4+4).join(' ')));
+      tm.after(300,()=>{
+        [0,1,2].forEach(r=>setRow(r,blank));
+        const t=trials[ti];
+        if(t.t==='B')tm.after(150,()=>{cue(t.row);ask(g);});else ask(g);
+      });
+    });
+  }
+  function ask(g){
+    const t=trials[ti];
+    ctl.innerHTML='<p>'+(t.t==='A'?'Írd be az összes betűt, amire emlékszel (a sorrend nem számít):':'Írd be a nyíllal jelölt sor betűit:')+'</p><input class="inp" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Betűk"> <button class="btn ok">Ellenőrzés</button>';
+    const inp=$('.inp',ctl);inp.focus({preventScroll:true});
+    const go=()=>{
+      const typed=new Set(inp.value.toUpperCase().replace(/[^A-Z]/g,'').split(''));
+      const pool=t.t==='A'?g:g.slice(t.row*4,t.row*4+4);
+      const n=pool.filter(c=>typed.has(c)).length;
+      (t.t==='A'?resA:resB).push(n);
+      ti++;
+      if(ti>=trials.length)return result();
+      ctl.innerHTML='<p>Találat: <b>'+n+'</b> / '+pool.length+'.</p><button class="btn nx">Következő próba</button>';
+      $('.nx',ctl).onclick=ready;
+    };
+    $('.ok',ctl).onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();};
+  }
+  function result(){
+    cue(-1);
+    const a=resA[0], m=resB.reduce((x,y)=>x+y,0)/resB.length, est=Math.round(m/4*12*10)/10;
+    ctl.innerHTML='<div class="lbox"><div><small>Teljes jelentés</small>'+a+' / 12 betű</div><div><small>Részleges: átlag / sor</small>'+(Math.round(m*10)/10)+' / 4</div><div><small>Becsült elérhető betű</small>kb. '+est+'</div></div><p>Ha a nyíl után egy sor betűit nagyjából tudtad, akkor a villanás pillanatában <em>mindhárom sorról</em> volt még elérhető információ, csak nem tudtad mindet leírni. A szenzoros (ikonikus) emlék terjedelme nagy, de a nyom másodperc törtrésze alatt elhalványul, mire a leírás végére érnél. Ezt a kísérletet George Sperling végezte az 1960-as évek elején.</p><button class="btn again">Újra</button>';
+    $('.again',ctl).onclick=()=>{tm.clear();actRestart(root,actIconic);};
+    finish('a3');
+  }
+  ready();
+  return root;
+}
+
+/* 4. fejezet: számterjedelem, két körben (a másodikban mondogatással zavarunk) */
+function actSpan(){
+  const {root,body}=panel('a4',K.gy,'Számterjedelem-teszt','Számjegyeket látsz egyesével, majd be kell írnod őket ugyanabban a sorrendben. A hossz addig nő, amíg el nem rontasz egy hosszt kétszer. Utána egy második kör jön, amelyben közben hangosan mondogatnod kell valamit.');
+  const tm=timers();
+  let mode=1,L,fails,best;const res={};
+  body.innerHTML='<button class="btn go">Indítom az 1. kört</button>';
+  $('.go',body).onclick=()=>start(1);
+  function start(m){mode=m;L=3;fails=0;best=0;next();}
+  function next(){
+    const seq=[];while(seq.length<L){const d=Math.floor(Math.random()*10);if(seq[seq.length-1]!==d)seq.push(d);}
+    body.innerHTML='<p class="qmeta">'+mode+'. kör · hossz: '+L+' számjegy'+(mode===2?' · közben mondogasd hangosan: „az, az, az…”':'')+'</p><div class="stage" aria-live="off"><span class="big">Készen állsz?</span></div><button class="btn go">Mutasd</button>';
+    $('.go',body).onclick=()=>{$('.go',body).remove();show(seq,0);};
+  }
+  function show(seq,i){
+    const st=$('.big',body);
+    if(i>=seq.length){st.textContent='?';return ask(seq);}
+    st.textContent=seq[i];
+    tm.after(700,()=>{st.textContent=' ';tm.after(300,()=>show(seq,i+1));});
+  }
+  function ask(seq){
+    const c=document.createElement('div');
+    c.innerHTML='<p>Írd be a számokat:</p><input class="inp" inputmode="numeric" autocomplete="off" maxlength="14" aria-label="Számjegyek"> <button class="btn ok">Ellenőrzés</button>';
+    body.append(c);
+    const inp=$('.inp',c);inp.focus({preventScroll:true});
+    const go=()=>{
+      const ok=inp.value.replace(/\D/g,'')===seq.join('');
+      if(ok){best=L;L++;fails=0;}else fails++;
+      const over=L>12||fails>=2;
+      c.innerHTML='<p><b>'+(ok?'Helyes.':'Nem talált.')+'</b> '+(ok?'':'A sor ez volt: '+seq.join(' ')+'.')+'</p><button class="btn nx">'+(over?'Tovább':'Következő')+'</button>';
+      $('.nx',c).onclick=()=>{if(over)endRound();else next();};
+    };
+    $('.ok',c).onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();};
+  }
+  function endRound(){
+    res[mode]=best;
+    if(mode===1){
+      body.innerHTML='<p>1. kör eredménye: <b>'+best+' számjegy</b>.</p><p>Most a 2. kör jön. Közben folyamatosan, hangosan mondogasd: „az, az, az…”. Ez lefoglalja a belső „fejben ismételgetést”.</p><button class="btn go">Indítom a 2. kört</button>';
+      $('.go',body).onclick=()=>start(2);
+    }else{
+      const d=res[1]-res[2];
+      body.innerHTML='<div class="lbox"><div><small>1. kör</small>'+res[1]+' számjegy</div><div><small>2. kör (mondogatással)</small>'+res[2]+' számjegy</div></div><p>'+(d>0?'A mondogatás miatt '+d+' számjeggyel kevesebbet tudtál megjegyezni. A rövid távú memóriában a tartalmat gondolatban „elmondogatjuk”, és ha ezt zavarjuk, romlik a teljesítmény.':'Nálad nem romlott az eredmény, ami előfordulhat, mert a számokat vizuálisan vagy csoportosítva is meg lehet jegyezni.')+' Miller szerint a rövid távú memória terjedelme átlagosan <mark>7 ± 2 egység</mark>, az újabb kutatások szerint inkább kevesebb (kb. 4 egység), ha nem csoportosítunk.</p><button class="btn again">Újra</button>';
+      $('.again',body).onclick=()=>{tm.clear();actRestart(root,actSpan);};
+      finish('a4');
+    }
+  }
+  return root;
+}
+
+/* 4. fejezet: hűség és pontosság */
+const STORY='Kovács Anna kedden reggel 6 óra 42 perckor indult Budapestről Szegedre a gyorsvonattal. A 3. kocsiban ült, az 52-es helyen. Sárga sálat viselt, és kék hátizsákot vitt magával. Az úton mandulás kekszet evett. Szegedre 9 óra 15 perckor érkezett meg, ahol a nagybátyja várta egy zöld autóval.';
+const DETAILS=['A neve: Kovács Anna','A nap és az indulás ideje: kedd, 6:42','Az útvonal: Budapest → Szeged','A kocsi és a hely száma: 3. kocsi, 52-es hely','A sál és a hátizsák színe: sárga és kék','Az étel: mandulás keksz','Az érkezés ideje: 9:15','Aki várta és az autó színe: nagybátyja, zöld autó'];
+function actStory(){
+  const {root,body}=panel('a5',K.gy,'Hűség és pontosság: a rövid történet','Elolvasol egy rövid szöveget, majd emlékezetből leírod. Utána összeveted az eredetivel.');
+  const tm=timers();
+  body.innerHTML='<button class="btn go">Mutasd a szöveget</button>';
+  $('.go',body).onclick=learn;
+  function learn(){
+    let t=40;
+    body.innerHTML='<div class="quote">'+STORY+'</div><p class="timer">Hátralévő idő: <b class="tn">40</b> mp</p><button class="btn ghost skip">Kész vagyok</button>';
+    $('.skip',body).onclick=()=>{tm.clear();write();};
+    tm.every(1000,()=>{t--;const e=$('.tn',body);if(e)e.textContent=t;if(t<=0){tm.clear();write();}});
+  }
+  function write(){
+    body.innerHTML='<p>Írd le a történetet a saját szavaiddal, ahogy emlékszel rá.</p><textarea class="ta" rows="7" aria-label="A történet"></textarea><button class="btn next">Összevetés</button>';
+    $('.next',body).onclick=()=>compare($('.ta',body).value);
+  }
+  function compare(mine){
+    body.innerHTML='<div class="two"><div><h4 class="qmeta">Az eredeti</h4><div class="quote">'+STORY+'</div></div><div><h4 class="qmeta">Amit te írtál</h4><div class="quote">'+(esc(mine)||'(üres)')+'</div></div></div><p><b>Pipáld ki</b>, amelyik részlet pontosan szerepel az írásodban:</p>'+DETAILS.map((d,i)=>'<label class="chk"><input type="checkbox" class="dt"><span>'+d+'</span></label>').join('')+'<div class="row"><label for="extra">Hány olyan részletet írtál, ami az eredetiben nem volt?</label><input id="extra" class="inp" type="number" min="0" max="20" value="0" style="max-width:90px"></div><button class="btn ok">Értékelés</button>';
+    $('.ok',body).onclick=()=>{
+      const n=$$('.dt:checked',body).length, ex=Math.max(0,parseInt($('#extra',body).value,10)||0);
+      body.innerHTML='<div class="lbox"><div><small>Pontosság (részletek)</small>'+n+' / 8</div><div><small>Hozzáadott, torzított elem</small>'+ex+'</div></div><p>A <mark>pontosság</mark> azt mutatja, mennyi részletet (számot, nevet, színt) őriztél meg hibátlanul. A <mark>hűség</mark> azt, hogy az emlék egésze mennyire felel meg az eredetinek, nem torzult-e és nem egészült-e ki olyan elemekkel, amelyek nem voltak ott. Az emlékezés újraalkotás, ezért gyakran kiegészítünk és átalakítunk.</p><button class="btn again">Újra</button>';
+      $('.again',body).onclick=()=>{tm.clear();actRestart(root,actStory);};
+      finish('a5');
+    };
+  }
+  return root;
+}
+
+/* 5. fejezet: sorozatpozíció-hatás */
+function actSerial(){
+  const {root,body}=panel('a6',K.gy,'Sorozatpozíció-hatás: mi marad meg a listából?','15 szót látsz egymás után, szavanként kb. egy másodpercig. Utána leírod, amire emlékszel. Ellenőrizzük, hogy a lista elejéről, közepéről vagy végéről maradt-e meg több.');
+  const tm=timers();
+  const words=sample(POOL,15);
+  body.innerHTML='<button class="btn go">Indítom</button>';
+  $('.go',body).onclick=()=>{
+    body.innerHTML='<div class="stage"><span class="big">Készülj…</span></div>';
+    const st=$('.big',body);let i=0;
+    tm.after(1200,function step(){
+      if(i>=words.length){tm.after(300,recall);return;}
+      st.textContent=words[i];i++;
+      tm.after(1100,()=>{st.textContent=' ';tm.after(250,step);});
+    });
+  };
+  function recall(){
+    body.innerHTML='<p>Írd le, amire emlékszel. A sorrend nem számít.</p><textarea class="ta" rows="6" aria-label="Felidézett szavak"></textarea><button class="btn next">Kiértékelés</button>';
+    $('.next',body).onclick=()=>{
+      const set=new Set($('.ta',body).value.split(/[\s,;.]+/).filter(Boolean).map(norm));
+      const hit=words.map(w=>set.has(norm(w)));
+      const grp=[0,1,2].map(g=>hit.slice(g*5,g*5+5).filter(Boolean).length);
+      const names=['Eleje (1–5.)','Közepe (6–10.)','Vége (11–15.)'];
+      body.innerHTML='<div class="strip" aria-label="Melyik pozíciójú szavakra emlékeztél">'+hit.map((h,i)=>'<div class="cell'+(h?' on':'')+'" title="'+words[i]+'">'+(i+1)+'</div>').join('')+'</div>'+grp.map((g,i)=>'<div class="hbar"><span>'+names[i]+'</span><div class="tr"><i style="width:'+g/5*100+'%"></i></div><b>'+g+'/5</b></div>').join('')+'<p>Gyakori mintázat: a lista elejéről és végéről többre emlékszünk, mint a közepéről. Az eleje <mark>kezdeti hatás</mark> (több idő jutott az ismétlésre, ezért átkerült a hosszú távú tárba), a vége <mark>végső hatás</mark> (még a rövid távú tárban van). Egyetlen próbánál az eredmény ingadozhat.</p><p><b>Mit tanulj ebből?</b> A tananyag fontos részeit ne a hosszú anyag közepére „temesd”, tanuláskor pedig különösen a közepével foglalkozz többet.</p><button class="btn again">Újra</button>';
+      $('.again',body).onclick=()=>{tm.clear();actRestart(root,actSerial);};
+      finish('a6');
+    };
+  }
+  return root;
+}
+
+/* 5. fejezet: láncmódszer */
+function actMnemo(){
+  const {root,body}=panel('a7',K.gy,'Láncmódszer: a szavakból történet','Nyolc szót kapsz. Fűzd őket egy különös, élénk, jól elképzelhető történetbe, ebben a sorrendben. Utána rövid szünet jön, és megnézzük, mennyi maradt meg.');
+  const tm=timers();
+  const words=sample(POOL,8);
+  body.innerHTML='<p>A szavak:</p><div class="wordgrid">'+words.map(w=>'<span class="w">'+w+'</span>').join('')+'</div><p>Írj egy rövid történetet, amelyben mind a nyolc szó szerepel. Minél furcsább és képszerűbb, annál jobb.</p><textarea class="ta" rows="5" aria-label="A történeted"></textarea><div class="chips" aria-live="polite"></div><button class="btn next" disabled>Kész, jöhet a próba</button>';
+  const ta=$('.ta',body), chips=$('.chips',body), nb=$('.next',body);
+  function upd(){
+    const t=norm(ta.value);
+    chips.innerHTML=words.map(w=>'<span class="tag '+(t.includes(norm(w))?'t-gy':'t-el')+'">'+w+'</span>').join(' ');
+    nb.disabled=!words.every(w=>t.includes(norm(w)));
+  }
+  ta.oninput=upd;upd();
+  nb.onclick=()=>{
+    let t=30;
+    body.innerHTML='<p><b>Zavaró feladat:</b> számolj hátrafelé 200-tól 7-esével, fejben vagy hangosan. A történetedet most nem látod.</p><p class="timer"><b class="tn">30</b> mp</p>';
+    tm.every(1000,()=>{t--;const e=$('.tn',body);if(e)e.textContent=t;if(t<=0){tm.clear();recall();}});
+  };
+  function recall(){
+    body.innerHTML='<p>Írd le a nyolc szót <b>a megadott sorrendben</b> (soronként egyet).</p><textarea class="ta" rows="8" aria-label="Szavak sorrendben"></textarea><button class="btn ok">Kiértékelés</button>';
+    $('.ok',body).onclick=()=>{
+      const got=$('.ta',body).value.split(/[\s,;.]+/).filter(Boolean).map(norm);
+      const found=words.filter(w=>got.includes(norm(w))).length;
+      const inPlace=words.filter((w,i)=>got[i]===norm(w)).length;
+      const cmp=LAST.recall!=null?' A 2. fejezetben, mnemotechnika nélkül '+LAST.recall+' szót idéztél fel 12-ből.':'';
+      body.innerHTML='<div class="lbox"><div><small>Felidézett szó</small>'+found+' / 8</div><div><small>Helyes sorrendben</small>'+inPlace+' / 8</div></div><p>A <mark>láncmódszer</mark> a különálló elemeket jelentéssel és képpel köti össze, így kapaszkodót ad a felidézéshez. Fontos, hogy még zavaró feladat után is működik.'+cmp+'</p><button class="btn again">Újra</button>';
+      $('.again',body).onclick=()=>{tm.clear();actRestart(root,actMnemo);};
+      finish('a7');
+    };
+  }
+  return root;
+}
+
+/* 5. fejezet: csoportosítás */
+function actChunk(){
+  const {root,body}=panel('a13',K.gy,'Csoportosítás: ugyanannyi betű, kevesebb egység','Két betűsort látsz 10-10 másodpercig. Mindkettő 16 betűs. Az egyiket szavakra bonthatod, a másik összevissza betűsor.');
+  const tm=timers();
+  const nonsense=sample('BCDFGHJKLMNPRSTVZ'.split(''),16).join('');
+  const sense='KUTYAHIDSAPKAFAL';
+  const order=shuffle([{k:'szavas',s:sense},{k:'összevissza',s:nonsense}]);
+  const res={};let i=0;
+  body.innerHTML='<button class="btn go">Indítom</button>';
+  $('.go',body).onclick=show;
+  function show(){
+    const it=order[i];let t=10;
+    body.innerHTML='<p class="qmeta">'+(i+1)+'. betűsor</p><div class="stage"><span class="big" style="letter-spacing:.12em;font-size:clamp(1.4rem,6vw,2.4rem);word-break:break-all">'+it.s+'</span></div><p class="timer"><b class="tn">10</b> mp</p>';
+    tm.every(1000,()=>{t--;const e=$('.tn',body);if(e)e.textContent=t;if(t<=0){tm.clear();ask(it);}});
+  }
+  function ask(it){
+    body.innerHTML='<p>Írd be a betűsort, ahogy emlékszel rá (nagybetűvel vagy kisbetűvel, mindegy).</p><input class="inp" style="max-width:420px" autocomplete="off" spellcheck="false" aria-label="Betűsor"> <button class="btn ok">Tovább</button>';
+    const inp=$('.inp',body);inp.focus({preventScroll:true});
+    const go=()=>{
+      const a=inp.value.toUpperCase().replace(/[^A-ZÁÉÍÓÖŐÚÜŰ]/g,'');
+      let n=0;for(let k=0;k<it.s.length;k++)if(a[k]===it.s[k])n++;
+      res[it.k]=n;i++;
+      if(i<order.length)show();else end();
+    };
+    $('.ok',body).onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();};
+  }
+  function end(){
+    body.innerHTML='<div class="lbox"><div><small>Szavakra bontható</small>'+res['szavas']+' / 16</div><div><small>Összevissza</small>'+res['összevissza']+' / 16</div></div><p>A szavas sor ugyanúgy 16 betű volt, de négy ismert szóra (KUTYA, HÍD, SAPKA, FAL) bontható, ezért négy egységet kellett megjegyezni a tizenhat helyett. Ez a <mark>csoportosítás</mark> (chunking): a rövid távú memória terjedelme egységekben mérhető, így az egységeket érdemes nagyobbra, értelmesebbre venni. Ugyanezért tanuljuk a telefonszámot csoportokban.</p><button class="btn again">Újra</button>';
+    $('.again',body).onclick=()=>{tm.clear();actRestart(root,actChunk);};
+    finish('a13');
+  }
+  return root;
+}
+
+/* 6. fejezet: Ebbinghaus-görbe */
+function actCurve(){
+  const {root,body}=panel('a8',K.gy,'Ebbinghaus felejtési görbéje','Hermann Ebbinghaus 1885-ben saját magán mérte, hogy értelmetlen szótagok megtanulása után mennyire felejt. Kattints a pontokra, vagy használd a csúszkát.');
+  const D=[{l:'tanulás után',v:100},{l:'20 perc',v:58},{l:'1 óra',v:44},{l:'9 óra',v:36},{l:'1 nap',v:34},{l:'2 nap',v:28},{l:'6 nap',v:25},{l:'31 nap',v:21}];
+  const W=640,H=320,ml=48,mr=20,mt=20,mb=52;
+  const X=i=>ml+i/(D.length-1)*(W-ml-mr), Y=v=>mt+(1-v/100)*(H-mt-mb);
+  let g='';
+  [0,20,40,60,80,100].forEach(v=>{g+='<line class="gr" x1="'+ml+'" x2="'+(W-mr)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text x="'+(ml-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'%</text>';});
+  const path=D.map((d,i)=>(i?'L':'M')+X(i)+' '+Y(d.v)).join(' ');
+  const pts=D.map((d,i)=>'<circle class="pt" data-i="'+i+'" cx="'+X(i)+'" cy="'+Y(d.v)+'" r="9" tabindex="0" role="button" aria-label="'+d.l+': '+d.v+'%"/><text x="'+X(i)+'" y="'+(H-mb+20)+'" text-anchor="middle">'+d.l+'</text>').join('');
+  body.innerHTML='<div class="chart"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Ebbinghaus felejtési görbe"><line class="ax" x1="'+ml+'" x2="'+ml+'" y1="'+mt+'" y2="'+(H-mb)+'"/><line class="ax" x1="'+ml+'" x2="'+(W-mr)+'" y1="'+(H-mb)+'" y2="'+(H-mb)+'"/>'+g+'<path class="ln" d="'+path+'"/>'+pts+'<text x="'+(W/2)+'" y="'+(H-6)+'" text-anchor="middle">idő a tanulás óta (a tengely nem egyenletes időskála)</text></svg></div><label class="note" for="sl">Idő csúszka</label><input id="sl" type="range" min="0" max="'+(D.length-1)+'" value="0"><div class="readout" aria-live="polite"></div><div class="q"></div>';
+  const sl=$('#sl',body), ro=$('.readout',body);let touched=false;
+  function sel(i){
+    $$('.pt',body).forEach(p=>p.classList.toggle('sel',+p.dataset.i===i));sl.value=i;
+    const d=D[i];
+    ro.textContent=i===0?'Közvetlenül a tanulás után: 100%, ez a kiindulópont.':d.l+' elteltével az újratanulás még kb. '+d.v+'%-kal kevesebb ismétlést igényelt, mint az első tanulás (megtakarítás).';
+    if(i>0&&!touched){touched=true;question();}
+  }
+  sl.oninput=()=>sel(+sl.value);
+  $$('.pt',body).forEach(p=>{p.onclick=()=>sel(+p.dataset.i);p.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sel(+p.dataset.i);}};});
+  sel(0);
+  function question(){
+    const q=$('.q',body);
+    q.innerHTML='<p class="qtext">Mikor veszítjük a legtöbbet a megtanult anyagból?</p><div class="opts"><button class="opt" data-ok="1">Közvetlenül a tanulás után, az első órában</button><button class="opt">Egyenletesen, minden nap ugyanannyit</button><button class="opt">Egy hónap elteltével</button></div><div class="fb"></div>';
+    $$('.opt',q).forEach(b=>{b.onclick=()=>{
+      $$('.opt',q).forEach(x=>{x.disabled=true;if(x.dataset.ok)x.classList.add('ok');});
+      if(!b.dataset.ok)b.classList.add('no');
+      $('.fb',q).innerHTML='<p><b>'+(b.dataset.ok?'Helyes.':'Nem egészen.')+'</b> A görbe az elején a legmeredekebb: a felejtés gyorsan indul, aztán lelassul. Ezért érdemes az első átismétlést hamar, még aznap vagy másnap megtenni. (Ebbinghaus mérései egyetlen személyre és értelmetlen szótagokra vonatkoztak, a pontos értékek ezért csak szemléltetnek.)</p>';
+      finish('a8');
+    };});
+  }
+  return root;
+}
+
+/* 6. fejezet: interferencia (A–B, A–C) */
+function actInterf(){
+  const {root,body}=panel('a9',K.gy,'Interferencia: amikor az emlékek zavarják egymást','Két névsort tanulsz meg: ugyanazok a nevek, de más városok. Utána mindkét listát próbára tesszük.');
+  const tm=timers();
+  const names=['Anna','Béla','Cili','Dani'];
+  const c1=shuffle(['Pécs','Eger','Győr','Szeged']), c2=shuffle(['Sopron','Miskolc','Kecskemét','Debrecen']);
+  const all=[...c1,...c2].sort((a,b)=>a.localeCompare(b,'hu'));
+  body.innerHTML='<button class="btn go">Indítom az 1. lista tanulását</button>';
+  $('.go',body).onclick=()=>learn(1);
+  function learn(n){
+    const c=n===1?c1:c2;let t=20;
+    body.innerHTML='<p class="qmeta">'+n+'. lista · ki melyik városban lakik</p><div class="wordgrid">'+names.map((x,i)=>'<span class="w">'+x+' → '+c[i]+'</span>').join('')+'</div><p class="timer"><b class="tn">20</b> mp</p>';
+    tm.every(1000,()=>{t--;const e=$('.tn',body);if(e)e.textContent=t;if(t<=0){tm.clear();if(n===1)learn(2);else test(1,[]);}});
+  }
+  function test(n,prev){
+    const c=n===1?c1:c2;
+    body.innerHTML='<p><b>'+n+'. lista próbája.</b> Ki hol lakott az <b>'+n+'. listában</b>?</p>'+names.map((x,i)=>'<div class="row"><label for="s'+i+'">'+x+'</label><select class="sel" id="s'+i+'"><option value="">–</option>'+all.map(v=>'<option>'+v+'</option>').join('')+'</select></div>').join('')+'<button class="btn ok">Ellenőrzés</button>';
+    $('.ok',body).onclick=()=>{
+      const ans=names.map((x,i)=>$('#s'+i,body).value);
+      const right=ans.filter((a,i)=>a===c[i]).length;
+      const other=n===1?c2:c1;
+      const intr=ans.filter(a=>other.includes(a)).length;
+      const r={n,right,intr};
+      if(n===1)test(2,[r]);else end([...prev,r]);
+    };
+  }
+  function end(r){
+    body.innerHTML='<div class="lbox"><div><small>1. lista (régi)</small>'+r[0].right+' / 4 helyes<br>'+r[0].intr+' keveredett a 2.-ból</div><div><small>2. lista (új)</small>'+r[1].right+' / 4 helyes<br>'+r[1].intr+' keveredett az 1.-ből</div></div><p>Amikor az <b>új</b> anyag zavarja a <b>régi</b> felidézését, <mark>retroaktív gátlás</mark> történik. Amikor a <b>régi</b> anyag zavarja az <b>újat</b>, <mark>proaktív gátlás</mark>. Minél hasonlóbbak az anyagok (itt ugyanazok a nevek), annál erősebb az interferencia. Ha nálad kevés keveredés volt, az is normális: kis minta, és az egyéni különbségek nagyok.</p><button class="btn again">Újra</button>';
+    $('.again',body).onclick=()=>{tm.clear();actRestart(root,actInterf);};
+    finish('a9');
+  }
+  return root;
+}
+
+/* 7. fejezet: szemléltető modell (összevont és elosztott ismétlés) */
+function actModel(){
+  const {root,body}=panel('a10',K.gy,'Összevont és elosztott ismétlés: szemléltető modell','Ugyanannyi ismétlés, más időbeosztás. A görbék egy egyszerű modellből jönnek, ezért nem mérési adatok, csak az elv szemléltetésére valók.');
+  function series(ev){
+    let S=2.5,last=0,k=0;const out=[[0,1]];
+    for(let t=0;t<=30.0001;t+=0.25){
+      while(k<ev.length&&ev[k]<=t+1e-9){
+        const r=ev[k], rho=Math.exp(-(r-last)/S);
+        out.push([r,rho]);S*=1.25+2*(1-rho);last=r;out.push([r,1]);k++;
+      }
+      out.push([t,Math.exp(-(t-last)/S)]);
+    }
+    const at=day=>{let S2=2.5,l=0;for(const r of ev){if(r>day)break;const rho=Math.exp(-(r-l)/S2);S2*=1.25+2*(1-rho);l=r;}return Math.exp(-(day-l)/S2);};
+    return {out,at};
+  }
+  const defs=[
+    {k:'Nincs ismétlés',ev:[],col:'var(--muted)',dash:'6 5'},
+    {k:'Összevont: 3 átismétlés ugyanazon a napon',ev:[0,0,0],col:'var(--bad)',dash:''},
+    {k:'Elosztott: átismétlés az 1., 3. és 7. napon',ev:[1,3,7],col:'var(--accent)',dash:''}
+  ].map(d=>Object.assign(d,series(d.ev)));
+  const W=640,H=300,ml=48,mr=20,mt=16,mb=44;
+  const X=t=>ml+t/30*(W-ml-mr), Y=v=>mt+(1-v)*(H-mt-mb);
+  let g='';
+  [0,.25,.5,.75,1].forEach(v=>{g+='<line class="gr" x1="'+ml+'" x2="'+(W-mr)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text x="'+(ml-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+Math.round(v*100)+'%</text>';});
+  [0,5,10,15,20,25,30].forEach(t=>{g+='<text x="'+X(t)+'" y="'+(H-mb+18)+'" text-anchor="middle">'+t+'.</text>';});
+  const lines=defs.map(d=>'<path d="'+d.out.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ')+'" fill="none" stroke="'+d.col+'" stroke-width="3" '+(d.dash?'stroke-dasharray="'+d.dash+'"':'')+' stroke-linejoin="round"/>').join('');
+  body.innerHTML='<div class="chart"><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Három emlékezeti görbe összehasonlítása"><line class="ax" x1="'+ml+'" x2="'+ml+'" y1="'+mt+'" y2="'+(H-mb)+'"/><line class="ax" x1="'+ml+'" x2="'+(W-mr)+'" y1="'+(H-mb)+'" y2="'+(H-mb)+'"/>'+g+lines+'<line id="cur" class="ax" x1="'+X(0)+'" x2="'+X(0)+'" y1="'+mt+'" y2="'+(H-mb)+'" style="stroke:var(--fg);stroke-width:1.5"/><text x="'+(W/2)+'" y="'+(H-4)+'" text-anchor="middle">nap a tanulás óta (0. nap = tanulás)</text></svg></div><div class="legend">'+defs.map(d=>'<span><i style="border-color:'+d.col+';'+(d.dash?'border-top-style:dashed':'')+'"></i>'+d.k+'</span>').join('')+'</div><label class="note" for="dsl">Melyik napot nézed?</label><input id="dsl" type="range" min="0" max="30" value="14"><div class="readout" aria-live="polite"></div><p class="note">Modell: az emléknyom erőssége az idővel exponenciálisan csökken, és minden ismétlés lassítja a további felejtést. Minél nagyobb a szünet az ismétlések között, annál többet nyer az ismétlés.</p>';
+  const sl=$('#dsl',body), ro=$('.readout',body), cur=$('#cur',body);let used=false;
+  function upd(){
+    const d=+sl.value;cur.setAttribute('x1',X(d));cur.setAttribute('x2',X(d));
+    ro.innerHTML=d+'. napon a becsült megmaradás: nincs ismétlés <b>'+Math.round(defs[0].at(d)*100)+'%</b>, összevont <b>'+Math.round(defs[1].at(d)*100)+'%</b>, elosztott <b>'+Math.round(defs[2].at(d)*100)+'%</b>.';
+    if(!used&&Math.abs(d-14)>2){used=true;finish('a10');}
+  }
+  sl.oninput=upd;upd();
+  return root;
+}
+
+/* 7. fejezet: ismétlési terv */
+function actPlan(){
+  const {root,body}=panel('a11',K.gy,'Ismétlési terv-készítő','Add meg, mikor tanulod először az anyagot és mikor lesz a dolgozat. A terv elosztott ismétlést javasol.');
+  const fmt=d=>d.toLocaleDateString('hu-HU',{weekday:'long',month:'long',day:'numeric'});
+  const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const parse=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+  const add=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+  const today=new Date();today.setHours(0,0,0,0);
+  body.innerHTML='<div class="row"><label for="d1">Első tanulás:</label><input type="date" id="d1" class="inp" style="max-width:200px" value="'+iso(today)+'"><label for="d2">Dolgozat:</label><input type="date" id="d2" class="inp" style="max-width:200px" value="'+iso(add(today,14))+'"></div><button class="btn mk">Terv készítése</button><div class="out"></div>';
+  $('.mk',body).onclick=()=>{
+    const a=parse($('#d1',body).value), b=parse($('#d2',body).value), out=$('.out',body);
+    if(isNaN(a)||isNaN(b)){out.innerHTML='<p>Add meg mindkét dátumot.</p>';return;}
+    const span=Math.round((b-a)/864e5);
+    if(span<1){out.innerHTML='<p>A dolgozatnak az első tanulás utánra kell esnie.</p>';return;}
+    const first=Math.max(1,Math.round(span*0.2));
+    const set=new Set([first]);
+    [3,7,14,30].forEach(n=>{if(n<span&&n>first)set.add(n);});
+    set.add(span-1>first?span-1:first);
+    const days=[...set].filter(n=>n>=1&&n<span).sort((x,y)=>x-y);
+    out.innerHTML='<p>Ennyi nap van a dolgozatig: <b>'+span+'</b>.'+(span<3?' Ilyen rövid időre is érdemes az ismétlést szétosztani: tanulj ma, ismételj holnap reggel.':'')+'</p><ul class="sched"><li><span><b>Első tanulás</b></span><span class="d">'+fmt(a)+'</span></li>'+days.map((n,i)=>'<li><span><b>'+(i+1)+'. átismétlés</b> · 10–20 perc, először emlékezetből próbáld felmondani'+(i===0?' (a tanulási idő kb. 10–30%-a után)':'')+(i===days.length-1&&n===span-1?' · záró átnézés a dolgozat előtti napon':'')+'</span><span class="d">'+fmt(add(a,n))+'</span></li>').join('')+'<li><span><b>Dolgozat</b></span><span class="d">'+fmt(b)+'</span></li></ul><p class="note">Szabály, amit a kutatók szerint érdemes követni: minél távolabb van a vizsga, annál hosszabb szünetet hagyj az ismétlések között. Az első átismétlés a vizsgáig hátralévő idő nagyjából 10–30%-a után a legjobb.</p>';
+    finish('a11');
+  };
+  return root;
+}
+
+/* 7. fejezet: Leitner-dobozok */
+const CARDS=[
+  ['Mit jelent, hogy az emlékezet szelektív?','Nem jegyzünk meg mindent: a figyelem, az érdeklődés és a szükségletek döntik el, mi kerül be és mi marad meg.'],
+  ['Mi a különbség a reprodukálás és a felismerés között?','Reprodukáláskor magunktól idézzük fel az anyagot (pl. szóbeli felelet). Felismeréskor az újra elénk kerülő anyagról megmondjuk, hogy ismerős-e (pl. tesztkérdés).'],
+  ['Mekkora a rövid távú memória terjedelme (Miller szerint)?','Kb. 7 ± 2 egység, ismétlés nélkül nagyjából 15–30 másodpercig.'],
+  ['Mit tárol az epizodikus emlékezet?','Személyesen átélt, időhöz és helyhez kötött eseményeket.'],
+  ['Mit jelent a procedurális emlékezet?','Mozgásos és cselekvéses készségek emlékezete (biciklizés, gépelés), nehezen szavakba önthető.'],
+  ['Mi a retroaktív gátlás?','Az újonnan tanult anyag zavarja a korábban tanult anyag felidézését.'],
+  ['Mi a proaktív gátlás?','A korábban tanult anyag zavarja az új anyag bevésését vagy felidézését.'],
+  ['Mi a mozaikszó (akrosztichon) módszer?','A megjegyzendő elemek kezdőbetűiből szót vagy mondatot alkotunk.'],
+  ['Mi az anterográd amnézia?','A sérülés vagy betegség utáni új emlékek rögzítésének képtelensége.'],
+  ['Miért jobb az elosztott ismétlés az összevontnál?','Az ismétlések közötti szünetek miatt az emléknyom erősebben és tartósabban rögzül.']
+];
+function actLeitner(){
+  const {root,body}=panel('a12',K.gy,'Leitner-dobozok: tanulókártyák','Tíz kártya a tanultakból. Ha tudod a választ, a kártya eggyel hátrébb kerül, és ritkábban kérdezzük. Ha nem tudod, vissza az 1. dobozba. Három dobozon át kell jutnia egy kártyának.');
+  let box,mast,round,queue,qi;
+  function start(){box=CARDS.map(()=>0);mast=new Set();round=1;next(true);}
+  function dueQ(){const d=[0];if(round%2===0)d.push(1);if(round%4===0)d.push(2);return shuffle(CARDS.map((_,i)=>i).filter(i=>!mast.has(i)&&d.includes(box[i])));}
+  function next(init){
+    if(mast.size===CARDS.length)return fin();
+    if(init||qi>=queue.length){
+      if(!init)round++;
+      queue=dueQ();let g=0;while(!queue.length&&g++<10){round++;queue=dueQ();}
+      qi=0;
+    }
+    showCard();
+  }
+  function status(){
+    const c=[0,1,2].map(b=>CARDS.filter((_,i)=>!mast.has(i)&&box[i]===b).length);
+    return '<div class="lbox"><div><small>1. doboz · minden nap</small>'+c[0]+'</div><div><small>2. doboz · 2 naponta</small>'+c[1]+'</div><div><small>3. doboz · 4 naponta</small>'+c[2]+'</div><div><small>Megtanult</small>'+mast.size+'</div></div><p class="qmeta">'+round+'. nap · '+(qi+1)+'. / '+queue.length+' kártya</p>';
+  }
+  function showCard(){
+    const i=queue[qi];
+    body.innerHTML=status()+'<div class="stage" style="min-height:120px"><span class="qtext">'+CARDS[i][0]+'</span></div><button class="btn show">Mutasd a választ</button>';
+    $('.show',body).onclick=()=>{
+      body.innerHTML=status()+'<div class="stage" style="min-height:120px;flex-direction:column"><span class="qtext">'+CARDS[i][0]+'</span><span>'+CARDS[i][1]+'</span></div><p>Tudtad?</p><button class="btn yes">Tudtam</button><button class="btn ghost no">Nem tudtam</button>';
+      $('.yes',body).onclick=()=>{box[i]++;if(box[i]>2)mast.add(i);qi++;next(false);};
+      $('.no',body).onclick=()=>{box[i]=0;qi++;next(false);};
+    };
+  }
+  function fin(){
+    body.innerHTML='<div class="result">Kész!</div><p>Mind a tíz kártya megtanult állapotba került a(z) '+round+'. napra. A Leitner-módszer lényege, hogy a jól tudott anyagot ritkábban, a bizonytalant gyakrabban kérdezi, vagyis az ismétlést a szükségletekhez igazítja. A saját jegyzeteidhez papírkártyákkal és három dobozzal is megcsinálhatod.</p><button class="btn again">Újra</button>';
+    $('.again',body).onclick=start;
+    finish('a12');
+  }
+  start();
+  return root;
+}
+
+/* ---------- fejezetek ---------- */
+function pager(n){
+  const d=document.createElement('div');d.className='row';d.style.marginTop='40px';
+  if(n>0){const b=node('<button class="btn ghost">← '+CH[n-1].short+'</button>');b.onclick=()=>render(n-1);d.append(b);}
+  if(n<CH.length-1){const b=node('<button class="btn">'+CH[n+1].short+' →</button>');b.onclick=()=>render(n+1);d.append(b);}
+  return d;
+}
+function chapter(n,title,lead,parts){
+  const r=document.createElement('div');
+  r.append(chead(n,title,lead),...parts,pager(n));
+  return r;
+}
+
+/* ===== 0. Kezdőlap ===== */
+function buildHome(){
+  const r=document.createElement('div');
+  r.append(chead(0,'Emlékezet-labor','Nyolc állomás, rengeteg kipróbálható kísérlet. Végigmész az emlékezet működésén, közben a saját fejeden mérjük, mi igaz a tankönyvi állításokból.'));
+  r.append(blk(K.el,'Hogyan használd?',
+    '<p>A bal oldali sávban (telefonon felül) válthatsz a fejezetek között. Minden fejezetben <b>elméletet</b>, <b>érdekességet</b>, <b>gyakorlatot</b> és <b>feladatot</b> találsz. A gyakorlatok a saját emlékezeteden futnak, ezért érdemes őket komolyan venni, és csak egyszer nézni a megadott anyagot.</p><p>A kész gyakorlatok és feladatok bejelölődnek, a haladásod a böngészőben megmarad. Az utolsó állomás egy összesítő teszt, amely megmutatja, melyik témát érdemes még átnézni.</p>'));
+  const grid=node('<div class="home-grid"></div>');
+  CH.slice(1).forEach((c,i)=>{
+    const b=node('<button class="hc"><span class="hn">'+(i+1===8?'ÖSSZESÍTŐ':(i+1)+'. FEJEZET')+'</span><b>'+c.title+'</b><span>'+c.sum+'</span></button>');
+    b.onclick=()=>render(i+1);grid.append(b);
+  });
+  r.append(grid);
+  r.append(blk(K.er,'Mielőtt elkezdjük',
+    '<p>Sokan úgy gondolják, hogy az emlékezet olyan, mint egy videokamera: rögzít, és bármikor visszajátszható. A pszichológiai kutatások viszont azt mutatják, hogy az emlékezés <mark>kreatív és nem tévedhetetlen folyamat</mark>. Elizabeth Loftus híres mondata szerint az emberi emlékezet nem úgy működik, mint egy videorögzítő. Az Emlékezet-labor azt is megmutatja, miért.</p>'));
+  r.append(node('<p class="foot">Tananyag a 10. évfolyamos pszichológia tantárgyhoz. Az érdekességek és kísérletleírások a tanórán használt pszichológiai könyvek (Pszichológia; Kognitív pszichológia) anyagára épülnek. A gyakorlatok egyszerűsített, szemléltető változatok, az eredmények nem diagnosztikai célúak.</p>'));
+  return r;
+}
+
+/* ===== 1. Alapvető vonások ===== */
+function buildTraits(){
+  const parts=[];
+  parts.push(blk(K.el,'Mi az emlékezet?',
+    '<p>Az emlékezet a <b>tapasztalatok bevésésének, megőrzésének és felidézésének</b> folyamata. Nélküle nem lenne identitásunk, nem ismernénk fel a szeretteinket, és nem tudnánk tanulni sem. Hét alapvető vonását tartjuk számon. Kattints a kártyákra!'));
+  parts.push(cards([
+    {n:'1',t:'Aktív',hint:'Mi dolgozunk vele',d:'<p>Az emlékezet nem passzív raktár: <b>tevékenység</b>. Az új információt feldolgozzuk, összekapcsoljuk a meglévő tudásunkkal, és felidézéskor újra felépítjük.</p><p><i>Példa:</i> amit elmondasz a saját szavaiddal, jobban megmarad, mint amit csak átolvastál.</p>'},
+    {n:'2',t:'Szelektív',hint:'Nem mindent jegyzünk meg',d:'<p>A rengeteg információból csak egy részt őrzünk meg: azt, amire a <b>figyelmünk, érdeklődésünk, céljaink</b> irányulnak.</p><p><i>Példa:</i> a kedvenc sorozatod szereplőit könnyen megjegyzed, a történelmi dátumokat nehezebben.</p>'},
+    {n:'3',t:'Érthető',hint:'A jelentés segít',d:'<p>Az érthető, értelmes anyag könnyebben rögzül, mint az, amit nem értünk. Az emlékezet a <b>jelentéshez</b> kötődik.</p><p><i>Példa:</i> egy megértett összefüggést hosszabb ideig megőrzünk, mint egy bemagolt, értelmetlen szósort.</p>'},
+    {n:'4',t:'Szituatív',hint:'Helyzethez kötött',d:'<p>Az emlékezet működése függ a <b>helyzettől</b>, amelyben tanulunk és felidézünk (hely, hangulat, körülmények).</p><p><i>Példa:</i> ugyanabba a szobába visszatérve eszünkbe jutnak dolgok, amelyek máshol nem.</p>'},
+    {n:'5',t:'Közvetített',hint:'Jelek, nyelv, eszközök',d:'<p>Az emlékezetet <b>jelrendszerek közvetítik</b>: a nyelv, a képek, a jegyzetek, a fogalmak. Az eszközök (írás, jegyzet, naptár) kiterjesztik a lehetőségeinket.</p><p><i>Példa:</i> a vázlat, a térkép, a fogalmi háló.</p>'},
+    {n:'6',t:'Szervezett',hint:'Rendezett egész',d:'<p>Az emlékek nem összevissza vannak tárolva, hanem <b>kapcsolatok szerint rendeződnek</b>: kategóriák, fogalmi hálók, sémák szerint.</p><p><i>Példa:</i> a „madár” szóra eszünkbe jut a szárny, a toll, a fészek, a repülés.</p>'},
+    {n:'7',t:'Rendszerszerű',hint:'Részek együttműködése',d:'<p>Az emlékezet több, <b>egymással együttműködő alrendszerből</b> áll (szenzoros, rövid és hosszú távú, eljárásbeli és tartalmi emlékezet), amelyek egymásra épülnek.</p><p><i>Példa:</i> ami a rövid távú tárba kerül, ismétléssel átkerülhet a hosszú távúba.</p>'}
+  ]));
+  parts.push(fact('Az emlékezet nem videokamera',
+    '<p>Sokan úgy képzelik, hogy az agyunk mindent rögzít, és bármikor visszajátszhatjuk. Elizabeth Loftus szerint viszont az emberi emlékezet <b>nem úgy működik, mint egy videorögzítő</b>. Felidézéskor az emléket újra felépítjük, és eközben beleszólhat a hangulatunk, a későbbi tapasztalataink és a kérdések megfogalmazása.</p><p>Kutatásaiban például egyszerű kérdéssel, a szavak megválasztásával is módosította a felidézést. Erről a hűség és a felejtés fejezetben még lesz szó.</p>'));
+  parts.push(actSelective());
+  parts.push(quiz('q1','Melyik vonásról van szó?','Olvasd el a helyzetet, és válaszd ki a hozzá illő vonást.',[
+    {q:'Az órán a kedvenc témádról mindent megjegyzel, a többiről alig valamit.',o:['Szelektív','Közvetített','Szituatív'],a:0,why:'A figyelem és az érdeklődés dönti el, mi rögzül.'},
+    {q:'Egy megértett fizikai összefüggést hetekkel később is fel tudsz idézni, a bemagolt képletet viszont elfelejted.',o:['Szervezett','Érthető','Aktív'],a:1,why:'Az értelmes, megértett anyag jobban megmarad.'},
+    {q:'A vizsgán a jegyzeteid vázlata segít, hogy eszedbe jusson az anyag.',o:['Közvetített','Szituatív','Szelektív'],a:0,why:'Jelek és eszközök (jegyzet, vázlat) közvetítik az emlékezést.'},
+    {q:'A régi iskolád folyosóján hirtelen eszedbe jut egy régen elfeledett vicc.',o:['Rendszerszerű','Szituatív','Érthető'],a:1,why:'A helyzet, a környezet hozzájárul a felidézéshez.'},
+    {q:'Amikor a témakört a saját szavaiddal elmondod a padtársadnak, jobban megmarad.',o:['Aktív','Szervezett','Közvetített'],a:0,why:'Az emlékezet tevékenység: a feldolgozás erősíti a nyomot.'},
+    {q:'A „madár” szóról eszedbe jut a toll, a szárny és a fészek.',o:['Szervezett','Szelektív','Szituatív'],a:0,why:'Az emlékek kapcsolatok szerint rendeződnek.'}
+  ],{stack:true,shuffleOpts:true}));
+  return chapter(1,'Az emlékezet alapvető vonásai','Hét vonás írja le, hogyan működik az emlékezet. Egyik sem passzív tárolásról szól.',parts);
+}
+
+/* ===== 2. Szakaszok ===== */
+function buildStages(){
+  const parts=[];
+  parts.push(blk(K.el,'Az emlékezés három szakasza',
+    '<p>Az emlékezés folyamata három egymásra épülő szakaszból áll. Kattints a szakaszokra!'));
+  parts.push(flow([
+    {t:'Bevésés',sub:'rögzítés',d:'<p><b>Bevésés (rögzítés):</b> az információ bekerül az emlékezetbe. Itt a legfontosabb a <b>figyelem</b>, a megértés és az ismétlés. Ha figyelmetlenül tanulunk, már ebben a szakaszban elvész az anyag.</p>'},
+    {t:'Megőrzés',sub:'tárolás',d:'<p><b>Megőrzés (tárolás):</b> az emléknyom időben fennmarad. Közben átalakulhat, elhalványulhat, más emlékekkel kapcsolódhat vagy keveredhet. A tárolás nem teljesen passzív folyamat.</p>'},
+    {t:'Felidézés',sub:'felismerés, reprodukálás',d:'<p><b>Felidézés:</b> a tárolt információ ismét elérhetővé válik. Két formája van:</p><ul><li><b>Felismerés:</b> amikor a tanult anyag újra elénk kerül, és megállapítjuk, hogy ismerős (például feleletválasztós teszt).</li><li><b>Reprodukálás:</b> amikor az anyagot magunktól idézzük fel, külső segítség nélkül (például szóbeli felelet, kifejtős dolgozat).</li></ul><p>A reprodukálás nehezebb, mert nekünk kell előhívnunk az emléket.</p>'}
+  ]));
+  parts.push(fact('Három szó, három hiba',
+    '<p>Egy szakaszban fellépő hiba a következő szakaszokra is hat. Ha valami <b>be sem vésődik</b> (például mert elterelődött a figyelmünk), akkor később nem fogjuk tudni felidézni, hiába „felejtettük el”. Daniel Schacter a felejtés okai közé sorolja a <b>szórakozottságot</b> is: amikor nem figyelünk oda (például letesszük a kulcsainkat), az információt mellékesen kezeljük, és nem tároljuk el későbbi használatra.</p><p>Máskor a baj a felidézésnél van: az emlék megvan, csak éppen nem érjük el. Erre a „nyelvem hegyén van” élmény a legjobb példa.</p>'));
+  parts.push(actRecall());
+  parts.push(quiz('q2','Melyik szakaszról van szó?','Egy rövid feladat a szakaszok felismeréséről.',[
+    {q:'A tanár szóban kérdez, te magadtól sorolod fel a választ.',o:['Bevésés','Felismerés','Reprodukálás'],a:2,why:'Külső segítség nélkül idézed fel az anyagot.'},
+    {q:'Egy feleletválasztós tesztben ráismersz a helyes válaszra.',o:['Reprodukálás','Felismerés','Megőrzés'],a:1,why:'A tanult anyag újra elénk kerül, és ismerősnek találjuk.'},
+    {q:'Nem figyeltél oda, amikor a barátod megmondta a telefonszámát, ezért később nem tudod.',o:['A felidézés zavara','A megőrzés hibája','A bevésés hibája'],a:2,why:'Az információ be sem vésődött.'},
+    {q:'Jól megtanultál valamit, de a következő héten már sok minden elhalványult belőle.',o:['A megőrzés szakaszának hibája','A bevésés hibája','Felismerés'],a:0,why:'Az emléknyom a tárolás során gyengült.'},
+    {q:'Melyik szakasz követeli meg a legtöbb önálló munkát a felidézésen belül?',o:['Felismerés','Reprodukálás','Bevésés'],a:1,why:'A reprodukálásnál magunknak kell előhívni az emléket.'}
+  ],{stack:true,shuffleOpts:true}));
+  return chapter(2,'Az emlékezet szakaszai','Bevésés, megőrzés, felidézés: így jut el az információ a külvilágból a tudatunkba.',parts);
+}
+
+/* ===== 3. Formák ===== */
+function buildForms(){
+  const parts=[];
+  parts.push(blk(K.el,'Az emlékezet formái',
+    '<p>Az emlékezetet többféle szempont szerint csoportosíthatjuk. Válassz szempontot a fülek között!'));
+  parts.push(tabs([
+    {l:'Szándék szerint',build:()=>node('<div class="theory"><ul><li><b>Szándékos emlékezet:</b> előre kitűzött cél vezeti, tudatos akarattal tanulunk vagy idézünk fel. <i>Példa:</i> a dolgozatra tanulás.</li><li><b>Önkéntelen emlékezet:</b> nincs tudatos szándék, mégis rögzül. Érzelmileg erős, szokatlan vagy érdekes dolgok gyakran önkéntelenül jegyződnek meg. <i>Példa:</i> a villanófényemlék (egy nagy ijedtség vagy fontos nap képe).</li></ul></div>')},
+    {l:'Feldolgozás szerint',build:()=>node('<div class="theory"><ul><li><b>Mechanikus emlékezet:</b> az anyag elemeinek külső, formai kapcsolatain alapul (ismétlés, bemagolás), a jelentés szerepe kicsi. <i>Példa:</i> az „értelmetlen” szótagsor, a telefonszám magolása.</li><li><b>Logikai (értelmi) emlékezet:</b> a megértésen, az összefüggések felismerésén alapul. Tartósabb és könnyebben felidézhető.</li></ul><p class="note">A logikai emlékezet általában hatékonyabb, ezért érdemes megérteni, nem csak bemagolni.</p></div>')},
+    {l:'Időtartam szerint',build:()=>{
+      const el=node('<div><div class="theory"><p>Az emlékezet három tárra osztható. Kattints rájuk!</p></div></div>');
+      el.append(flow([
+        {t:'Szenzoros',sub:'a másodperc töredéke – pár mp',d:'<p><b>Szenzoros emlékezet:</b> az érzékszervek által felvett benyomások rendkívül rövid ideig (az ikonikus, vagyis látási emlék kb. fél másodpercig, a hallási pár másodpercig) maradnak meg. Nagy terjedelmű, de gyorsan halványul. Amire a figyelmünk irányul, az továbbjut.</p>'},
+        {t:'Rövid távú',sub:'kb. 15–30 mp',d:'<p><b>Rövid távú emlékezet:</b> az agyunk „írótáblája”. Kb. <b>7 ± 2 egységet</b> tud megtartani, ismétlés nélkül nagyjából fél percig. Ide tartozik a <b>munkamemória</b> is, amely nemcsak tárol, hanem feldolgoz is (például fejben számolás). Hogy a rövid távú memóriában gondolatban elismételjük az információt, azt zavarással is kimutatták.</p>'},
+        {t:'Hosszú távú',sub:'percektől évtizedekig',d:'<p><b>Hosszú távú emlékezet:</b> gyakorlatilag korlátlan terjedelmű, és az információt órákig, évekig, akár egy életen át megőrizheti. Az ismétlés, a megértés és az érzelmi hatás segíti a bekerülést.</p>'}
+      ],['figyelem','ismétlés']));
+      return el;
+    }},
+    {l:'Tartalom szerint',build:()=>{
+      const el=node('<div><div class="theory"><p>A hosszú távú emlékezet tartalom szerint is felosztható. Kattints!</p></div></div>');
+      el.append(cards([
+        {t:'Epizodikus',hint:'Mi történt velem?',d:'<p>Személyesen átélt, időhöz és helyhez kötött eseményeket tárol. <i>Példa:</i> mit reggeliztél ma, hol voltál a születésnapodon.</p>'},
+        {t:'Szemantikus',hint:'Mit tudok a világról?',d:'<p>Általános tudást, fogalmakat, tényeket tárol, amelyeknek nincs személyes időpontjuk. <i>Példa:</i> Budapest Magyarország fővárosa, a víz 100 °C-on forr.</p>'},
+        {t:'Procedurális',hint:'Hogyan csináljam?',d:'<p>Mozgásos és cselekvéses készségek emlékezete, amelyek gyakorlással rögzülnek és automatikussá válnak. <i>Példa:</i> biciklizés, gépelés, úszás. Nehezen fogalmazható meg szavakkal.</p>'},
+        {t:'Affektív',hint:'Mit éreztem?',d:'<p>Érzelmi élmények és érzések emlékezete. Az érzelmi töltet erősíti a bevésést és a megőrzést. <i>Példa:</i> a félelem vagy öröm emléke egy fontos pillanatból.</p>'}
+      ]));
+      return el;
+    }}
+  ]));
+  parts.push(fact('H. M. és a tű: a rejtett emlékezet',
+    '<p>A 20. század legismertebb amnéziás betegét H. M.-nek hívták. Súlyos epilepszia miatt az ötvenes években sebészek <b>eltávolították a hippocampusát</b> (az agy csikóhalalakú területét) mindkét oldalról. Az operáció után az emlékezete súlyosan károsodott, de személyisége és összintelligenciája viszonylag érintetlen maradt.</p><p>Az emlékezet egy formája, a <b>procedurális (implicit) emlékezet</b> azonban sértetlen maradt: H. M. új készségeket tanult meg, például rejtvényeket és labirintusokat, mégsem emlékezett rá, hogy valaha is látta volna őket.</p><p>Édouard Claparède svájci pszichológus híres anekdotája: egyszer tűt rejtett a tenyerébe, mielőtt kezet fogott volna egy amnéziás pácienssel. Másnap a beteg nem volt hajlandó megfogni a kezét, bár nem tudta megmagyarázni, hogy miért.</p>'));
+  parts.push(actIconic());
+  parts.push(classify('q3','Melyik forma?','Határozd meg, melyik emlékezeti formáról van szó.',
+    ['Epizodikus','Szemantikus','Procedurális','Affektív'],[
+    {q:'Emlékszel a tavalyi osztálykirándulásra: ki ült melletted a buszon.',a:0,why:'Személyes, időhöz és helyhez kötött esemény.'},
+    {q:'Tudod, hogy a hippocampus fontos szerepet játszik az új emlékek rögzítésében.',a:1,why:'Általános tudás, nincs hozzá személyes időpont.'},
+    {q:'Anélkül tudsz biciklizni, hogy a mozdulatokra gondolnál.',a:2,why:'Mozgásos készség, automatikus.'},
+    {q:'A vizsgák előtti szorongás érzése azonnal visszajön, ha belépsz az osztályterembe.',a:3,why:'Érzelmi élmény emlékezete.'},
+    {q:'Fejből gépelsz a billentyűzeten, a gombokra rápillantás nélkül.',a:2,why:'Gyakorlással kialakult, automatizált készség.'},
+    {q:'Tudod, hogy a madarak tojásrakással szaporodnak.',a:1,why:'Tényszerű tudás.'}
+  ]));
+  return chapter(3,'Az emlékezet formái','Szándék, feldolgozás, időtartam és tartalom: négy szempont, amely szerint csoportosíthatjuk az emlékezetet.',parts);
+}
+
+/* ===== 4. Tulajdonságok ===== */
+function buildProps(){
+  const parts=[];
+  parts.push(blk(K.el,'Az emlékezet hat tulajdonsága',
+    '<p>Az emlékezet jellemzésére hat fontos tulajdonságot használunk. Kattints a kártyákra!'));
+  parts.push(cards([
+    {t:'Terjedelem',hint:'Mennyit fér bele?',d:'<p>Az egyszerre megjegyezhető információ mennyisége. A rövid távú memóriánál kb. <b>7 ± 2 egység</b> (George Miller). A hosszú távú memória terjedelme gyakorlatilag korlátlan.</p>'},
+    {t:'Mobilitás',hint:'Mennyire mozgósítható?',d:'<p>Azt mutatja, mennyire gyorsan és könnyen tudjuk az emlékeket a megfelelő helyzetben felidézni és felhasználni. Jó mobilitás esetén az ismeretek rugalmasan, új helyzetben is alkalmazhatók.</p>'},
+    {t:'Rögzítési sebesség',hint:'Milyen gyorsan tanulunk?',d:'<p>Az, hogy hány ismétlés vagy mennyi idő kell egy anyag bevésődéséhez. Egyénenként és anyagonként eltérő; függ a figyelemtől, a motivációtól és a megértéstől.</p>'},
+    {t:'Megőrzési időtartam',hint:'Mennyi ideig marad meg?',d:'<p>Az emléknyom fennmaradásának ideje: a szenzoros memóriában a másodperc töredéke, a rövid távúban kb. fél perc, a hosszú távúban akár egy élet.</p>'},
+    {t:'Hűség',hint:'Eredeti-e az emlék?',d:'<p>Azt mutatja, mennyire felel meg a felidézett emlék az eredeti élménynek, nem torzult-e el, nem egészült-e ki olyan elemmel, ami nem volt ott.</p>'},
+    {t:'Pontosság',hint:'Mennyi részlet stimmel?',d:'<p>A felidézett részletek (számok, nevek, adatok) helyességét mutatja. Lehet valaki „hű”, de nem „pontos” (az egész lényegét jól adja vissza, a részletekben téved).</p>'}
+  ]));
+  parts.push(blk(K.er,'Mennyit tud az emlékezet? Összehasonlítás',
+    '<div class="tbl"><table><thead><tr><th>Tár</th><th>Terjedelem</th><th>Időtartam</th></tr></thead><tbody><tr><td>Szenzoros</td><td>nagy, de nyers</td><td>a másodperc töredéke</td></tr><tr><td>Rövid távú</td><td>kb. 7 ± 2 egység</td><td>kb. 15–30 mp</td></tr><tr><td>Hosszú távú</td><td>gyakorlatilag korlátlan</td><td>percektől évtizedekig</td></tr></tbody></table></div><p class="note">Az emberi agykéreg becslések szerint több tízmilliárd idegsejtet tartalmaz, és mindegyik sejt sok ezer másikkal létesít kapcsolatot, ezért az agyunkban elraktározható információ mennyiségének valószínűleg nincs felfogható határa.</p>'));
+  parts.push(actSpan());
+  parts.push(fact('Egy szó, ami megváltoztatja az emléket',
+    '<p>Elizabeth Loftus egyik klasszikus kísérletében (1974) emberek autóbalesetről készült filmet néztek, majd megkérdezték tőlük, milyen sebességgel haladtak az autók. Amikor a kérdésben az ütközés szavát „<b>koccantak</b>” formában használták, alacsonyabb sebességet becsültek, mint amikor azt kérdezték, milyen sebességgel „<b>csapódtak egymásba</b>” az autók. Egy héttel később azt is megkérdezte tőlük, láttak-e betört üveget a baleset után. Akik a hevesebb szót hallották, többen válaszoltak igennel.</p><p>A kísérlet megmutatta, hogy a <b>hűség</b> milyen könnyen sérül: a felidézés után a kérdés megfogalmazása is beépülhet az emlékbe.</p>'));
+  parts.push(actStory());
+  parts.push(quiz('q4','Melyik tulajdonság?','Párosítsd a helyzetet a megfelelő tulajdonsággal.',[
+    {q:'A rövid távú memória kb. hét egységet tud megtartani.',o:['Terjedelem','Hűség','Mobilitás'],a:0,why:'Az egyszerre megtartható mennyiség a terjedelem.'},
+    {q:'Valaki jól összefoglalta a történetet, de a neveket és számokat összekeverte.',o:['Hűség (jó), pontosság (gyenge)','Terjedelem','Rögzítési sebesség'],a:0,why:'A lényeg stimmel, a részletek nem.'},
+    {q:'Egy diáknak három ismétlés is elég egy vers megtanulásához, a társának tíz kell.',o:['Rögzítési sebesség','Megőrzési időtartam','Pontosság'],a:0,why:'A tanuláshoz szükséges idő vagy ismétlés különbözik.'},
+    {q:'A szenzoros emlék a másodperc törtrésze alatt eltűnik.',o:['Megőrzési időtartam','Mobilitás','Hűség'],a:0,why:'Az emléknyom fennmaradásának idejéről van szó.'},
+    {q:'Egy tanulónak a megtanult képletet új típusú feladatnál is sikerül előhívnia és alkalmaznia.',o:['Mobilitás','Terjedelem','Pontosság'],a:0,why:'Az ismeret jól mozgósítható.'}
+  ],{stack:true,shuffleOpts:true}));
+  return chapter(4,'Az emlékezet tulajdonságai','Terjedelem, mobilitás, rögzítési sebesség, megőrzési időtartam, hűség és pontosság.',parts);
+}
+
+/* ===== 5. Optimalizálás ===== */
+function buildOpt(){
+  const parts=[];
+  parts.push(blk(K.el,'Hogyan lehet jobb az emlékezetünk?',
+    '<p>Az emlékezet hatékonyságát <b>szubjektív</b> (a tanuló személyétől függő) és <b>objektív</b> (az anyagtól és a körülményektől függő) tényezők befolyásolják. Kattints és nézd meg!'));
+  parts.push(tabs([
+    {l:'Szubjektív tényezők',build:()=>node('<div class="theory"><ul><li><b>Motiváció, érdeklődés:</b> amit fontosnak tartunk, jobban megjegyezzük.</li><li><b>Figyelem és koncentráció:</b> az elterelt figyelem már a bevésésnél gyengít.</li><li><b>Előzetes tudás:</b> a meglévő ismeretekhez kapcsolt új anyag könnyebben rögzül.</li><li><b>Érzelmi állapot:</b> a túl nagy szorongás zavarja, a mérsékelt izgalom segítheti az emlékezést.</li><li><b>Testi állapot:</b> alvás, étkezés, fáradtság. Egy 2007-es kutatás szerint az alváshiányos résztvevők 19%-kal kevesebbre emlékeztek.</li><li><b>Tanulási módszer:</b> amit az ember a saját szavaival elmond, megértve tanul.</li></ul></div>')},
+    {l:'Objektív tényezők',build:()=>node('<div class="theory"><ul><li><b>Az anyag jellemzői:</b> terjedelme, érthetősége, szerkezete, tagoltsága. A jól strukturált anyag könnyebben megmarad.</li><li><b>Az anyag helye a sorozatban:</b> az elejére és a végére jobban emlékezünk, mint a közepére.</li><li><b>A környezet:</b> zaj, zavaró ingerek, napszak, a tanulás körülményei.</li><li><b>Az ismétlés módja:</b> elosztott ismétlés jobb, mint az összevont (erről a hetedik fejezetben lesz szó).</li><li><b>Zavaró hatások:</b> hasonló anyagok egymás utáni tanulása interferenciát okoz.</li></ul></div>')}
+  ]));
+  parts.push(blk(K.el,'Mnemotechnikai eljárások',
+    '<p>A <b>mnemotechnika</b> az emlékezést segítő módszerek gyűjtőneve. Lényege, hogy a megjegyzendő anyagot jelentéssel, képpel vagy kapaszkodóval kapcsoljuk össze. Kattints a módszerekre!'));
+  parts.push(cards([
+    {t:'Helyek módszere',hint:'Képzeletbeli útvonal',d:'<p>A megjegyzendő elemeket egy jól ismert útvonal mentén (például az iskolába vezető úton vagy a lakásodban) különböző helyeken „helyezed el” képzeletben. Felidézéskor végigsétálsz az útvonalon. A memóriaversenyzők gyakran használják: a kutatók a memóriabajnokok agyában a mozgáshoz és a navigációhoz kapcsolódó agyterületek fokozott aktivitását találták (Maguire és mtsai, 2003).</p>'},
+    {t:'Láncmódszer',hint:'Egymásba kapaszkodó képek',d:'<p>A szavakat egy különös, élénk, képszerű történetbe fűzöd, ebben a sorrendben. Minden elem a következő felidézésének kulcsa.</p>'},
+    {t:'Mozaikszó (akrosztichon)',hint:'Kezdőbetűk',d:'<p>A megjegyzendő elemek kezdőbetűiből szót vagy mondatot alkotsz. <i>Példa:</i> a szivárvány színei kezdőbetűkből alkotott mondattal.</p>'},
+    {t:'Csoportosítás',hint:'Kevesebb, nagyobb egység',d:'<p>A hosszú sort kisebb, értelmes egységekre bontod (például telefonszám csoportokban). A rövid távú memória terjedelme egységekben mérhető, ezért ez nagyon hatékony.</p>'},
+    {t:'Rímek és ritmus',hint:'Dallam segít',d:'<p>A rím, a ritmus és a dallam kapaszkodót ad. <i>Példa:</i> mondókák, tanult versek, a nevek ritmikus mondogatása.</p>'},
+    {t:'Összegzés és integrálás',hint:'Kapcsold a meglévő tudáshoz',d:'<p>Ha összefoglalod a tanultak fő pontjait, és átgondolod, hogyan viszonyulnak a már ismert dolgokhoz és saját tapasztalataidhoz, az emlékeid tovább megmaradnak. Ezt a folyamatot <b>tudásintegrációnak</b> nevezik. Egyik módja, ha megpróbálod elmagyarázni a barátaidnak vagy családtagjaidnak, amit éppen megtanultál.</p>'}
+  ]));
+  parts.push(fact('Tíz módszer a memóriád felturbózásához',
+    '<p>A pszichológiai kutatások szerint a következők segíthetnek:</p><ul><li><b>Fejts rejtvényt!</b> A keresztrejtvényekkel és játékokkal foglalkozók körében ritkábban alakult ki Alzheimer-kór (Robert Wilson és kollégái, 801 apáca, pap és szerzetes, ötéves kutatás).</li><li><b>Aludj rá egyet!</b> Tanulás után az éjszakai alvás megszilárdítja az emlékeket.</li><li><b>Egyél rendesen!</b> A reggelire igaz: a gyerekek jobban teljesítenek a figyelmet és az emlékezetet vizsgáló teszteken, ha reggelire bab is volt a pirítóson. A halakban található zsírsavak is segítenek.</li><li><b>Forgasd a szemed!</b> Andrew Parker és Neil Dagnall szerint a szem balról jobbra mozgatása segíthet a két agyfélteke közötti kommunikációban.</li><li><b>Oszd el a tanulnivalót!</b> Hosszú távú megjegyzéshez rendszeresen át kell ismételni a tanultakat (erről a hetedik fejezetben).</li></ul><p>A teljes tízes lista további elemei: mnemonikus módszerek, mobiltelefon, intelligens gyógyszerek, villanyozd fel az agyad és összegezz és integrálj.</p>'));
+  parts.push(actSerial());
+  parts.push(actMnemo());
+  parts.push(actChunk());
+  parts.push(classify('q5','Szubjektív vagy objektív?','Döntsd el, melyik tényezőcsoportba tartozik az adott példa.',
+    ['Szubjektív (a tanuló)','Objektív (anyag, körülmény)'],[
+    {q:'A tanuló nagyon érdekli a téma.',a:0,why:'Az érdeklődés a tanuló személyes tulajdonsága.'},
+    {q:'Az anyag zavaros, tagolatlan, értelmetlen szövegekből áll.',a:1,why:'Az anyag jellemzője.'},
+    {q:'A tanuló előző éjjel keveset aludt.',a:0,why:'A tanuló testi állapota.'},
+    {q:'A tanulószoba hangos, mellette építkezés zajlik.',a:1,why:'Külső körülmény.'},
+    {q:'A tanuló nagyon szorong a dolgozat miatt.',a:0,why:'Érzelmi állapot.'},
+    {q:'A tananyag fontos pontjai a lista közepén vannak.',a:1,why:'Az anyag helye a sorozatban objektív tényező.'}
+  ]));
+  return chapter(5,'Az emlékezet optimalizálása','Szubjektív és objektív tényezők, és a mnemotechnikai eljárások, amelyekkel hatékonyabban tanulhatunk.',parts);
+}
+
+/* ===== 6. Felejtés ===== */
+function buildForget(){
+  const parts=[];
+  parts.push(blk(K.el,'Miért felejtünk?',
+    '<p>A felejtés nem hiba, hanem az emlékezet fontos és hasznos működése. Schacter szerint a felejtés az emlékezet lényeges funkciója, amely lehetővé teszi a hatékony működést: ha mindenre emlékeznénk, a lényeges elveszne a zűrzavarban. Három fő elmélet magyarázza. Kattints!'));
+  parts.push(cards([
+    {t:'Motivált felejtés',hint:'Freud elmélete',d:'<p>Sigmund Freud szerint a lelkünk védi magát az elfogadhatatlan vagy fájdalmas gondolatokkal szemben azzal, hogy <b>tudattalanul kiszorítja</b> őket (elfojtás). Az elfojtott emlék nem tűnik el, csak nem elérhető.</p><p class="note">Kritika: Elizabeth Loftus szkeptikus volt az elfojtott emlékek „visszaállításával” kapcsolatban, mert kutatásai szerint a felidézés könnyen torzítható.</p>'},
+    {t:'A nyomok elhalványulása',hint:'Idő és használat hiánya',d:'<p>Az emléknyom használat hiányában idővel <b>gyengül, elhalványul</b>. Ebbinghaus 1885-ben saját magán mérte: a felejtés az elején gyors, később lelassul. Ezt a görbét a következő gyakorlatban meg is nézheted.</p>'},
+    {t:'Interferencia',hint:'Az emlékek zavarják egymást',d:'<p>Az emlékek <b>egymást gátolják</b>. A hasonló anyagok különösen zavarják egymást:</p><ul><li><b>Retroaktív gátlás:</b> az új anyag zavarja a régi felidézését.</li><li><b>Proaktív gátlás:</b> a régi anyag zavarja az új tanulását vagy felidézését.</li></ul>'}
+  ]));
+  parts.push(actCurve());
+  parts.push(actInterf());
+  parts.push(blk(K.el,'A felejtés formái',
+    '<div class="tbl"><table><thead><tr><th>Forma</th><th>Mit jelent?</th><th>Példa</th></tr></thead><tbody><tr><td><b>Teljes</b></td><td>Az emlék nem idézhető fel, sem segítséggel.</td><td>A kisgyermekkor első éveinek eseményei.</td></tr><tr><td><b>Részleges</b></td><td>Csak töredékekre emlékszünk, vagy segítséggel (támpont) idézhető fel.</td><td>Az esemény helyére emlékszünk, a résztvevőkre nem.</td></tr><tr><td><b>Pillanatnyi (lapsus)</b></td><td>Átmeneti elérési zavar, később eszünkbe jut.</td><td>A „nyelvem hegyén van”.</td></tr></tbody></table></div>'));
+  parts.push(fact('Rick Perry és a nyelve hegye',
+    '<p>Rick Perry amerikai republikánus elnökjelölt 2011-ben egy országos tévéviták során arra kérték, nevezze meg azt a három minisztériumot, amelynek eltörlése része a politikájának. Az első kettőt (kereskedelem és oktatás) megnevezte, a harmadiknál beletört a bicskája. Több milliós nézőközönség előtt képtelen volt elmondani a saját politikai terveit.</p><p>Ez az <b>interferencia</b> iskolapéldája: a már megnevezett két minisztérium ismételgetése még messzebb űzte annak az esélyét, hogy eszébe jusson az utolsó. Ha túl aktívan vannak jelen a fejünkben a helytelen válaszok, kiszorítják a helyeset.</p><p><b>Mit tegyél, ha neked is a nyelved hegyén van valami?</b> Lazíts, és ne erőltesd. Ha egy másik dologra figyelsz, a releváns elemek visszaállhatnak az eredeti aktivitási szintre.</p>'));
+  parts.push(blk(K.el,'Amnézia: amikor az emlékezet kiesik',
+    '<p>Az <b>amnézia</b> az emlékezet kóros kiesése. Kattints a típusokra!'));
+  parts.push(cards([
+    {t:'Anterográd amnézia',hint:'Új emlékek nem rögzülnek',d:'<p>A beteg nem tud <b>új hosszú távú emlékeket rögzíteni</b>. Tudja a nevét, ismeri az élettörténetét, rövid ideig még a telefonszámot is képes felidézni, de ha megkérdezzük, hol volt tegnap, értetlenül néz ránk. Oka lehet agyvérzés, agysérülés vagy a Korszakov-szindróma (tartós alkoholfogyasztás és vitaminhiány miatt).</p><p><b>Példa:</b> H. M. esete. A „Memento” című film főhőse is ilyen betegségben szenved.</p>'},
+    {t:'Retrográd amnézia',hint:'Régi emlékek elvesznek',d:'<p>A sérülés <b>előtti események</b> emlékeit veszíti el a páciens. Az emlékek gyakran fokozatosan visszatérnek, a legrégebbiekkel kezdve. A baleset pillanatát megelőző időszak azonban gyakran örökre homályban marad.</p>'},
+    {t:'Infantilis amnézia',hint:'A korai gyerekkor emlékei',d:'<p>Legtöbbünk nem emlékszik a 3–4 éves kor előtti eseményekre. Carole Peterson szerint a legkorábbi emlékeink a 3 és fél, négyéves korra nyúlnak vissza. Úgy tűnik, hogy a korábbi emlékek valamikor eltárolódnak a verbálisan hozzáférhető hosszú távú memóriában.</p>'}
+  ]));
+  parts.push(fact('A hét bűn és a fejünkben lakó „kaméleonember”',
+    '<p>Daniel Schacter az emlékezet hét „bűnét” különbözteti meg. Az első három <b>mulasztásos</b> (elhalványulás, szórakozottság, rövidzárlat), a következő három <b>cselekedeti</b> (téves attribúció, szuggesztibilitás, elfogultság), a hetedik az <b>emlékek makacssága</b>: amikor olyasmire emlékszünk, amit el akarunk felejteni.</p><p>2007-ben pszichológusok beszámoltak A. D. esetéről: a férfi frontotemporális agykárosodást szenvedett. Furcsa viselkedése azután kezdődött. Amikor orvosok között volt, orvosként viselkedett, pszichológusok között pszichológusként, ügyvédeknél ügyvédként: nemcsak mondta, hogy „orvos vagyok”, hanem el is játszotta ezeket a szerepeket. A kutatók „kaméleonembernek” nevezték.</p>'));
+  parts.push(classify('q6','Melyik jelenség?','Döntsd el, melyik felejtési elméletről vagy formáról van szó.',
+    ['Motivált felejtés','Elhalványulás','Interferencia','Amnézia'],[
+    {q:'A múlt évi történelem anyagából a nyár alatt alig maradt valami, mert nem ismételted.',a:1,why:'Használat hiányában a nyom gyengül.'},
+    {q:'Az új francia szavak miatt a tavalyi spanyol szavak összekeverednek.',a:2,why:'Hasonló anyagok zavarják egymást.'},
+    {q:'Valaki nem emlékszik a baleset előtti utolsó percekre, mert agysérülést szenvedett.',a:3,why:'Betegséghez vagy sérüléshez köthető memóriakiesés.'},
+    {q:'Egy kellemetlen élményt a lélek védekezésként kiszorít a tudatból.',a:0,why:'Freud elfojtás-elmélete.'},
+    {q:'A tavaly tanult dátumok megzavarják a mostani dátumok bevésését.',a:2,why:'Proaktív gátlás, az interferencia egyik típusa.'},
+    {q:'Nem találsz rá egy hónapja tanult szóra, pedig a nyelvedre ugrik.',a:2,why:'Átmeneti elérési zavar, interferencia (lapsus).'}
+  ]));
+  return chapter(6,'A felejtés','Miért felejtünk, hogyan, és mi történik, ha az emlékezet kiesik?',parts);
+}
+
+/* ===== 7. Ismétlés ===== */
+function buildRepeat(){
+  const parts=[];
+  parts.push(blk(K.el,'Az ismétlés: a felejtés elleni küzdelem fő formája',
+    '<p>A felejtés elleni leghatékonyabb eszköz az <b>ismétlés</b>. Három típusát különböztetjük meg:'));
+  parts.push(cards([
+    {t:'Túltanulás',hint:'Az elsajátítás után is folytatjuk',d:'<p>Akkor beszélünk túltanulásról, ha az anyag tökéletes tudása (egyszeri hibátlan felmondás) után is <b>tovább ismételjük</b>. Jelentősen javítja a megőrzést, mert a nyom erősebb lesz.</p>'},
+    {t:'Összevont ismétlés',hint:'Egyben, rövid idő alatt',d:'<p>Az ismétlések <b>közvetlenül egymás után</b>, szünet nélkül követik egymást (például a dolgozat előtti éjszakai „bemagolás”). Rövid távon eredményes lehet, de gyorsan elfelejtjük.</p>'},
+    {t:'Elosztott ismétlés',hint:'Szünetekkel, időben szétosztva',d:'<p>Az ismétlések között <b>szünetek</b> vannak, az anyagot több alkalommal vesszük elő. Hosszú távon sokkal hatékonyabb, mint az összevont ismétlés.</p>'}
+  ]));
+  parts.push(fact('Mennyi idő után érdemes ismételni?',
+    '<p>Doug Rohrer és Harold Pashler kísérletei szerint az optimális idő, amely után érdemes átnézni a korábban tanultakat, a <b>kívánt megőrzési idő 10–30%-a</b>. Tehát ha egy olyan vizsgára készülsz, amelyik tíz nap múlva esedékes, ne tanuld ugyanazt még aznap újra: ehelyett jobb, ha otthagyod, és egy nappal később átismétled. Ha a vizsga egy hónap múlva lesz, egy hónap múlva érdemes újra átnézni az anyagot.</p><p>Az ismétlések közötti szünetek miatt a felejtés görbéje minden alkalommal laposabb lesz.</p>'));
+  parts.push(actModel());
+  parts.push(actPlan());
+  parts.push(actLeitner());
+  parts.push(quiz('q7','Mit választasz?','Gondold végig az ismétlés típusait.',[
+    {q:'Dolgozatra készülsz, ami három hét múlva lesz. Melyik terv a leghatékonyabb?',o:['Az utolsó éjszakán átolvasni az egészet háromszor','Az 1–2., 5–6. és 12–14. napon átismételni, közben az anyagot felmondani','Egyszer nagyon alaposan megtanulni és nem foglalkozni vele'],a:1,why:'Az elosztott ismétlés tartósabb nyomot hagy.'},
+    {q:'Mi a túltanulás?',o:['Amikor az anyagot a szükségesnél többször, a hibátlan tudás után is ismételjük','Amikor túl sok anyagot tanulunk egyszerre','Amikor egyik anyag a másikat zavarja'],a:0,why:'A tökéletes tudás után folytatott ismétlés a túltanulás.'},
+    {q:'Melyik az összevont ismétlés?',o:['Egymás után háromszor elolvasod az anyagot, szünet nélkül','Egy héttel később átnézed','Kétnaponta felmondod emlékezetből'],a:0,why:'Szünet nélküli, sűrített ismétlés.'},
+    {q:'Mikor a legmeredekebb a felejtési görbe?',o:['A tanulás után közvetlenül','Egy hónap múlva','Nincs különbség'],a:0,why:'Az elején felejtünk a legtöbbet, ezért érdemes hamar ismételni.'}
+  ],{stack:true,shuffleOpts:true}));
+  return chapter(7,'Az ismétlés','A felejtés elleni küzdelem fő formája: túltanulás, összevont és elosztott ismétlés.',parts);
+}
+
+/* ===== 8. Összesítő teszt ===== */
+function buildFinal(){
+  const qs=[
+    {ch:1,q:'Melyik vonás jelenti, hogy az emlékezet a figyelmünk és érdeklődésünk alapján dönt, mit őrzünk meg?',o:['Szelektív','Közvetített','Szituatív'],a:0,why:'A szelektív emlékezet a figyelem és céljaink szerint választ.'},
+    {ch:1,q:'Mely állítás igaz az emlékezetről?',o:['Olyan, mint egy videokamera: mindent pontosan rögzít','Aktív, újraalkotó folyamat, ezért nem tévedhetetlen','Csak a hosszú távú memória működik aktívan'],a:1,why:'Az emlékezés felidézéskor újraépítés, könnyen torzulhat.'},
+    {ch:2,q:'Melyik a szakaszok helyes sorrendje?',o:['Felidézés, megőrzés, bevésés','Bevésés, megőrzés, felidézés','Megőrzés, bevésés, felidézés'],a:1,why:'Bevésés (rögzítés), megőrzés (tárolás), felidézés.'},
+    {ch:2,q:'Melyik felidézési forma a nehezebb?',o:['Felismerés','Reprodukálás','Egyformán nehéz'],a:1,why:'Reprodukáláskor külső támpont nélkül kell előhívnunk.'},
+    {ch:3,q:'A biciklizés tudása az emlékezet melyik formájába tartozik?',o:['Epizodikus','Szemantikus','Procedurális'],a:2,why:'Mozgásos, automatizált készség.'},
+    {ch:3,q:'Melyik tár terjedelme kb. 7 ± 2 egység?',o:['Szenzoros','Rövid távú','Hosszú távú'],a:1,why:'Miller szerint a rövid távú memória terjedelme.'},
+    {ch:4,q:'Egy diák a szöveg lényegét helyesen mondja el, de a számokat összekeveri. Melyik tulajdonság gyenge?',o:['Hűség','Pontosság','Terjedelem'],a:1,why:'A részletek helyességét a pontosság mutatja.'},
+    {ch:4,q:'Loftus kísérletében melyik szó mellett becsültek nagyobb sebességet?',o:['„koccantak”','„csapódtak egymásba”','Nem volt különbség'],a:1,why:'A kérdés szavai módosították az emléket, ez a hűség sérülése.'},
+    {ch:5,q:'Melyik objektív tényező?',o:['A tanuló motivációja','Az anyag tagoltsága és érthetősége','A tanuló fáradtsága'],a:1,why:'Az anyag jellemzői objektív tényezők.'},
+    {ch:5,q:'Melyik mnemotechnikai eljárás kapcsolja a megjegyzendő szavakat egy képes történetbe?',o:['Láncmódszer','Csoportosítás','Mozaikszó'],a:0,why:'A láncmódszer lényege a történetbe fűzés.'},
+    {ch:6,q:'Az új tanult anyag zavarja a korábban tanultak felidézését. Mi ez?',o:['Proaktív gátlás','Retroaktív gátlás','Elfojtás'],a:1,why:'Az új anyag visszahat a régire: retroaktív gátlás.'},
+    {ch:6,q:'Az anterográd amnézia lényege:',o:['A régi emlékek elvesznek','Az új hosszú távú emlékek rögzítése nem lehetséges','Minden emlék törlődik'],a:1,why:'A beteg új emléket nem tud rögzíteni (például H. M.).'},
+    {ch:7,q:'Melyik ismétlés a leghatékonyabb hosszú távon?',o:['Összevont','Elosztott','Nincs különbség'],a:1,why:'Az ismétlések közötti szünet erősíti a nyomot.'},
+    {ch:7,q:'Mi a túltanulás?',o:['A hibátlan tudás után is folytatott ismétlés','A túl sok anyag egyszerre','A zavaró hatás'],a:0,why:'A tökéletes tudás után folytatott ismétlés.'}
+  ].filter(q=>!window.SEL||window.SEL.has(q.ch));
+  const parts=[quiz('qf','Összesítő teszt',qs.length+' kérdés a kiválasztott fejezetekből. A végén megkapod, melyik témát érdemes átnézni.',qs,{stack:true,shuffleOpts:true,final:true})];
+  parts.push(blk(K.er,'Egy utolsó gondolat',
+    '<p>Az emlékezet nem tévedhetetlen, de tanulható és fejleszthető. Loftus kutatásai megmutatták, hogy a felidézés mennyire könnyen befolyásolható. Egyik híres megfogalmazása szerint amit teljes szívvel hiszünk, az nem feltétlenül igaz. A tanulásban a legjobb védekezés a <mark>megértés, az elosztott ismétlés és a figyelem</mark>.</p>'));
+  return chapter(8,'Összesítő teszt','Mutasd meg, mit tudsz a hét fejezetből.',parts);
+}
+
+
+/* ===== Rövid változat: tervező + szűkített fejezetek ===== */
+const MIN={1:12,2:10,3:12,4:10,5:10,6:12,7:12};
+const PRESET={'1 óra':[2,3,6,7],'2 óra':[1,2,3,4,5,6,7]};
+const DROP={4:['a5'],5:['a6','a13'],6:['a9'],7:['a12']};
+const SHORT_ACTS={1:['a1','q1'],2:['a2','q2'],3:['a3','q3'],4:['a4','q4'],5:['a7','q5'],6:['a8','q6'],7:['a10','a11','q7']};
+let SEL=new Set([1,2,3,4,5,6,7]);
+try{const s=JSON.parse(localStorage.getItem('emlekezet-rovid-sel')||'null');if(Array.isArray(s))SEL=new Set(s.filter(n=>n>=1&&n<=7));}catch(e){}
+window.SEL=SEL;
+let VIS=[0];
+function refreshVIS(){VIS=[0,...[...SEL].sort((a,b)=>a-b)];if(SEL.size)VIS.push(8);}
+function saveSel(){try{localStorage.setItem('emlekezet-rovid-sel',JSON.stringify([...SEL]));}catch(e){}}
+
+function pager(n){
+  const d=document.createElement('div');d.className='row';d.style.marginTop='40px';
+  const k=VIS.indexOf(n),p=VIS[k-1],q=VIS[k+1];
+  if(p!==undefined){const b=node('<button class="btn ghost">← '+CH[p].short+'</button>');b.onclick=()=>render(p);d.append(b);}
+  if(q!==undefined){const b=node('<button class="btn">'+CH[q].short+' →</button>');b.onclick=()=>render(q);d.append(b);}
+  return d;
+}
+function buildNav(){
+  const ul=$('#nav');ul.innerHTML='';
+  VIS.forEach(i=>{
+    const li=document.createElement('li');
+    li.innerHTML='<button class="nav-i" data-i="'+i+'"><span class="nn">'+(i>0&&i<8?i:(i===0?'•':'✓'))+'</span><span class="nl">'+CH[i].short+'</span><span class="nk"></span></button>';
+    li.firstChild.onclick=()=>render(i);ul.append(li);
+  });
+}
+function updateProgress(){
+  const acts=VIS.flatMap(i=>CH[i].acts||[]);
+  const d=acts.filter(a=>done.has(a)).length;
+  $('#pcount').textContent=d+' / '+acts.length;
+  $('#pbar').style.width=(acts.length?d/acts.length*100:0)+'%';
+  VIS.forEach(i=>{const b=$('.nav-i[data-i="'+i+'"]');const a=CH[i].acts||[];if(b&&a.length)b.classList.toggle('cdone',a.every(x=>done.has(x)));});
+}
+function total(){
+  let t=0;SEL.forEach(n=>t+=MIN[n]);
+  if(SEL.size){const q=CH[8]?14:0;t+=Math.max(4,Math.round([...SEL].length*2*0.6));}
+  return t;
+}
+function buildHome(){
+  const r=document.createElement('div');
+  r.append(chead(0,'Emlékezet-labor röviden','Állítsd össze az órához illő változatot. A kiválasztott fejezeteken kívül minden más el van rejtve, a diákok csak azt látják, amit kijelölsz.'));
+  const box=node('<section class="panel"><h3>Mely fejezeteket használod?</h3><p class="intro">Minden fejezet egy gyakorlatot (néhánynál kettőt), egy érdekességet és egy rövid kvízt tartalmaz. Az idő becslés: önálló vagy közös munkával, megbeszéléssel együtt.</p><div class="row"><button class="btn ghost pr" data-p="1 óra">1 óra (4 fejezet)</button><button class="btn ghost pr" data-p="2 óra">2 óra (mind a 7)</button></div><div class="plist"></div><p class="readout" aria-live="polite"></p></section>');
+  const pl=$('.plist',box);
+  for(let n=1;n<=7;n++){
+    const row=node('<label class="chk"><input type="checkbox" id="pc'+n+'"'+(SEL.has(n)?' checked':'')+'><span><b>'+n+'. '+CH[n].title+'</b> · kb. '+MIN[n]+' perc<br><small class="note">'+CH[n].sum+'</small></span></label>');
+    $('input',row).onchange=e=>{e.target.checked?SEL.add(n):SEL.delete(n);apply(false);};
+    pl.append(row);
+  }
+  function apply(redraw){
+    saveSel();refreshVIS();buildNav();updateProgress();
+    $$('.nav-i').forEach(b=>b.classList.toggle('on',+b.dataset.i===cur));
+    const t=total();
+    $('.readout',box).textContent=SEL.size?('Kiválasztva: '+SEL.size+' fejezet + összesítő teszt, összesen kb. '+t+' perc.'):'Nincs kijelölt fejezet.';
+    if(redraw)$$('input',pl).forEach((c,i)=>{c.checked=SEL.has(i+1);});
+    $('.go',box)&&($('.go',box).disabled=!SEL.size);
+  }
+  $$('.pr',box).forEach(b=>{b.onclick=()=>{SEL=new Set(PRESET[b.dataset.p]);window.SEL=SEL;apply(true);};});
+  const go=node('<button class="btn go">Indítás: az első fejezet</button>');
+  go.onclick=()=>{if(SEL.size)render(VIS[1]);};
+  box.append(go);
+  r.append(box);
+  apply(true);
+  r.append(node('<p class="foot">Az összesítő teszt csak a kijelölt fejezetek kérdéseit kérdezi. A hosszú változat minden fejezetben további gyakorlatokat tartalmaz.</p>'));
+  return r;
+}
+function shorten(n,fn){
+  return ()=>{
+    const el=fn();
+    (DROP[n]||[]).forEach(id=>{const p=el.querySelector('[data-act="'+id+'"]');if(p)p.remove();});
+    return el;
+  };
+}
+CH.length=0;
+CH.push(
+  {short:'Kezdőlap',title:'Kezdőlap',sum:'',acts:[],build:buildHome},
+  {short:'Vonások',title:'Az emlékezet alapvető vonásai',sum:'Aktív, szelektív, érthető, szituatív, közvetített, szervezett és rendszerszerű.',acts:SHORT_ACTS[1],build:shorten(1,buildTraits)},
+  {short:'Szakaszok',title:'Az emlékezet szakaszai',sum:'Bevésés, megőrzés, felidézés (felismerés és reprodukálás).',acts:SHORT_ACTS[2],build:shorten(2,buildStages)},
+  {short:'Formák',title:'Az emlékezet formái',sum:'Szándékos és önkéntelen, mechanikus és logikai; szenzoros, rövid és hosszú távú; epizodikus, szemantikus, procedurális, affektív.',acts:SHORT_ACTS[3],build:shorten(3,buildForms)},
+  {short:'Tulajdonságok',title:'Az emlékezet tulajdonságai',sum:'Terjedelem, mobilitás, rögzítési sebesség, megőrzési időtartam, hűség, pontosság.',acts:SHORT_ACTS[4],build:shorten(4,buildProps)},
+  {short:'Optimalizálás',title:'Az emlékezet optimalizálása',sum:'Szubjektív és objektív tényezők, mnemotechnikai eljárások.',acts:SHORT_ACTS[5],build:shorten(5,buildOpt)},
+  {short:'Felejtés',title:'A felejtés',sum:'Motivált felejtés, elhalványulás, interferencia; a felejtés formái; amnézia.',acts:SHORT_ACTS[6],build:shorten(6,buildForget)},
+  {short:'Ismétlés',title:'Az ismétlés',sum:'Túltanulás, összevont és elosztott ismétlés.',acts:SHORT_ACTS[7],build:shorten(7,buildRepeat)},
+  {short:'Összesítő',title:'Összesítő teszt',sum:'Kérdések a kijelölt fejezetekből.',acts:['qf'],build:buildFinal}
+);
+refreshVIS();buildNav();updateProgress();
+{
+  const m=/^#k(\d)$/.exec(location.hash||'');
+  render(m&&VIS.includes(+m[1])?+m[1]:0);
+}
+
+</script>
+
+</body></html>
