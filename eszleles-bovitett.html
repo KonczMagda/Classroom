@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Észlelés</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F4FB; --ink:#16163A; --muted:#4F5279; --card:#FFFFFF; --line:#D5D8EE;
+  --accent:#D42A68; --blue:#3550F5; --teal:#0B7F72; --sun:#FFC533; --sun-ink:#33240A;
+  --good:#0B7A4E; --bad:#B8263F;
+  --display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --body:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12122B; --ink:#EEEFFC; --muted:#A9ACD6; --card:#1D1E42; --line:#34376B;
+    --accent:#FF5C93; --blue:#6F86FF; --teal:#2CC7B4; --sun:#FFC533; --sun-ink:#33240A;
+    --good:#4BD99A; --bad:#FF7A90;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12122B; --ink:#EEEFFC; --muted:#A9ACD6; --card:#1D1E42; --line:#34376B;
+  --accent:#FF5C93; --blue:#6F86FF; --teal:#2CC7B4; --sun:#FFC533; --sun-ink:#33240A;
+  --good:#4BD99A; --bad:#FF7A90;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:clamp(1.02rem,1.5vw,1.28rem);line-height:1.5;overflow:hidden}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em;line-height:1.06;margin:0 0 .45em}
+h1{font-size:clamp(2.6rem,7.5vw,5.6rem)}
+h2{font-size:clamp(1.9rem,4.2vw,3.2rem)}
+h3{font-size:clamp(1.15rem,2vw,1.5rem);font-weight:600;letter-spacing:-.01em}
+h1:focus,h2:focus{outline:none}
+p{margin:0 0 .8em}
+.lead{color:var(--muted);max-width:62ch;font-size:1.08em}
+.small{font-size:.86em;color:var(--muted)}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+.deck{height:100%;display:flex;flex-direction:column}
+.stage{flex:1;min-height:0;position:relative}
+.slide{position:absolute;inset:0;overflow-y:auto;display:flex;padding:clamp(18px,3.5vw,48px) clamp(18px,6vw,88px)}
+.slide[hidden]{display:none!important}
+.slide-inner{width:100%;max-width:1120px;margin:auto}
+
+.bar{display:flex;align-items:center;gap:12px;padding:10px clamp(12px,3vw,32px);border-top:1px solid var(--line);background:var(--bg)}
+.nav{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none}
+.nav:disabled{opacity:.35;cursor:default}
+.nav svg{width:22px;height:22px}
+.track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.fill{height:100%;width:0;background:var(--accent);border-radius:inherit;transition:width .3s}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:500;min-width:4.2em;text-align:right}
+.pill{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.5em 1em;min-height:46px;cursor:pointer;font-weight:500;flex:none}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.btn{font-weight:700;padding:.7em 1.35em;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer;min-height:46px;font-size:1rem}
+.btn.hot{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.55;cursor:default}
+
+.notes{display:none;margin-top:1.6em;padding:14px 18px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);font-size:.9rem}
+.notes b{color:var(--ink)}
+body.notes-on .notes{display:block}
+
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:20px 22px}
+.card h3{margin-bottom:.3em}
+.card p{margin:0;color:var(--muted)}
+
+.flip{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px 20px;min-height:150px;cursor:pointer}
+.flip .back{display:none}
+.flip.is-open{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.flip.is-open .front{display:none}
+.flip.is-open .back{display:block}
+.flip .hint{display:block;margin-top:.7em;font-size:.82em;color:var(--muted)}
+.flip .t{font-family:var(--display);font-weight:600;font-size:1.2em;line-height:1.2;display:block;margin-bottom:.3em}
+.flip .back b{display:block;font-family:var(--display);font-size:1.15em;margin-bottom:.25em}
+.flip svg{display:block;margin-top:.5em}
+
+.box{border-left:6px solid var(--sun);background:var(--card);border-radius:0 16px 16px 0;padding:16px 20px;margin-top:20px}
+.box p{margin:0 0 .5em}
+ul.plain{margin:0;padding-left:1.1em}
+ul.plain li{margin-bottom:.35em}
+.big-say{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.02em;max-width:26ch;margin:0 0 .6em}
+
+.hero{display:grid;gap:32px;align-items:center}
+@media (min-width:900px){.hero{grid-template-columns:1.05fr .95fr}}
+.cloud{display:flex;flex-wrap:wrap;gap:12px 10px;align-items:center;justify-content:center}
+.chip{display:inline-block;padding:.45em 1em;border-radius:999px;font-weight:700;font-size:var(--s,1.1rem);transform:rotate(var(--r,0deg));animation:rise .7s both;animation-delay:var(--d,0s);border:2px solid transparent}
+.c1{background:var(--accent);color:#fff}
+.c2{background:var(--blue);color:#fff}
+.c3{background:var(--teal);color:#fff}
+.c4{background:var(--sun);color:var(--sun-ink)}
+.c5{border-color:var(--ink);color:var(--ink)}
+@keyframes rise{from{opacity:0;transform:translateY(28px) rotate(var(--r,0deg))}to{opacity:1;transform:translateY(0) rotate(var(--r,0deg))}}
+
+.panel{background:#1A1A2E;color:#F2F3FF;border-radius:24px;padding:24px 26px}
+.panel p{color:#DADCF5}
+.panel h3{color:#fff}
+.panel .btn.light{background:#F2F3FF;color:#1A1A2E;border-color:#F2F3FF}
+.panel .small{color:#A9ACD6}
+
+/* compare columns */
+.compare{display:grid;gap:18px;grid-template-columns:1fr;margin:20px 0}
+@media (min-width:820px){.compare{grid-template-columns:1fr 1fr}}
+.compare .col{border-radius:20px;padding:20px 22px;border:1.5px solid var(--line)}
+.compare .col.a{background:var(--card)}
+.compare .col.b{background:#1A1A2E;color:#F2F3FF;border-color:#1A1A2E}
+.compare .col.b p{color:#DADCF5}
+.compare h3{margin-bottom:.4em}
+
+/* word demo */
+.wordline{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,4.5vw,2.8rem);letter-spacing:.01em;text-align:center;padding:.5em;background:var(--card);border:1.5px solid var(--line);border-radius:18px}
+
+/* dashed/closure */
+.closure-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+.closure-svg path{transition:stroke-dasharray .4s}
+
+/* rubin vase */
+.rubin-wrap{display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+
+/* door constancy */
+.door-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.door-caption{min-height:2.4em;text-align:center;color:var(--muted)}
+
+/* depth hotspots */
+.depth-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.depth-btns button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.5em 1.1em;cursor:pointer;font-weight:600;font-size:.92em}
+.depth-btns button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.depth-desc{min-height:3em;color:var(--muted);margin-top:10px}
+.depth-dim{opacity:.28;transition:opacity .3s}
+.depth-on{opacity:1;transition:opacity .3s}
+
+/* pareidolia */
+.blob-wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap;justify-content:center}
+
+.stmt{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.stmt.ok{border-color:var(--good);border-width:2.5px}
+.stmt.no{border-color:var(--bad);border-width:2.5px}
+.stmt-t{font-weight:700;margin:0;font-size:1.05em}
+.ans{display:flex;gap:10px}
+.fb{margin:0;font-size:.95em;color:var(--muted)}
+.stmt.ok .fb strong{color:var(--good)}
+.stmt.no .fb strong{color:var(--bad)}
+
+/* chain (fázisok) */
+.chain{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0}
+.chain .step{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:14px 18px;min-width:140px;text-align:center;opacity:.35;transition:opacity .3s, transform .3s, border-color .3s;cursor:pointer}
+.chain .step.on{opacity:1;border-color:var(--accent);transform:translateY(-3px)}
+.chain .step b{display:block;font-family:var(--display);font-size:1.02em;margin-bottom:.2em}
+.chain .step span{font-size:.8em;color:var(--muted)}
+.chain .arrow{color:var(--line);font-size:1.3em}
+.chain .arrow.on{color:var(--accent)}
+.chain-desc{min-height:2.6em;font-size:.98em;color:var(--muted)}
+
+/* --- új elemek --- */
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.status{color:var(--muted);min-height:1.5em;margin:10px 0 0}
+.field{font:inherit;padding:.6em .9em;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);min-width:0;flex:1}
+.puz-txt{font-family:var(--display);font-weight:700;font-size:1.02em;line-height:1.5;word-break:break-word;color:var(--ink)!important;margin:.3em 0 .8em!important}
+.puz-ans{margin-top:.8em!important;color:var(--good)!important;font-weight:500}
+.cat{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,7vw,4.2rem);letter-spacing:.08em;text-align:center;padding:.4em;background:var(--card);border:1.5px solid var(--line);border-radius:20px;margin:12px 0}
+.cat .hl{color:var(--accent);border-bottom:5px solid var(--accent)}
+.hg-svg,.lc-svg,.cb-svg{width:min(380px,100%);height:auto;background:var(--card);border:1.5px solid var(--line);border-radius:18px;display:block}
+.hg-hit{cursor:pointer}
+.lc-opts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+@keyframes pulse{0%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+.cb-ring{transform-origin:275px 186px;animation:pulse 1.2s infinite}
+
+@media (prefers-reduced-motion:reduce){
+  .chip{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+<main class="stage" id="stage">
+
+<!-- 1. Cím -->
+<section class="slide" aria-label="Cím">
+  <div class="slide-inner hero">
+    <div>
+      <h1 tabindex="-1">Észlelés</h1>
+      <p class="lead">Az érzékszerveink ugyanazt az ingert kapják – de nem mindenki ugyanazt "látja" benne. Ma megnézzük, hogyan szervezi és értelmezi az agyunk azt, amit érzékelünk.</p>
+      <button class="btn hot" data-next>Kezdjük</button>
+      <aside class="notes"><b>Tanári jegyzet (kb. 1 perc).</b> A lecke Zimbardo Pszichológia c. tankönyve és a X. osztályos román pszichológia tankönyv „Percepție” fejezete alapján épül fel: érzékelés–észlelés különbség, Gestalt-elvek, percepciós állandóság, mélységészlelés, percepciós készenlét.</aside>
+    </div>
+    <div class="cloud" aria-hidden="true">
+      <span class="chip c1" style="--d:.05s;--r:-4deg;--s:1.6rem">alak</span>
+      <span class="chip c5" style="--d:.15s;--r:3deg;--s:1.1rem">háttér</span>
+      <span class="chip c2" style="--d:.25s;--r:-2deg;--s:1.3rem">állandóság</span>
+      <span class="chip c4" style="--d:.35s;--r:4deg;--s:1.5rem">mélység</span>
+      <span class="chip c3" style="--d:.45s;--r:-3deg;--s:1.15rem">illúzió</span>
+      <span class="chip c5" style="--d:.55s;--r:2deg;--s:1.4rem">kontextus</span>
+      <span class="chip c1" style="--d:.65s;--r:-5deg;--s:1.1rem">elvárás</span>
+      <span class="chip c2" style="--d:.75s;--r:3deg;--s:1.5rem">csoportosítás</span>
+      <span class="chip c4" style="--d:.85s;--r:-2deg;--s:1.15rem">értelmezés</span>
+      <span class="chip c3" style="--d:.95s;--r:2deg;--s:1.3rem">figyelem</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Nyitó: duplikált szó -->
+<section class="slide" aria-label="Nyitó rejtvény" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Olvasd el egyszer, gyorsan és hangosan</h2>
+    <p class="lead">Nézd meg a mondatot, olvasd fel gyorsan magadban vagy hangosan, aztán kattints.</p>
+    <p class="wordline">A MADÁR A A FÁN ÉNEKEL</p>
+    <div style="margin-top:18px"><button class="btn hot" id="word-btn">Meg vagyok – mutasd, mi történt</button></div>
+    <p class="box" id="word-answer" hidden>Van benne <strong>két egymás utáni „A” szó</strong> – sokan ezt olvasás közben egyszerűen nem veszik észre. Miért? Mert az agyad nem passzívan "fényképezi le" a betűket, hanem elvárásaid alapján (helyes, értelmes mondat) <strong>kiegészíti és megszervezi</strong> az információt. Ugyanazt az ingert (a nyomtatott szöveget) <em>érzékelted</em>, mégis másképp <em>észlelted</em>, mint ami ténylegesen ott állt.</p>
+  </div>
+</section>
+
+<!-- 2b. Olvasd el! -->
+<section class="slide" aria-label="Olvasd el!" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Olvasd el! Az agyunk kitölti a hiányt</h2>
+    <p class="lead">A percepció elsődleges célja, hogy pontos helyzetjelentést adjon a világról. A világ azonban nem mindig nyitott könyv, amiből könnyű olvasni, mégis szinte mindent ki tudsz olvasni. Próbáld ki, és csak utána nézd meg a megfejtést!</p>
+    <div class="grid two">
+      <div class="card puz">
+        <h3>1. Számok és jelek (leet)</h3>
+        <p class="puz-txt">K3zDJüK 3G¥ 3G¥5z3rüBB3L. H4 3zT K1OLv45OD, 4z 49¥4D tOöKéL3t353N ¥155z4áLLíTj4 4 H1áN¥zó 1NfOrMáC1óK4T.</p>
+        <button class="btn ghost" data-reveal>Megfejtés</button>
+        <p class="puz-ans" hidden>Kezdjük egy egyszerűbbel. Ha ezt kiolvasod, az agyad tökéletesen visszaállítja a hiányzó információkat.</p>
+      </div>
+      <div class="card puz">
+        <h3>2. Összekevert belső betűk</h3>
+        <p class="puz-txt">A kutátsok szreint mndegy, mlyen srorendben vánnak a bteúk egy szóbna, a lnyeg, hogy az első és az uotlsó bteű a hlyeén lgyen. A tböbi lheet tljes zkavar, mgiés rguaklmasan oalvsahó mraad a szveög.</p>
+        <button class="btn ghost" data-reveal>Megfejtés</button>
+        <p class="puz-ans" hidden>A kutatások szerint mindegy, milyen sorrendben vannak a betűk egy szóban, a lényeg, hogy az első és az utolsó betű a helyén legyen. A többi lehet teljes zavar, mégis rugalmasan olvasható marad a szöveg.<br><span class="small" style="color:var(--muted)">Pontosítás: a „tipoglikémia” a neten terjedő, nem tudományos név. A kísérletek szerint az összekevert betűk lassítják az olvasást, de a szavakat valóban egészként, a szövegkörnyezetből is felismerjük.</span></p>
+      </div>
+      <div class="card puz">
+        <h3>3. Visszafelé írt mondat</h3>
+        <p class="puz-txt">.rét a sagát ttellem záh A</p>
+        <p class="small">Olvasd el visszafelé. Mi az utolsó szó?</p>
+        <div class="row"><input class="field" id="rev-in" type="text" placeholder="Az utolsó szó…" aria-label="Az utolsó szó"><button class="btn ghost" id="rev-check">Ellenőrzés</button></div>
+        <p class="puz-ans" id="rev-ans" hidden></p>
+      </div>
+      <div class="card puz">
+        <h3>4. Betű-figurák</h3>
+        <svg viewBox="0 0 300 140" width="100%" style="max-width:300px" role="img" aria-label="Négy figura, amelyek testtartásukkal betűket formálnak" id="fig-svg"></svg>
+        <p class="small">Három betű, négy figura: mit olvasol ki?</p>
+        <button class="btn ghost" data-reveal>Megfejtés</button>
+        <p class="puz-ans" hidden>HIT. Két figura (H: karjuk összeér a testük közepén), egy álló figura (I) és egy kitárt karú figura (T). A testtartásokból az agy alkotja meg az egészet.</p>
+      </div>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 6 perc).</b> A feltöltött fotók feladatai (leet, belső betűk, a könyv visszafelé írt mondata, a „Can you read this?” betű-figurák) nyomán, saját változatban. A visszafelé írt mondatnál a legtöbben elsőre „rét”-et olvasnak, mert a ház melletti tágas hely elvárásunk szerint rét: az elvárásaink formálják az ingerek interpretációját (a könyv példája). A betű-figurák a feltöltött kép mintájára készült saját rajz.</aside>
+  </div>
+</section>
+
+<!-- 2c. Kontextus és percepciós beállítódás -->
+<section class="slide" aria-label="Kontextus és beállítódás" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Mit olvasol? A kontextus és az elvárás</h2>
+    <p class="lead">Olvasd fel hangosan, ami itt áll, aztán kattints.</p>
+    <div class="cat" id="cat-text" aria-label="TAE CAT">TAE CAT</div>
+    <button class="btn hot" id="cat-btn">Nézd meg a középső betűket</button>
+    <p class="box" id="cat-ans" hidden>Mindkét középső betű <strong>A</strong>. Mégis a legtöbben azt olvassák, hogy <em>THE CAT</em>: az angol szavakkal kapcsolatos elvárásaink befolyásoltak minket. A T_E kontextus nagy valószínűséggel egy H-t feltételez a két betű közé, a C_T esetében viszont mindez fordítva van (Selfridge, 1955).</p>
+    <h3 style="margin-top:22px">Percepciós beállítódás: két lista</h3>
+    <p class="lead">Olvasd el gyorsan az alábbi sorokat, és döntsd el, mi áll a T?L helyén.</p>
+    <div class="grid two" id="tel-quiz"></div>
+    <div class="grid" style="margin-top:14px">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Percepciós beállítódás</span><span class="hint">Mi ez?</span></span><span class="back"><b>Felkészültség</b>A percepciós beállítódás hatása alatt hajlamosak vagyunk bizonyos jelzéseket észrevenni és azokra reagálni, mint amikor a futó a startpisztoly dörrenésére vár. Az újszülött anyja például a gyermeke sírására van felkészülve.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Miért nem ismerünk fel valakit?</span><span class="hint">Kontextus</span></span><span class="back"><b>Nem számítottunk rá</b>Előfordult már, hogy nem ismertünk fel valakit egy másik városban vagy egy új társaságban. Nem az volt a baj, hogy másképp néz ki, hanem hogy a kontextus szokatlan volt: nem számítottunk rá. A felismerés a kontextustól és az elvárásainktól is függ, nem csak a fizikai tulajdonságoktól.</span></button>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A „THE CAT” és a „TÁNYÉR… T?L” példák a feltöltött könyvoldal nyomán (Selfridge, 1955; percepciós beállítódás), átfogalmazva. Kérdezd meg előbb a diákokat, mit olvastak, csak utána mutasd a megfejtést.</aside>
+  </div>
+</section>
+
+<!-- 3. Érzékelés vs Észlelés -->
+<section class="slide" aria-label="Érzékelés vs Észlelés" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Érzékelés vagy észlelés?</h2>
+    <p class="lead">Az előző órán az érzékelésről tanultunk. Ma ennek a folytatását nézzük meg: mi történik, miután az inger eljutott az agyunkig?</p>
+    <div class="compare">
+      <div class="col a">
+        <h3>Érzékelés (sensation)</h3>
+        <p>Alulról felfelé (bottom-up) induló folyamat: a receptorok a nyers ingerenergiát (fény, hang, nyomás) ideg­impulzussá alakítják. Ha a receptoraid épek, ez nagyjából mindenkinél ugyanúgy történik.</p>
+      </div>
+      <div class="col b">
+        <h3>Észlelés (perception)</h3>
+        <p>Az agy <strong>megszervezi és értelmezi</strong> ezeket a jeleket: alakot, mintázatot, jelentést ad nekik. Ebbe beleszól a tapasztalatod, az elvárásaid, a figyelmed, a kultúrád, a hangulatod – ezért ugyanaz az inger másképp "jelenhet meg" két embernek.</p>
+      </div>
+    </div>
+    <div class="box">
+      <p>Emlékszel az előző óráról a <strong>Necker-kockára</strong>? A recehártyádra eső fény (érzékelés) nem változott, mégis „átugrott” az agyad a kétféle értelmezés között (észlelés). Pontosan ez a mai óra témája.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Kérdezd meg: tudnak-e olyan helyzetet mondani, amikor ők és egy barátjuk ugyanazt látták/hallották, mégis mást gondoltak róla?</aside>
+  </div>
+</section>
+
+<!-- 3b. Az észlelés fázisai -->
+<section class="slide" aria-label="Az észlelés fázisai" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Egy észlelés 5 lépésben zajlik le</h2>
+    <p class="lead">Kattints sorban a lépésekre – közben kövesd a példát.</p>
+    <div class="chain" id="phase-chain">
+      <div class="step" data-i="0"><b>Tájékozódás</b><span>a figyelem a jel felé fordul</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="1"><b>Felfedezés</b><span>"Aha!" – észreveszed</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="2"><b>Megkülönböztetés</b><span>elválik a háttértől</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="3"><b>Azonosítás</b><span>"ez egy személy"</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="4"><b>Értelmezés</b><span>"ez az igazgató!"</span></div>
+    </div>
+    <p class="chain-desc" id="phase-chain-desc"></p>
+    <div class="box">
+      <p><strong>Példa:</strong> Órán ülsz, a tanárra figyelsz. Hirtelen kinyílik az ajtó. Automatikusan odafordulsz (<em>tájékozódás</em>), észreveszed, hogy történt valami (<em>felfedezés</em>), a mozgó alakot elkülöníted a terem többi részétől (<em>megkülönböztetés</em>), felismered, hogy ez egy ember, aki belépett (<em>azonosítás</em>), majd rájössz, hogy ő az igazgató – és ennek jelentőséget tulajdonítasz (<em>értelmezés</em>).</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Kérj egy saját diák-példát ugyanerre az öt lépésre – bármilyen hétköznapi helyzet működik (pl. meghallani, hogy valaki a nevünket mondja egy zsúfolt teremben).</aside>
+  </div>
+</section>
+
+<!-- 4. Gestalt elvek -->
+<section class="slide" aria-label="Gestalt-elvek" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Hogyan szervezzük az ingereket? – Gestalt-elvek</h2>
+    <p class="lead">A Gestalt-pszichológusok szerint az agyunk automatikusan, bizonyos szabályok szerint csoportosítja az ingereket. Kattints mindegyikre.</p>
+    <div class="grid">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Közelség</span>
+        <svg width="140" height="46" viewBox="0 0 140 46"><g fill="#16163A"><circle cx="12" cy="23" r="7"/><circle cx="30" cy="23" r="7"/><circle cx="48" cy="23" r="7"/><circle cx="92" cy="23" r="7"/><circle cx="110" cy="23" r="7"/><circle cx="128" cy="23" r="7"/></g></svg>
+        <span class="hint">Kattints a magyarázatért</span></span><span class="back"><b>Közelség</b>Az egymáshoz közel lévő elemeket egy csoportnak látjuk. A hat pontból két hármas csoportot érzékelsz, nem hat különálló pontot.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Hasonlóság</span>
+        <svg width="140" height="46" viewBox="0 0 140 46"><g><circle cx="12" cy="23" r="7" fill="#D42A68"/><circle cx="40" cy="23" r="7" fill="#16163A"/><circle cx="68" cy="23" r="7" fill="#D42A68"/><circle cx="96" cy="23" r="7" fill="#16163A"/><circle cx="124" cy="23" r="7" fill="#D42A68"/></g></svg>
+        <span class="hint">Kattints a magyarázatért</span></span><span class="back"><b>Hasonlóság</b>A hasonló (pl. azonos színű vagy alakú) elemeket csoportosítjuk, még ha nincsenek is közel egymáshoz.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Folytonosság</span>
+        <svg width="140" height="46" viewBox="0 0 140 46"><path d="M5,40 Q40,5 70,23 Q100,41 135,6" fill="none" stroke="#16163A" stroke-width="3"/></svg>
+        <span class="hint">Kattints a magyarázatért</span></span><span class="back"><b>Folytonosság</b>A sima, folyamatos vonalvezetést részesítjük előnyben a hirtelen irányváltásokkal szemben – akkor is, ha az ingerben nincs valódi folytonos vonal.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Zártság</span><span class="hint">Kattints a magyarázatért (részletesen a következő dián)</span></span><span class="back"><b>Zártság (closure)</b>A hiányos, megszakított alakzatokat is teljesnek, zártnak érzékeljük – az agyunk "kitölti" a hiányzó részeket.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Alak-háttér</span><span class="hint">Kattints a magyarázatért (részletesen a következő dián)</span></span><span class="back"><b>Alak-háttér (figure-ground)</b>Mindig elkülönítünk egy "alakot", ami kiemelkedik, és egy "hátteret", ami mögötte marad – néha a kettő felcserélhető.</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Zártság - dashed triangle -->
+<section class="slide" aria-label="Zártság" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Zártság: a hiányból is egészet látunk</h2>
+    <p class="lead">Nézd meg az ábrát – pedig a vonal nagy része hiányzik.</p>
+    <div class="closure-wrap">
+      <svg class="closure-svg" width="320" height="280" viewBox="0 0 320 280">
+        <path id="closure-path" d="M160,30 L290,240 L30,240 Z" fill="none" stroke="#16163A" stroke-width="6" stroke-linejoin="round" stroke-dasharray="18 16"/>
+      </svg>
+      <button class="btn ghost" id="closure-btn">Mutasd folytonos vonallal</button>
+      <p class="box">Valójában a kontúr nagy része <strong>nincs is megrajzolva</strong> – csak szaggatott vonaldarabkák vannak ott. Az agyad mégis egy teljes, zárt háromszöget "lát", mert a <strong>zártság elve</strong> alapján automatikusan kitölti a hézagokat. Ugyanez történik, amikor felismersz egy szót részben eltakart felirat esetén is.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Alak-háttér - Rubin váza -->
+<section class="slide" aria-label="Alak-háttér" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Váza, vagy két egymással szemben néző arc?</h2>
+    <p class="lead">Nézd meg az ábrát: az egyik pillanatban az egyik olvasat "ugrik be", aztán a másik. Kattints arra, amit most éppen látsz.</p>
+    <div class="rubin-wrap">
+      <svg width="240" height="288" viewBox="0 0 300 360" role="img" aria-label="Rubin-serleg: fehér váza, vagy két arcprofil"><rect x="1.5" y="1.5" width="297" height="357" rx="6" fill="#16163A" stroke="#8A8DB8" stroke-width="3"/><path fill="#FFFFFF" d="M74.0,0.0 C74.7,3.0 76.3,12.0 78.0,18.0 C79.7,24.0 82.0,29.0 84.0,36.0 C86.0,43.0 88.3,53.0 90.0,60.0 C91.7,67.0 93.7,73.3 94.0,78.0 C94.3,82.7 93.7,83.7 92.0,88.0 C90.3,92.3 83.0,97.3 84.0,104.0 C85.0,110.7 93.7,121.0 98.0,128.0 C102.3,135.0 107.0,141.3 110.0,146.0 C113.0,150.7 115.3,153.7 116.0,156.0 C116.7,158.3 116.7,158.3 114.0,160.0 C111.3,161.7 104.0,164.0 100.0,166.0 C96.0,168.0 91.0,169.0 90.0,172.0 C89.0,175.0 92.7,181.0 94.0,184.0 C95.3,187.0 98.3,188.0 98.0,190.0 C97.7,192.0 93.8,193.7 92.0,196.0 C90.2,198.3 86.7,201.3 87.0,204.0 C87.3,206.7 92.7,209.3 94.0,212.0 C95.3,214.7 96.0,217.7 95.0,220.0 C94.0,222.3 90.2,223.3 88.0,226.0 C85.8,228.7 81.3,232.3 82.0,236.0 C82.7,239.7 89.7,243.7 92.0,248.0 C94.3,252.3 96.3,258.0 96.0,262.0 C95.7,266.0 93.7,268.3 90.0,272.0 C86.3,275.7 79.3,280.0 74.0,284.0 C68.7,288.0 62.0,290.3 58.0,296.0 C54.0,301.7 52.7,307.3 50.0,318.0 C47.3,328.7 43.3,353.0 42.0,360.0 L258.0,360.0 C256.7,353.0 252.7,328.7 250.0,318.0 C247.3,307.3 246.0,301.7 242.0,296.0 C238.0,290.3 231.3,288.0 226.0,284.0 C220.7,280.0 213.7,275.7 210.0,272.0 C206.3,268.3 204.3,266.0 204.0,262.0 C203.7,258.0 205.7,252.3 208.0,248.0 C210.3,243.7 217.3,239.7 218.0,236.0 C218.7,232.3 214.2,228.7 212.0,226.0 C209.8,223.3 206.0,222.3 205.0,220.0 C204.0,217.7 204.7,214.7 206.0,212.0 C207.3,209.3 212.7,206.7 213.0,204.0 C213.3,201.3 209.8,198.3 208.0,196.0 C206.2,193.7 202.3,192.0 202.0,190.0 C201.7,188.0 204.7,187.0 206.0,184.0 C207.3,181.0 211.0,175.0 210.0,172.0 C209.0,169.0 204.0,168.0 200.0,166.0 C196.0,164.0 188.7,161.7 186.0,160.0 C183.3,158.3 183.3,158.3 184.0,156.0 C184.7,153.7 187.0,150.7 190.0,146.0 C193.0,141.3 197.7,135.0 202.0,128.0 C206.3,121.0 215.0,110.7 216.0,104.0 C217.0,97.3 209.7,92.3 208.0,88.0 C206.3,83.7 205.7,82.7 206.0,78.0 C206.3,73.3 208.3,67.0 210.0,60.0 C211.7,53.0 214.0,43.0 216.0,36.0 C218.0,29.0 220.3,24.0 222.0,18.0 C223.7,12.0 225.3,3.0 226.0,0.0 Z"/></svg>
+      <div style="max-width:460px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn ghost" data-see="vase">Én egy vázát látok</button>
+          <button class="btn ghost" data-see="faces">Én két arcot látok</button>
+        </div>
+        <p class="box" id="rubin-answer" hidden>Mindkét válasz helyes – ez a <strong>Rubin-serleg</strong>, egy <strong>kettős jelentésű ábra</strong>: olyan ingermintázat, amelyet két vagy több különböző módon lehet értelmezni (a másik híres példa a Necker-kocka). Ha a sötét részt tekinted "alaknak", vázát látsz; ha a fehér részeket, két egymással szemben néző profilt. Ugyanaz az ábra (érzékelés), de az agyad csak az egyik olvasatot tudja egyszerre "alaknak" látni (észlelés). A pszichológia tankönyvekben az egyik leghíresebb ilyen ábra valójában <strong>három</strong> olvasatot rejt egyszerre: egy fiatal nőt, egy öregasszonyt és egy férfit – attól függően, melyik részletre fókuszálsz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Percepciós állandóság -->
+<section class="slide" aria-label="Percepciós állandóság" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Ugyanaz az ajtó – teljesen más alakú retinakép</h2>
+    <p class="lead">Kattints a gombra, és nézd meg, ahogy az ajtó nyílik. Figyeld meg: a retinádra eső <em>alak</em> drámaian változik.</p>
+    <div class="door-wrap">
+      <svg id="door-svg" width="260" height="220" viewBox="0 0 260 220">
+        <rect x="20" y="20" width="120" height="180" fill="#D9DEFF" stroke="#16163A" stroke-width="4"/>
+        <circle cx="120" cy="112" r="5" fill="#16163A"/>
+      </svg>
+      <p class="door-caption" id="door-caption">Csukott ajtó: téglalap alakú retinakép.</p>
+      <button class="btn hot" id="door-next">Nyisd tovább az ajtót</button>
+    </div>
+    <div class="box">
+      <p>Ez a <strong>percepciós állandóság (alakállandóság)</strong>: annak ellenére, hogy a retinádon egyre keskenyebb, torzabb alak jelenik meg, végig ugyanazt a téglalap alakú ajtót <em>észleled</em> – a tudásod és a tapasztalatod "kijavítja" a nyers képet.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7b. Hermann-rács -->
+<section class="slide" aria-label="Hermann-rács" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Hermann-rács: ha tudod is, mégis látod</h2>
+    <p class="lead">Szegezd a tekintetedet a rács közepére: a fehér vonalak keresztezési pontjaiban sötét, elmosódó foltokat látsz. Ha a fókuszt egy keresztezésre irányítod, az ottani folt eltűnik. Kattints a gombra, és ellenőrizd: tényleg fehér ott minden?</p>
+    <svg class="hg-svg" id="hg-svg" viewBox="0 0 320 320" role="img" aria-label="Fekete négyzetekből álló rács, a fehér vonalak keresztezésében szürke foltokkal"></svg>
+    <div class="row" style="margin-top:12px"><button class="btn hot" id="hg-btn">Mutasd meg, hogy fehér</button></div>
+    <div class="grid two" style="margin-top:16px">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Alulról felfelé</span><span class="hint">Miért látjuk a foltot?</span></span><span class="back"><b>Az érzékelés szintje</b>A vizuális idegpályák receptorsejtjei egymással kommunikálnak: a világos és a sötét határvonalára érzékeny sejtek ingerlése gátolja azokat a szomszédos sejteket, melyek a fehér rácsvonalak érzékelését végzik. Ezért látjuk a fehér részeket sötétebbnek a tekintetünk fókuszán kívül eső területeken.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Felülről lefelé</span><span class="hint">Segít, ha tudjuk?</span></span><span class="back"><b>A tudás nem elég</b>Még ha tudjuk is, hogy a rács négyzetei feketék, a rácsvonalak pedig fehérek (felülről lefelé irányuló feldolgozás), ezt a tudást háttérbe szorítja az optikai illúzió, ami egy alapvetőbb szintre, a szenzoros szintre hat.</span></button>
+    </div>
+    <div class="box"><p>Amikor hibásan értelmezünk egy ingermintázatot, <strong>érzéki csalódás</strong> (illúzió) áldozataivá válunk. Az ilyen illúziók segíthetnek megértenünk az érzékelés és a percepció alapvető jellemzőit, különösen azt, hogy az észleleteink és a külső valóság között ellentmondás lehet (Cohen és Girgus, 1973).</p></div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> A Hermann-rács (3.16. ábra) a feltöltött tankönyvoldal alapján, saját rajzzal. Az illúzió erőssége képernyőn és eszközönként változik; kérd meg a diákokat, hogy különböző keresztezéseket nézzenek.</aside>
+  </div>
+</section>
+
+<!-- 7c. Ugyanaz a szürke -->
+<section class="slide" aria-label="Ugyanaz a szürke" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Ugyanaz a szürke?</h2>
+    <p class="lead">Két szürke négyzet látható, az egyik sötét, a másik világos háttéren. Melyik világosabb?</p>
+    <svg class="lc-svg" id="lc-svg" viewBox="0 0 360 160" role="img" aria-label="Két szürke négyzet, az egyik sötét, a másik világos háttéren"></svg>
+    <div class="lc-opts" id="lc-opts">
+      <button class="btn ghost" data-v="L">A bal</button>
+      <button class="btn ghost" data-v="R">A jobb</button>
+      <button class="btn ghost" data-v="E">Egyforma</button>
+    </div>
+    <p class="status" id="lc-fb"></p>
+    <button class="btn hot" id="lc-bridge">Kösd össze őket!</button>
+    <div class="box">
+      <p>A két négyzet <strong>pontosan ugyanolyan szürke</strong>. Ha összekötöd őket egy ugyanilyen színű sávval, egybeolvadnak, mert a színük megegyezik. A magyarázatot a <strong>szín- és világosságállandóság</strong> (konstancia) adja: ez annak a képességünknek az eredménye, hogy egy dolgot alapvetően változatlannak látunk, akkor is, ha a megvilágítás vagy a környezet változik. Itt ez a képességünk csapja be az agyunkat.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> A feltöltött tankönyv szín- és világosságállandóságot bemutató illúziójának (3.18. ábra) saját, egyszerűsített változata: két azonos szürke négyzet, eltérő háttérrel.</aside>
+  </div>
+</section>
+
+<!-- 8. Mélységészlelés -->
+<section class="slide" aria-label="Mélységészlelés" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Honnan tudod, mi van közelebb?</h2>
+    <p class="lead">A retinaképed lapos (2D), mégis mélységet észlelsz. Kattints a jelzőkre, és nézd meg, mely részletek segítenek ebben.</p>
+    <svg width="100%" height="220" viewBox="0 0 500 220" preserveAspectRatio="xMidYMid meet">
+      <rect width="500" height="220" fill="#EEF0FF"/>
+      <g id="depth-persp" class="depth-dim">
+        <line x1="250" y1="70" x2="20" y2="220" stroke="#16163A" stroke-width="3"/>
+        <line x1="250" y1="70" x2="480" y2="220" stroke="#16163A" stroke-width="3"/>
+      </g>
+      <g id="depth-overlap" class="depth-dim">
+        <path d="M150,150 Q210,90 270,150 Z" fill="#3550F5"/>
+        <path d="M210,160 Q270,110 330,160 Z" fill="#0B7F72"/>
+      </g>
+      <g id="depth-size" class="depth-dim">
+        <circle cx="60" cy="190" r="16" fill="#D42A68"/>
+        <circle cx="440" cy="120" r="5" fill="#D42A68"/>
+      </g>
+    </svg>
+    <div class="depth-btns" id="depth-btns">
+      <button data-g="depth-persp" aria-pressed="false">Perspektíva</button>
+      <button data-g="depth-overlap" aria-pressed="false">Takarás</button>
+      <button data-g="depth-size" aria-pressed="false">Relatív méret</button>
+    </div>
+    <p class="depth-desc" id="depth-desc">Kattints egy gombra a jelzőkör kiemeléséhez.</p>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Ezek monokuláris (fél szemmel is működő) mélységjelzők. Említsd meg, hogy két szemmel (binokuláris látással) további jelzők is segítenek, pl. a két retinakép közti apró eltérés (sztereopszis).</aside>
+  </div>
+</section>
+
+<!-- 8b. Más formái + miért csalnak az illúziók -->
+<section class="slide" aria-label="Egyéb észlelési formák" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Nemcsak a térről van szó</h2>
+    <p class="lead">A térbeli észlelés mellett a tankönyv még háromféle összetett észlelést említ.</p>
+    <div class="grid three">
+      <div class="card"><h3>Időészlelés</h3><p>Az idő is végtelen, közvetlenül nem érzékelhető – csak az események sorrendjét, egyidejűségét, időtartamát észleljük, az emlékezet segítségével.</p></div>
+      <div class="card"><h3>Mozgásészlelés</h3><p>Azért észlelünk mozgást, mert a tárgy elválik a háttértől, és a recehártyánkon a kép folyamatosan, de állandó alakban változik.</p></div>
+      <div class="card"><h3>Személyközi észlelés</h3><p>Mások megfigyelhető tulajdonságainak, viselkedésének észlelése. Annak van jobb "emberismerete", aki a kevésbé nyilvánvaló vonásokat is észreveszi.</p></div>
+    </div>
+    <div class="box">
+      <p><strong>De miért csalnak meg minket az illúziók egyáltalán?</strong> Jean Piaget szerint ennek egyik oka a <em>"centrálás hatása"</em>: amire a figyelmünk középpontjában összpontosítunk, azt hajlamosak vagyunk túlbecsülni, nagyobbnak látni. Más esetekben az életkor és a tapasztalat is számít: kutatások szerint gyerekek gyakran másképp dőlnek be egyes geometriai illúzióknak, mint a már a négyzet alakhoz "hozzászokott" felnőttek.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Opcionális, factuális megjegyzés: a tankönyv megemlíti, hogy bizonyos súlyos lelki betegségek (pl. szkizofrénia) esetén az észlelés is sérülhet, és hallucinációk jelenhetnek meg – ha felmerül a téma, kezeld semleges, tényszerű hangnemben, elkerülve bármilyen ijesztő vagy stigmatizáló megfogalmazást.</aside>
+  </div>
+</section>
+
+<!-- 9. Pareidolia -->
+<section class="slide" aria-label="Pareidolia" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Látsz benne arcot?</h2>
+    <p class="lead">Ez a forma teljesen véletlenszerű – mégis, szinte lehetetlen nem arcot látni benne.</p>
+    <div class="blob-wrap">
+      <svg width="220" height="200" viewBox="0 0 220 200">
+        <path d="M110,10 C170,10 205,55 200,100 C196,140 175,175 130,190 C90,202 40,185 20,145 C2,108 15,55 55,25 C72,13 90,10 110,10 Z" fill="#D9DEFF" stroke="#16163A" stroke-width="3"/>
+        <circle cx="80" cy="85" r="11" fill="#16163A"/>
+        <circle cx="145" cy="80" r="11" fill="#16163A"/>
+        <path d="M75,135 Q112,160 150,130" fill="none" stroke="#16163A" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+      <div style="max-width:340px">
+        <p class="box">Ez a jelenség a <strong>pareidolia</strong>: az agyunk annyira "rá van hangolva" az arcfelismerésre, hogy véletlenszerű foltokban, felhőkben, konnektorokban is arcokat vél felfedezni. Ez is <strong>percepciós készenlét</strong>: elvárásaink és korábbi tapasztalataink alapján aktívan "keresünk" bizonyos mintázatokat, még ott is, ahol nincsenek szándékosan elhelyezve.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9b. Látom, ezért elhiszem: változási vakság -->
+<section class="slide" aria-label="Változási vakság" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Látom, ezért elhiszem?</h2>
+    <p class="lead">Ha azt hiszed, hogy az érzékszerveid a világ pontos és torzítatlan képét adják, ki kell ábrándítanunk. Két kép váltakozik, köztük egy villanásnyi szünet. Valami megváltozik a két kép között. Mi az?</p>
+    <svg class="cb-svg" id="cb-svg" viewBox="0 0 360 220" role="img" aria-label="Egy kis falu képe, amely villogva váltakozik"></svg>
+    <div class="row" style="margin-top:12px">
+      <button class="btn hot" id="cb-start">Indítás</button>
+      <button class="btn ghost" id="cb-found" disabled>Megtaláltam, mutasd!</button>
+    </div>
+    <p class="status" id="cb-status"></p>
+    <div class="box">
+      <p>A <strong>bűvészek</strong> a percepciók manipulálásának művészei, ezért partnerei a percepciót vizsgáló kutatóknak. Az eredmények között találunk <em>változási vakságot</em> (nagy változásokat sem veszünk észre, ha egy pillanatra megszakad a látvány) és <em>figyelmetlenségi vakságot</em> (nem veszünk észre dolgokat, ha máson van a figyelmünk). A kutatók akkor örülnek, ha sikerül leleplezniük az agy trükkjeit, és kideríteni, hogyan csap be mindannyiunkat az érzékelésünk és az észlelésünk.</p>
+      <p class="small">Érdekesség: a könyv szerint pont egy bűvész barátunktól tudjuk, hogy az okos embereket a legkönnyebb becsapni. Szóval, legyünk résen!</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A „Látom, ezért elhiszem” szakasz nyomán (bűvészek, változási és figyelmetlenségi vakság; Martinez-Conde és Macknik, 2008). A villogó kép saját rajz. Hagyd, hogy a diákok versenyezzenek: ki veszi észre előbb?</aside>
+  </div>
+</section>
+
+<!-- 10. Igaz/hamis kvíz -->
+<section class="slide" aria-label="Igaz vagy hamis" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Igaz vagy hamis? Érzékelés és észlelés</h2>
+    <div class="grid two" id="tf-quiz"></div>
+  </div>
+</section>
+
+<!-- 11. Záró -->
+<section class="slide" aria-label="Összegzés" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Amit ma megtanultunk</h2>
+    <p class="big-say">Az érzékelés a nyersanyag, az észlelés az, amit ebből az agyunk épít: szervez, kiegészít és jelentéssel lát el.</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>Kilépőjegy (füzetbe, 2 perc)</h3>
+        <ul class="plain">
+          <li>Egy dolog, ami ma meglepett.</li>
+          <li>Melyik Gestalt-elvre emlékszel a legjobban?</li>
+          <li>Egy kérdés, amit még feltennél a témáról.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Házi feladat</h3>
+        <p>Keress otthon vagy az utcán egy példát a percepciós állandóságra vagy egy alak-háttér helyzetre (pl. egy mintás tárgyon). Írd le 3–4 mondatban, mit figyeltél meg.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="bar" aria-label="Diák közötti lépegetés">
+  <button class="nav" id="prev" aria-label="Előző dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+  <span class="count" id="count">1 / 18</span>
+  <button class="pill" id="notes-btn" aria-pressed="false">Jegyzetek</button>
+  <button class="nav" id="next" aria-label="Következő dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+</nav>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var cur=0;
+  var prevBtn=document.getElementById('prev'), nextBtn=document.getElementById('next');
+  var fill=document.getElementById('fill'), count=document.getElementById('count');
+
+  function show(n){
+    n=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,k){ s.hidden=(k!==n); });
+    cur=n;
+    slides[cur].scrollTop=0;
+    var h=slides[cur].querySelector('h1,h2');
+    if(h&&n>0) h.focus({preventScroll:true});
+    fill.style.width=((cur/(slides.length-1))*100)+'%';
+    count.textContent=(cur+1)+' / '+slides.length;
+    prevBtn.disabled=cur===0; nextBtn.disabled=cur===slides.length-1;
+  }
+  prevBtn.addEventListener('click',function(){show(cur-1)});
+  nextBtn.addEventListener('click',function(){show(cur+1)});
+  document.querySelectorAll('[data-next]').forEach(function(b){b.addEventListener('click',function(){show(cur+1)})});
+
+  var notesBtn=document.getElementById('notes-btn');
+  notesBtn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('notes-on');
+    notesBtn.setAttribute('aria-pressed',on);
+  });
+
+  document.addEventListener('keydown',function(e){
+    var t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return;
+    if(e.ctrlKey||e.metaKey||e.altKey) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();show(cur+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1)}
+    else if(e.key==='Home'){show(0)}
+    else if(e.key==='End'){show(slides.length-1)}
+    else if(e.key==='n'||e.key==='N'){notesBtn.click()}
+  });
+
+  var sx=0, sy=0, tracking=false;
+  var stage=document.getElementById('stage');
+  stage.addEventListener('touchstart',function(e){
+    if(e.target.closest('button,a,input,textarea')){tracking=false;return}
+    tracking=true; sx=e.touches[0].clientX; sy=e.touches[0].clientY;
+  },{passive:true});
+  stage.addEventListener('touchend',function(e){
+    if(!tracking) return; tracking=false;
+    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){ show(dx<0?cur+1:cur-1); }
+  },{passive:true});
+
+  document.querySelectorAll('.flip').forEach(function(b){
+    b.addEventListener('click',function(){
+      var o=b.classList.toggle('is-open');
+      b.setAttribute('aria-expanded',o?'true':'false');
+    });
+  });
+
+  /* ---- észlelés fázisai ---- */
+  (function(){
+    var steps=[].slice.call(document.querySelectorAll('#phase-chain .step'));
+    var arrows=[].slice.call(document.querySelectorAll('#phase-chain .arrow'));
+    var desc=document.getElementById('phase-chain-desc');
+    var texts=[
+      'A figyelmed automatikusan a váratlan inger felé fordul.',
+      'Ez a felfedezés pillanata: tudatosul, hogy történt valami új.',
+      'Az agyad elkülöníti az új ingert a háttértől – ez lesz az "alak".',
+      'Kategorizálod: rájössz, milyen típusú dologról van szó.',
+      'Végül jelentést, személyes relevanciát adsz neki – ez már a te egyéni értelmezésed.'
+    ];
+    var i=-1;
+    function step(){
+      i++; if(i>=steps.length){ i=0; steps.forEach(function(s){s.classList.remove('on')}); arrows.forEach(function(a){a.classList.remove('on')}); desc.textContent=''; return; }
+      steps[i].classList.add('on');
+      if(arrows[i-1]) arrows[i-1].classList.add('on');
+      desc.textContent=texts[i];
+    }
+    steps.forEach(function(s){ s.addEventListener('click', step); });
+  })();
+
+  /* ---- duplikált szó ---- */
+  document.getElementById('word-btn').addEventListener('click',function(){
+    document.getElementById('word-answer').hidden=false;
+  });
+
+  /* ---- zártság ---- */
+  document.getElementById('closure-btn').addEventListener('click',function(){
+    var p=document.getElementById('closure-path');
+    var dashed = p.getAttribute('stroke-dasharray') !== 'none';
+    p.setAttribute('stroke-dasharray', dashed ? 'none' : '18 16');
+    this.textContent = dashed ? 'Mutasd szaggatva' : 'Mutasd folytonos vonallal';
+  });
+
+  /* ---- rubin váza ---- */
+  document.querySelectorAll('[data-see]').forEach(function(b){
+    b.addEventListener('click',function(){ document.getElementById('rubin-answer').hidden=false; });
+  });
+
+  /* ---- ajtó / alakállandóság ---- */
+  (function(){
+    var svg=document.getElementById('door-svg'), cap=document.getElementById('door-caption'), btn=document.getElementById('door-next');
+    var states=[
+      { html:'<rect x="20" y="20" width="120" height="180" fill="#D9DEFF" stroke="#16163A" stroke-width="4"/><circle cx="120" cy="112" r="5" fill="#16163A"/>', text:'Csukott ajtó: téglalap alakú retinakép.' },
+      { html:'<polygon points="70,20 140,45 140,175 70,200" fill="#D9DEFF" stroke="#16163A" stroke-width="4"/><circle cx="132" cy="112" r="5" fill="#16163A"/>', text:'Félig nyitott ajtó: a retinakép már trapéz alakú.' },
+      { html:'<rect x="128" y="20" width="14" height="180" fill="#D9DEFF" stroke="#16163A" stroke-width="4"/>', text:'Majdnem teljesen nyitva: a retinaképen már csak egy vékony csík látszik – mégis tudod, hogy ugyanaz a téglalap alakú ajtó.' }
+    ];
+    var i=0;
+    btn.addEventListener('click',function(){
+      i=(i+1)%states.length;
+      svg.innerHTML=states[i].html;
+      cap.textContent=states[i].text;
+    });
+  })();
+
+  /* ---- mélységészlelés ---- */
+  (function(){
+    var btns=[].slice.call(document.querySelectorAll('#depth-btns button'));
+    var groups={ 'depth-persp': document.getElementById('depth-persp'), 'depth-overlap': document.getElementById('depth-overlap'), 'depth-size': document.getElementById('depth-size') };
+    var texts={
+      'depth-persp':'Lineáris perspektíva: a párhuzamos vonalak a távolban egy pontba futnak össze – ez mélységet sugall.',
+      'depth-overlap':'Takarás (interpozíció): amelyik forma eltakar egy másikat, azt közelebbinek észleljük.',
+      'depth-size':'Relatív méret: az azonos méretű tárgyak közül a kisebbnek látszót messzebbinek észleljük.'
+    };
+    var desc=document.getElementById('depth-desc');
+    btns.forEach(function(b){
+      b.addEventListener('click',function(){
+        btns.forEach(function(x){x.setAttribute('aria-pressed','false')});
+        Object.keys(groups).forEach(function(k){ groups[k].setAttribute('class', k===b.getAttribute('data-g') ? 'depth-on' : 'depth-dim'); });
+        b.setAttribute('aria-pressed','true');
+        desc.textContent=texts[b.getAttribute('data-g')];
+      });
+    });
+  })();
+
+  /* ---- igaz/hamis ---- */
+  (function(){
+    var data=[
+      { t:'Két ember, ugyanazt az ingert érzékelve, mindig pontosan ugyanazt észleli.', a:false,
+        e:'Hamis. Az észlelést a tapasztalat, az elvárás, a figyelem és a kultúra is alakítja, ezért ugyanaz az inger két embernél különböző észlelést eredményezhet.' },
+      { t:'A percepciós állandóság segít felismerni a tárgyakat változó szög vagy megvilágítás mellett is.', a:true,
+        e:'Igaz. Az alak-, méret- és színállandóság nélkül minden apró szögváltozásnál újra kellene "tanulnunk" felismerni a már ismert tárgyakat.' },
+      { t:'A Hermann-rács sötét foltjai eltűnnek, ha tudjuk, hogy a rácsvonalak fehérek.', a:false,
+        e:'Hamis. A tudás (felülről lefelé feldolgozás) nem szünteti meg az illúziót, mert az az érzékelés, vagyis egy alapvetőbb szint szintjén hat.' },
+      { t:'A percepciós beállítódás miatt ugyanazt a jelet más szóként olvashatjuk, ha más kontextusban látjuk.', a:true,
+        e:'Igaz. A T?L-t konyhai eszközök után TÁL-nak, évszakok után TÉL-nek olvassuk: az elvárásaink alakítják az észlelést.' },
+      { t:'Az optikai illúziók azt bizonyítják, hogy a szemünk rosszul működik.', a:false,
+        e:'Hamis. Az illúziók nem a szem hibái, hanem azt mutatják meg, hogyan szervezi és értelmezi az agyunk az ingereket – ez az észlelés, nem az érzékelés szintjén történik.' }
+    ];
+    var wrap=document.getElementById('tf-quiz');
+    data.forEach(function(d){
+      var el=document.createElement('div'); el.className='stmt';
+      el.innerHTML='<p class="stmt-t">'+d.t+'</p><div class="ans"><button class="btn ghost" data-v="1">Igaz</button><button class="btn ghost" data-v="0">Hamis</button></div><p class="fb" hidden></p>';
+      var btns=[].slice.call(el.querySelectorAll('button')), fb=el.querySelector('.fb');
+      btns.forEach(function(b){
+        b.addEventListener('click',function(){
+          var v=b.getAttribute('data-v')==='1', ok=(v===d.a);
+          el.classList.add(ok?'ok':'no');
+          btns.forEach(function(x){x.disabled=true});
+          fb.hidden=false;
+          fb.innerHTML='<strong>'+(ok?'Jól tippeltél.':'Ez most nem jött be.')+'</strong> '+d.e;
+        });
+      });
+      wrap.appendChild(el);
+    });
+  })();
+
+  /* ---------- Olvasd el! ---------- */
+  [].forEach.call(document.querySelectorAll('[data-reveal]'),function(b){
+    b.addEventListener('click',function(){
+      var a=b.nextElementSibling; if(a){ a.hidden=false; }
+      b.disabled=true;
+    });
+  });
+  (function(){
+    var inp=document.getElementById('rev-in'), btn=document.getElementById('rev-check'), ans=document.getElementById('rev-ans');
+    function norm(x){ return x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,''); }
+    function check(){
+      var v=norm(inp.value);
+      if(!v){ ans.hidden=false; ans.textContent='Írj be egy szót!'; return; }
+      ans.hidden=false;
+      if(v==='ter') ans.innerHTML='Helyes: <strong>tér</strong>. A teljes mondat: „A ház mellett tágas a tér.” Visszafelé olvasva az utolsó szó nem rét, hanem tér. Ha elsőre a rétet olvastad ki, az elvárásaid csaptak be.';
+      else if(v==='ret') ans.innerHTML='Éppen az elvárásod csapott be! A „.rét” visszafelé olvasva <strong>tér</strong>. A teljes mondat: „A ház mellett tágas a tér.” Az elvárásaink igen erőteljesen formálják az ingerek interpretációját.';
+      else ans.innerHTML='Nem egészen. A „.rét” visszafelé olvasva <strong>tér</strong>. A teljes mondat: „A ház mellett tágas a tér.”';
+    }
+    btn.addEventListener('click',check);
+    inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); check(); } });
+  })();
+  (function(){
+    var svg=document.getElementById('fig-svg'); if(!svg) return;
+    function fig(x,arms){
+      var y0=14, s='<circle cx="'+x+'" cy="'+(y0+8)+'" r="8" fill="none" stroke="#16163A" stroke-width="3.5"/>';
+      s+='<path d="M'+x+' '+(y0+16)+'V'+(y0+66)+'M'+x+' '+(y0+66)+'L'+(x-11)+' '+(y0+112)+'M'+x+' '+(y0+66)+'L'+(x+11)+' '+(y0+112)+'" stroke="#16163A" stroke-width="3.5" stroke-linecap="round" fill="none"/>';
+      s+=arms;
+      return s;
+    }
+    var y0=14, h='';
+    // H: két figura, a karjuk a törzs közepén összeér
+    h+=fig(46,'<path d="M46 '+(y0+42)+'H104" stroke="#16163A" stroke-width="3.5" stroke-linecap="round"/>');
+    h+=fig(104,'');
+    // I: egy álló figura, karok lent
+    h+=fig(170,'<path d="M170 '+(y0+30)+'L158 '+(y0+58)+'M170 '+(y0+30)+'L182 '+(y0+58)+'" stroke="#16163A" stroke-width="3.5" stroke-linecap="round" fill="none"/>');
+    // T: kitárt karok
+    h+=fig(240,'<path d="M208 '+(y0+26)+'H272" stroke="#16163A" stroke-width="3.5" stroke-linecap="round"/>');
+    svg.innerHTML=h;
+  })();
+
+  /* ---------- THE CAT + T?L ---------- */
+  (function(){
+    var btn=document.getElementById('cat-btn'), t=document.getElementById('cat-text'), a=document.getElementById('cat-ans');
+    btn.addEventListener('click',function(){
+      t.innerHTML='T<span class="hl">A</span>E C<span class="hl">A</span>T'; a.hidden=false; btn.disabled=true;
+    });
+    var wrap=document.getElementById('tel-quiz');
+    var data=[
+      { t:'TÁNYÉR, KANÁL, POHÁR, VILLA, CSÉSZE, T?L', a:'TÁL', e:'Valószínűleg TÁL-t olvastál ki: a konyhai eszközök neve percepciós beállítódást hozott létre.' },
+      { t:'TAVASZ, NYÁR, ŐSZ, T?L', a:'TÉL', e:'Itt viszont TÉL-t olvasol ki, mert az évszakok szerepeltek. Ugyanaz a „T?L”, mégis más szó: a kérdőjel helyére az elvárásaid írtak betűt.' }
+    ];
+    data.forEach(function(d){
+      var el=document.createElement('div'); el.className='stmt';
+      var p=document.createElement('p'); p.className='stmt-t'; p.textContent=d.t; el.appendChild(p);
+      var ans=document.createElement('div'); ans.className='ans'; el.appendChild(ans);
+      var fb=document.createElement('p'); fb.className='fb'; fb.hidden=true; el.appendChild(fb);
+      var btns=[];
+      ['TÁL','TÉL'].forEach(function(o){
+        var b=document.createElement('button'); b.className='btn ghost'; b.textContent=o;
+        b.addEventListener('click',function(){
+          var ok=(o===d.a); el.classList.add(ok?'ok':'no'); btns.forEach(function(x){x.disabled=true});
+          fb.hidden=false; fb.innerHTML='<strong>'+(ok?'Pontosan.':'Nem ezt olvastad volna?')+'</strong> '+d.e;
+        });
+        btns.push(b); ans.appendChild(b);
+      });
+      wrap.appendChild(el);
+    });
+  })();
+
+  /* ---------- Hermann-rács ---------- */
+  (function(){
+    var svg=document.getElementById('hg-svg'); if(!svg) return;
+    var s='<rect width="320" height="320" fill="#FFFFFF"/>';
+    for(var i=0;i<4;i++) for(var j=0;j<4;j++) s+='<rect x="'+(8+i*80)+'" y="'+(8+j*80)+'" width="64" height="64" fill="#16163A"/>';
+    var pts=[];
+    for(var a=0;a<3;a++) for(var b=0;b<3;b++) pts.push([80+a*80,80+b*80]);
+    s+='<g id="hg-dots" visibility="hidden">';
+    pts.forEach(function(p){ s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="11" fill="#FFFFFF" stroke="#D42A68" stroke-width="2"/>'; });
+    s+='</g>';
+    svg.innerHTML=s;
+    var btn=document.getElementById('hg-btn'), g=document.getElementById('hg-dots'), on=false;
+    btn.addEventListener('click',function(){
+      on=!on; g.setAttribute('visibility',on?'visible':'hidden');
+      btn.textContent=on?'Rejtsd el a jelöléseket':'Mutasd meg, hogy fehér';
+    });
+  })();
+
+  /* ---------- ugyanaz a szürke ---------- */
+  (function(){
+    var svg=document.getElementById('lc-svg'); if(!svg) return;
+    var bridge=false;
+    function draw(){
+      var s='<rect width="180" height="160" fill="#262626"/><rect x="180" width="180" height="160" fill="#E6E6E6"/>';
+      if(bridge) s+='<rect x="120" y="50" width="120" height="60" fill="#808080"/>';
+      s+='<rect x="60" y="50" width="60" height="60" fill="#808080"/><rect x="240" y="50" width="60" height="60" fill="#808080"/>';
+      svg.innerHTML=s;
+    }
+    draw();
+    var fb=document.getElementById('lc-fb'), btns=[].slice.call(document.querySelectorAll('#lc-opts button'));
+    btns.forEach(function(b){
+      b.addEventListener('click',function(){
+        btns.forEach(function(x){x.disabled=true});
+        fb.textContent=(b.getAttribute('data-v')==='E')?'Jó válasz: egyformák. Ritka, aki elsőre így látja.':'Nem egészen: a két négyzet pontosan ugyanolyan szürke. A sötét háttéren lévő világosabbnak, a világos háttéren lévő sötétebbnek látszik.';
+      });
+    });
+    var bb=document.getElementById('lc-bridge');
+    bb.addEventListener('click',function(){
+      bridge=!bridge; draw(); bb.textContent=bridge?'Vedd el a hidat':'Kösd össze őket!';
+    });
+  })();
+
+  /* ---------- változási vakság ---------- */
+  (function(){
+    var svg=document.getElementById('cb-svg'); if(!svg) return;
+    function scene(car){
+      var s='<rect width="360" height="220" fill="#BFE0FF"/><circle cx="318" cy="38" r="22" fill="#FFC533"/><rect y="150" width="360" height="70" fill="#8FCB8F"/>';
+      var cols=['#F4E3C1','#E9B6A0','#C9D8F0'], roofs=['#C8463C','#3550F5','#0B7F72'];
+      for(var i=0;i<3;i++){
+        var x=16+i*92;
+        s+='<rect x="'+x+'" y="92" width="64" height="62" fill="'+cols[i]+'" stroke="#16163A" stroke-width="2.5"/>';
+        s+='<polygon points="'+(x-6)+',92 '+(x+32)+',60 '+(x+70)+',92" fill="'+roofs[i]+'" stroke="#16163A" stroke-width="2.5" stroke-linejoin="round"/>';
+        s+='<rect x="'+(x+8)+'" y="104" width="16" height="16" fill="#BFE0FF" stroke="#16163A" stroke-width="2"/>';
+        s+='<rect x="'+(x+38)+'" y="118" width="18" height="36" fill="#6B4423"/>';
+      }
+      s+='<rect x="292" y="112" width="10" height="44" fill="#6B4423"/><circle cx="297" cy="102" r="26" fill="#0B7F72"/>';
+      if(car){
+        s+='<rect x="240" y="172" width="70" height="22" rx="5" fill="#D42A68" stroke="#16163A" stroke-width="2.5"/><rect x="254" y="160" width="40" height="16" rx="4" fill="#E8789C" stroke="#16163A" stroke-width="2.5"/><circle cx="256" cy="196" r="7" fill="#16163A"/><circle cx="294" cy="196" r="7" fill="#16163A"/>';
+      }
+      return s;
+    }
+    var start=document.getElementById('cb-start'), found=document.getElementById('cb-found'), st=document.getElementById('cb-status');
+    var timer=null, t0=0, state=0, running=false;
+    function render(k){
+      if(k===0) svg.innerHTML=scene(true);
+      else if(k===1) svg.innerHTML=scene(false);
+      else svg.innerHTML='<rect width="360" height="220" fill="#8A8A8A"/>';
+    }
+    function loop(){
+      var seq=[[0,500],[2,160],[1,500],[2,160]], i=0;
+      function step(){
+        if(!running) return;
+        render(seq[i][0]); var d=seq[i][1]; i=(i+1)%seq.length;
+        timer=setTimeout(step,d);
+      }
+      step();
+    }
+    render(0);
+    start.addEventListener('click',function(){
+      clearTimeout(timer); running=true; t0=Date.now(); start.disabled=true; found.disabled=false; st.textContent='Figyeld a képet: mi változik?';
+      loop();
+    });
+    found.addEventListener('click',function(){
+      running=false; clearTimeout(timer); found.disabled=true; start.disabled=false; start.textContent='Újra';
+      var sec=Math.max(1,Math.round((Date.now()-t0)/1000));
+      render(0);
+      svg.innerHTML+='<ellipse class="cb-ring" cx="275" cy="184" rx="48" ry="28" fill="none" stroke="#D42A68" stroke-width="4"/>';
+      st.textContent='Az autó tűnik el a második képről. Ennyi idő után jelentkeztél: '+sec+' másodperc. Ha sokáig tartott, az a változási vakság: a villanásnyi szünet elfedi, ami megváltozott.';
+    });
+  })();
+
+  show(0);
+})();
+</script>
+</body>
+</html>
