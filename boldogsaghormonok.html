@@ -176,6 +176,51 @@ td .go { background: none; border: 0; padding: 0; font-family: var(--font-displa
 .bar-col small { font-size: 12px; color: var(--muted); white-space: nowrap; }
 .hbar { display: grid; grid-template-columns: 120px minmax(0, 1fr) 28px; gap: 10px; align-items: center; font-weight: 700; }
 .hbar i { display: block; height: 16px; border-radius: 8px; background: var(--h); min-width: 4px; }
+/* reflections */
+.steps { display: flex; flex-wrap: wrap; gap: 8px; }
+.step-btn { font-family: var(--font-display); font-weight: 700; font-size: 15px; padding: 10px 18px; border-radius: 999px; border: 2px solid var(--line); background: var(--surface); }
+.step-btn:hover { border-color: var(--ink); }
+.step-btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.quote { font-family: var(--font-display); font-weight: 800; font-size: clamp(26px, 3.6vw, 44px); line-height: 1.2; max-width: 30ch; text-wrap: balance; margin: 0; }
+.cite { color: var(--muted); font-weight: 600; }
+.panel { display: flex; flex-direction: column; gap: 22px; }
+.goal { color: var(--muted); }
+.goal b { color: var(--ink); }
+.briefs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.brief { background: var(--h-t); border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.brief h3 { font-size: 26px; font-weight: 800; color: var(--h-x); }
+.brief .btn { margin-top: auto; }
+.pairbox { background: var(--surface); border: 2px solid var(--line); border-radius: 26px; padding: 26px; display: flex; flex-direction: column; gap: 18px; }
+.pairbox ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; counter-reset: n; }
+.pairbox li { counter-increment: n; display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; font-size: clamp(18px, 2vw, 22px); }
+.pairbox li::before { content: counter(n); width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; background: var(--dopa); color: #1E1030; }
+.timerbox { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.bigtimer { font-family: var(--font-display); font-weight: 800; font-size: clamp(48px, 8vw, 92px); line-height: 1; font-variant-numeric: tabular-nums; min-width: 4.2ch; }
+.example { background: var(--oxi-t); border-radius: 22px; padding: 18px 22px; display: flex; flex-direction: column; gap: 6px; }
+.example b.k { font-family: var(--font-display); }
+.todo { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 64ch; }
+.fieldgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field .flabel { color: var(--h-x); }
+.inp { font: inherit; color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; width: 100%; }
+.recipe { background: var(--surface); border: 2px solid var(--line); border-radius: 26px; padding: 22px; display: flex; flex-direction: column; gap: 12px; position: relative; min-width: 0; }
+.recipe h3 { font-size: 26px; font-weight: 800; padding-right: 44px; overflow-wrap: anywhere; }
+.rline { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; align-items: start; }
+.rline b { font-family: var(--font-display); color: var(--h-x); }
+.rline span { overflow-wrap: anywhere; }
+.recipe .mini { position: absolute; top: 16px; right: 16px; }
+.recipes { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; align-items: start; }
+.tiplist { display: flex; flex-direction: column; gap: 10px; }
+.tipitem { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; background: var(--surface); border: 2px solid var(--line); border-radius: 18px; padding: 12px 16px; }
+.tipitem .hn { font-family: var(--font-display); font-weight: 700; font-size: 14px; padding: 4px 12px; border-radius: 999px; background: var(--h-t); color: var(--h-x); }
+.tipitem span.t { overflow-wrap: anywhere; }
+.cloud { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; background: var(--surface); border: 2px solid var(--line); border-radius: 26px; padding: 22px; min-height: 120px; }
+.cloud span { font-family: var(--font-display); font-weight: 800; color: var(--h-x); overflow-wrap: anywhere; }
+.emos { display: flex; flex-wrap: wrap; gap: 12px; }
+.emo { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.emo-ct { display: flex; align-items: center; gap: 10px; }
+.cnt { font-family: var(--font-display); font-weight: 800; font-size: 22px; min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .rline { grid-template-columns: 1fr; gap: 2px; } }
 /* pager */
 .pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 2px solid var(--line); }
 @media (max-width: 560px) { .hhead { grid-template-columns: 1fr; } .hhead .face { order: -1; width: 110px; } .brand { display: none; } body { font-size: 17px; } }
@@ -199,6 +244,7 @@ td .go { background: none; border: 0; padding: 0; font-family: var(--font-displa
     { id: "oxi", label: "Oxitocin", cls: "h-oxi" },
     { id: "summary", label: "Összefoglaló" },
     { id: "quiz", label: "Kvíz" },
+    { id: "reflect", label: "Reflexiók" },
     { id: "diary", label: "Hangulatnapló" },
     { id: "homework", label: "Házi feladat" }
   ];
@@ -339,7 +385,7 @@ td .go { background: none; border: 0; padding: 0; font-family: var(--font-displa
       '<div class="hero"><p class="eyebrow">Az öngondoskodás módjai</p><h1>Boldogsághormonok</h1>' +
       '<p class="lead">A testben mirigyek és idegsejtek olyan anyagokat termelnek, amelyek hírvivőként működnek, és szerepet játszanak a hangulat szabályozásában. Négy hormon felel a napközben érzett jó érzésekért: dopamin, oxitocin, szerotonin és endorfin. Válassz egyet, és ugorj rá!</p></div>' +
       '<div class="tiles">' + tiles + '</div>' +
-      '<div class="shortcuts"><button class="chip" data-go="warmup" type="button">Ráhangolódás</button><button class="chip" data-go="summary" type="button">Összefoglaló</button><button class="chip" data-go="quiz" type="button">Kvíz</button><button class="chip" data-go="diary" type="button">Hangulatnapló</button><button class="chip" data-go="homework" type="button">Házi feladat</button></div></section>';
+      '<div class="shortcuts"><button class="chip" data-go="warmup" type="button">Ráhangolódás</button><button class="chip" data-go="summary" type="button">Összefoglaló</button><button class="chip" data-go="quiz" type="button">Kvíz</button><button class="chip" data-go="reflect" type="button">Reflexiók</button><button class="chip" data-go="diary" type="button">Hangulatnapló</button><button class="chip" data-go="homework" type="button">Házi feladat</button></div></section>';
   }
 
   function renderWarmup() {
@@ -436,8 +482,82 @@ td .go { background: none; border: 0; padding: 0; font-family: var(--font-displa
       '<div class="toolbar"><button class="btn ghost" type="button" id="d-clear" data-cleardia hidden>Összes bejegyzés törlése</button></div>' + pager("diary") + '</section>';
   }
 
+  var BRIEF = {
+    endo: "A természetes fájdalomcsillapító és jókedvhormon. Nevetés, mozgás és zene hatására szabadul fel.",
+    sero: "A hangulat és jóllét hormonja. Napsütés, mozgás és hálaérzet segíti a termelődését.",
+    dopa: "A motiváció és jutalom hormonja. Segít célokat kitűzni és örömöt érezni, amikor elérjük őket.",
+    oxi: "A kapcsolódás hormonja. Ölelés, bizalom, barátság és szeretet hatására termelődik."
+  };
+  var FEEL = ["nyugodt", "hálás", "inspirált", "kíváncsi", "vidám", "energikus", "büszke", "megkönnyebbült", "elégedett", "fáradt"];
+  var HK = ["endo", "sero", "dopa", "oxi"];
+  var NAMES = ["Hormonmix 4.0", "Instant jókedv", "Mosolypirula"];
+
+  function renderReflect() {
+    var steps = [["brief", "Röviden"], ["pair", "Páros beszélgetés"], ["recipe", "Boldogságrecept"], ["share", "Egy tipp tőlem, neked"], ["close", "Záró kör"]];
+    var stepBtns = steps.map(function (s, i) { return '<button class="step-btn" type="button" data-step="' + s[0] + '" aria-pressed="' + (i === 0) + '">' + s[1] + '</button>'; }).join("");
+    var briefs = HK.map(function (k) {
+      return '<div class="brief ' + clsOf(k) + '"><h3>' + H[k].name + '</h3><p>' + BRIEF[k] + '</p><button class="btn" type="button" data-go="' + k + '">Részletek</button></div>';
+    }).join("");
+    var recFields = HK.map(function (k) {
+      return '<div class="field ' + clsOf(k) + '"><label class="flabel" for="r-' + k + '">' + H[k].name + '</label><input class="inp" id="r-' + k + '" type="text" maxlength="80" autocomplete="off"></div>';
+    }).join("");
+    var nameChips = NAMES.map(function (n, i) { return '<button class="chip" type="button" data-recname="' + i + '">' + n + '</button>'; }).join("");
+    var shChips = HK.map(function (k) { return '<button class="achip ' + clsOf(k) + '" type="button" data-sh="' + k + '" aria-pressed="false">' + H[k].name + '</button>'; }).join("");
+    var feelChips = FEEL.map(function (w, i) { return '<button class="achip ' + clsOf(HK[i % 4]) + '" type="button" data-feel="' + i + '">' + w + '</button>'; }).join("");
+    var emos = [1, 2, 3, 4, 5].map(function (n) {
+      return '<div class="emo"><button class="mood" type="button" data-emo="' + n + '">' + moodFace(n) + '<span>' + MOODS[n] + '</span></button>' +
+        '<div class="emo-ct"><button class="mini" type="button" data-emom="' + n + '" aria-label="Eggyel kevesebb: ' + MOODS[n] + '">−</button><span class="cnt" id="emo-' + n + '">0</span></div></div>';
+    }).join("");
+    return '<section class="view" id="v-reflect"><div class="hero"><p class="eyebrow">Reflexiók</p>' +
+      '<p class="quote">„A boldogság nem valami kész dolog. A boldogság a cselekedeteidből fakad.”</p><p class="cite">Dalai Láma</p></div>' +
+      '<div class="steps" role="group" aria-label="Reflexiós lépések">' + stepBtns + '</div>' +
+
+      '<div class="panel" id="r-p-brief"><h2 class="title" style="font-size:clamp(26px,3.4vw,38px)">A négy boldogsághormon röviden</h2><div class="briefs">' + briefs + '</div></div>' +
+
+      '<div class="panel" id="r-p-pair" hidden><h2 class="title" style="font-size:clamp(26px,3.4vw,38px)">Páros beszélgetés: boldogság a gyakorlatban</h2>' +
+      '<div class="pairbox"><p class="lead">Beszélgess a pároddal 5 percig a következő kérdésekről!</p><ol>' +
+      '<li><span>Mikor érezted utoljára, hogy igazán boldog vagy?</span></li>' +
+      '<li><span>Szerinted melyik hormon dolgozott benned akkor?</span></li>' +
+      '<li><span>Milyen tevékenységek segítenek neked feltöltődni (pl. sport, zene, barátok)?</span></li>' +
+      '<li><span>Mit tudsz tenni, ha rossz napod van, hogy kicsit javíts a hangulatodon?</span></li></ol>' +
+      '<div class="timerbox"><span class="bigtimer" id="p-time" role="timer" aria-live="off">5:00</span><button class="btn" type="button" data-ptimer="start">Indítás</button><button class="btn ghost" type="button" data-ptimer="pause">Szünet</button><button class="btn ghost" type="button" data-ptimer="reset">Újra</button><span class="small" id="p-msg" role="status"></span></div></div>' +
+      '<p class="goal"><b>Cél:</b> felismerni, hogyan működnek a boldogsághormonok a mindennapokban.</p></div>' +
+
+      '<div class="panel" id="r-p-recipe" hidden><h2 class="title" style="font-size:clamp(26px,3.4vw,38px)">Csoportos kihívás: boldogságrecept</h2>' +
+      '<p class="lead">3–4 fős csoportban készítsetek egy „boldogságreceptet”, amely mind a négy boldogsághormon termelődését segíti!</p>' +
+      '<div class="fgroup"><span class="flabel">Teendők</span><ul class="todo"><li>Írjatok minden hormonhoz (dopamin, szerotonin, oxitocin, endorfin) egy-egy konkrét tevékenységet.</li><li>Adjatok a receptnek egy kreatív nevet (pl. Hormonmix 4.0, Instant jókedv, Mosolypirula).</li></ul></div>' +
+      '<div class="example"><b class="k">Példa</b><span>Dopamin – cél kitűzése és elérése</span><span>Szerotonin – reggeli séta napfényben</span><span>Oxitocin – ölelés, közös nevetés</span><span>Endorfin – mozgás, tánc kedvenc zenére</span></div>' +
+      '<div class="formbox"><div class="fgroup"><label class="flabel" for="r-name">A recept neve</label><input class="inp" id="r-name" type="text" maxlength="60" autocomplete="off"><div class="shortcuts">' + nameChips + '</div></div>' +
+      '<div class="fieldgrid">' + recFields + '</div>' +
+      '<div class="toolbar"><button class="btn" type="button" data-recsave>Recept hozzáadása</button><button class="btn ghost" type="button" data-recex>Példa betöltése</button><span class="small" id="r-msg" role="status"></span></div></div>' +
+      '<div id="r-preview"></div><div class="recipes" id="r-list"></div>' +
+      '<div class="toolbar"><button class="btn ghost" type="button" id="r-clear" data-recclear hidden>Összes recept törlése</button></div>' +
+      '<p class="goal"><b>Cél:</b> alkalmazni a tanultakat és közösen alkotni valami pozitívat.</p></div>' +
+
+      '<div class="panel" id="r-p-share" hidden><h2 class="title" style="font-size:clamp(26px,3.4vw,38px)">Közös megosztás: egy tipp tőlem, neked</h2>' +
+      '<p class="lead">Minden diák osszon meg egy konkrét ötletet, ami segíti valamelyik boldogsághormon termelődését. A végén lesz egy közös <b>Boldogságlista</b>, amit akár le is fotózhatnak, menthetnek.</p>' +
+      '<div class="formbox"><div class="fgroup"><label class="flabel" for="s-text">Az ötlet</label><input class="inp" id="s-text" type="text" maxlength="120" autocomplete="off"></div>' +
+      '<div class="fgroup"><span class="flabel" id="s-l">Melyik hormont segíti?</span><div class="chips" role="group" aria-labelledby="s-l">' + shChips + '</div></div>' +
+      '<div class="toolbar"><button class="btn" type="button" data-addtip>Hozzáadás a listához</button><span class="small" id="s-msg" role="status"></span></div></div>' +
+      '<div class="tips-head"><h3 style="font-size:26px;font-weight:800">Boldogságlista <span class="small" id="s-count"></span></h3><div class="toolbar"><button class="btn ghost" type="button" data-copytips>Lista másolása</button><button class="btn ghost" type="button" id="s-clear" data-tipclear hidden>Lista törlése</button></div></div>' +
+      '<div id="s-fallback"></div><div class="tiplist" id="s-list"></div>' +
+      '<p class="goal"><b>Cél:</b> közösségi tanulás, inspiráció, pozitív lezárás.</p></div>' +
+
+      '<div class="panel" id="r-p-close" hidden><h2 class="title" style="font-size:clamp(26px,3.4vw,38px)">Lezáró reflexiós kör</h2>' +
+      '<p class="lead">Egy szóval fejezd ki, milyen érzéssel távozol az óráról! Mutasd kézzel, arckifejezéssel vagy emoji-kártyával is az érzésedet!</p>' +
+      '<div class="formbox"><div class="fgroup"><span class="flabel" id="c-l">Kattints egy szóra (vagy írj sajátot)</span><div class="chips" role="group" aria-labelledby="c-l">' + feelChips + '</div></div>' +
+      '<div class="toolbar"><label class="flabel" for="c-word">Saját szó</label><input class="inp" id="c-word" type="text" maxlength="24" autocomplete="off" style="max-width:260px"><button class="btn" type="button" data-addword>Hozzáad</button></div></div>' +
+      '<div class="cloud" id="c-cloud" aria-live="polite"></div>' +
+      '<div class="fgroup"><span class="flabel" id="e-l">Emoji-kártyák</span><div class="emos" role="group" aria-labelledby="e-l">' + emos + '</div></div>' +
+      '<div class="toolbar"><button class="btn ghost" type="button" id="c-reset" data-resetclose>Szavak és kártyák nullázása</button></div>' +
+      '<p class="goal"><b>Cél:</b> tudatos lezárás, érzelmi reflexió, jókedv.</p>' +
+      '<div class="challenge h-dopa"><div><h3>Gondolj a mai órára</h3><p>Próbálj minden nap tenni valamit, ami segíti a saját boldogsághormonjaid termelődését!</p></div></div>' +
+      '<p class="small">A beírt szavak, receptek és ötletek csak ezen az eszközön, ebben a böngészőben maradnak meg.</p></div>' +
+      pager("reflect") + '</section>';
+  }
+
   var main = document.getElementById("main"), tabs = document.getElementById("tabs");
-  main.innerHTML = renderHome() + renderWarmup() + renderHormone("endo") + renderHormone("sero") + renderHormone("dopa") + renderHormone("oxi") + renderSummary() + renderQuiz() + renderDiary() + renderHomework();
+  main.innerHTML = renderHome() + renderWarmup() + renderHormone("endo") + renderHormone("sero") + renderHormone("dopa") + renderHormone("oxi") + renderSummary() + renderQuiz() + renderReflect() + renderDiary() + renderHomework();
   tabs.innerHTML = VIEWS.map(function (v) { return '<button class="tab" type="button" data-go="' + v.id + '">' + v.label + '</button>'; }).join("");
 
   function show(id, noScroll) {
@@ -667,6 +787,143 @@ td .go { background: none; border: 0; padding: 0; font-family: var(--font-displa
       if (!clearArmed) { clearArmed = true; t.textContent = "Biztos? Kattints még egyszer"; setTimeout(function () { clearArmed = false; t.textContent = "Összes bejegyzés törlése"; }, 4000); return; }
       diary = []; clearArmed = false; t.textContent = "Összes bejegyzés törlése"; saveDiary(); renderDiaryList(); return;
     }
+  });
+
+  /* ---------- reflections: state and behaviour ---------- */
+  function loadJ(k, d) { try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
+  function saveJ(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  var rTips = loadJ("bh-tips", []), rRecipes = loadJ("bh-recipes", []), rWords = loadJ("bh-words", {}), rEmo = loadJ("bh-emo", {});
+  if (!Array.isArray(rTips)) rTips = [];
+  if (!Array.isArray(rRecipes)) rRecipes = [];
+  if (!rWords || typeof rWords !== "object" || Array.isArray(rWords)) rWords = {};
+  if (!rEmo || typeof rEmo !== "object" || Array.isArray(rEmo)) rEmo = {};
+  var shKey = "";
+  function $(id) { return document.getElementById(id); }
+  function armed(t, label, fn) {
+    if (!t._armed) { t._armed = true; t.textContent = "Biztos? Kattints még egyszer"; setTimeout(function () { t._armed = false; t.textContent = label; }, 4000); return; }
+    t._armed = false; t.textContent = label; fn();
+  }
+
+  /* pair timer */
+  var pEnd = 0, pLeft = 300, pId = null;
+  function pShow() { var m = Math.floor(pLeft / 60), s = pLeft % 60; $("p-time").textContent = m + ":" + (s < 10 ? "0" : "") + s; }
+  function pTick() {
+    pLeft = Math.max(0, Math.ceil((pEnd - Date.now()) / 1000)); pShow();
+    if (pLeft <= 0) { clearInterval(pId); pId = null; $("p-msg").textContent = "Letelt az idő!"; }
+  }
+
+  /* recipes */
+  function recipeCard(r, del) {
+    var lines = HK.map(function (k) { return r[k] ? '<div class="rline ' + clsOf(k) + '"><b>' + H[k].name + '</b><span>' + esc(r[k]) + '</span></div>' : ""; }).join("");
+    return '<div class="recipe">' + '<h3>' + esc(r.name || "Névtelen recept") + '</h3>' + lines +
+      (del ? '<button class="mini" type="button" data-recdel="' + r.id + '" aria-label="Recept törlése">×</button>' : "") + '</div>';
+  }
+  function recipeFromForm() { var r = { name: $("r-name").value.trim() }; HK.forEach(function (k) { r[k] = $("r-" + k).value.trim(); }); return r; }
+  function renderPreview() {
+    var r = recipeFromForm(), any = r.name || HK.some(function (k) { return r[k]; });
+    $("r-preview").innerHTML = any ? '<p class="flabel" style="margin-bottom:10px">Előnézet</p>' + recipeCard(r, false) : "";
+  }
+  function renderRecipes() {
+    $("r-list").innerHTML = rRecipes.map(function (r) { return recipeCard(r, true); }).join("");
+    $("r-clear").hidden = rRecipes.length === 0;
+  }
+
+  /* tips */
+  function renderTips() {
+    $("s-count").textContent = rTips.length ? "(" + rTips.length + ")" : "";
+    $("s-clear").hidden = rTips.length === 0;
+    $("s-list").innerHTML = rTips.length ? rTips.map(function (t) {
+      return '<div class="tipitem ' + clsOf(t.k) + '"><span class="hn">' + H[t.k].name + '</span><span class="t">' + esc(t.text) + '</span><button class="mini" type="button" data-deltip="' + t.id + '" aria-label="Ötlet törlése">×</button></div>';
+    }).join("") : '<p class="lead">A lista még üres. Írj be egy ötletet, jelöld meg a hormont, és add hozzá.</p>';
+  }
+  function addTip() {
+    var inp = $("s-text"), text = inp.value.trim(), msg = $("s-msg");
+    if (!text) { msg.textContent = "Írj be egy ötletet!"; inp.focus(); return; }
+    if (!shKey) { msg.textContent = "Válaszd ki, melyik hormont segíti!"; return; }
+    rTips.push({ id: Date.now() + Math.floor(Math.random() * 1000), k: shKey, text: text });
+    saveJ("bh-tips", rTips); inp.value = ""; msg.textContent = "Hozzáadva."; renderTips(); inp.focus();
+  }
+
+  /* closing round */
+  function renderClose() {
+    var keys = Object.keys(rWords).filter(function (w) { return rWords[w] > 0; }).sort(function (a, b) { return rWords[b] - rWords[a] || (a < b ? -1 : 1); });
+    var max = keys.length ? rWords[keys[0]] : 1;
+    $("c-cloud").innerHTML = keys.length ? keys.map(function (w, i) {
+      var size = 18 + Math.round(rWords[w] / max * 30);
+      return '<span class="' + clsOf(HK[i % 4]) + '" style="font-size:' + size + 'px" title="' + rWords[w] + '">' + esc(w) + (rWords[w] > 1 ? ' <small>×' + rWords[w] + '</small>' : '') + '</span>';
+    }).join("") : '<span class="small" style="font-weight:600">Még nincs beírt szó. Kattints egy szóra fent.</span>';
+    for (var n = 1; n <= 5; n++) $("emo-" + n).textContent = rEmo[n] || 0;
+  }
+  function addWord(w) {
+    w = String(w).trim().toLowerCase().slice(0, 24); if (!w) return;
+    if (!Object.prototype.hasOwnProperty.call(rWords, w)) rWords[w] = 0;
+    rWords[w]++; saveJ("bh-words", rWords); renderClose();
+  }
+
+  $("p-time").parentNode && pShow();
+  renderPreview(); renderRecipes(); renderTips(); renderClose();
+
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("button"); if (!t) return;
+    if (t.hasAttribute("data-step")) {
+      var id = t.getAttribute("data-step");
+      Array.prototype.forEach.call(document.querySelectorAll("#v-reflect [data-step]"), function (b) { b.setAttribute("aria-pressed", b === t ? "true" : "false"); });
+      ["brief", "pair", "recipe", "share", "close"].forEach(function (s) { $("r-p-" + s).hidden = s !== id; });
+      return;
+    }
+    if (t.hasAttribute("data-ptimer")) {
+      var a = t.getAttribute("data-ptimer");
+      if (a === "start") { if (pId) return; if (pLeft <= 0) pLeft = 300; pEnd = Date.now() + pLeft * 1000; $("p-msg").textContent = ""; pId = setInterval(pTick, 250); }
+      if (a === "pause") { if (pId) { clearInterval(pId); pId = null; pTick(); } }
+      if (a === "reset") { clearInterval(pId); pId = null; pLeft = 300; $("p-msg").textContent = ""; pShow(); }
+      return;
+    }
+    if (t.hasAttribute("data-recname")) { $("r-name").value = NAMES[+t.getAttribute("data-recname")]; renderPreview(); return; }
+    if (t.hasAttribute("data-recex")) {
+      $("r-dopa").value = "cél kitűzése és elérése"; $("r-sero").value = "reggeli séta napfényben";
+      $("r-oxi").value = "ölelés, közös nevetés"; $("r-endo").value = "mozgás, tánc kedvenc zenére";
+      if (!$("r-name").value.trim()) $("r-name").value = NAMES[0];
+      renderPreview(); return;
+    }
+    if (t.hasAttribute("data-recsave")) {
+      var r = recipeFromForm(), msg = $("r-msg");
+      if (!r.name && !HK.some(function (k) { return r[k]; })) { msg.textContent = "Adj nevet a receptnek, és írj legalább egy tevékenységet!"; return; }
+      r.id = Date.now() + Math.floor(Math.random() * 1000); rRecipes.push(r); saveJ("bh-recipes", rRecipes);
+      $("r-name").value = ""; HK.forEach(function (k) { $("r-" + k).value = ""; });
+      msg.textContent = "Recept hozzáadva."; renderPreview(); renderRecipes(); return;
+    }
+    if (t.hasAttribute("data-recdel")) { var rid = t.getAttribute("data-recdel"); rRecipes = rRecipes.filter(function (x) { return String(x.id) !== rid; }); saveJ("bh-recipes", rRecipes); renderRecipes(); return; }
+    if (t.hasAttribute("data-recclear")) { armed(t, "Összes recept törlése", function () { rRecipes = []; saveJ("bh-recipes", rRecipes); renderRecipes(); }); return; }
+    if (t.hasAttribute("data-sh")) {
+      shKey = t.getAttribute("data-sh");
+      Array.prototype.forEach.call(document.querySelectorAll("#v-reflect [data-sh]"), function (b) { b.setAttribute("aria-pressed", b === t ? "true" : "false"); });
+      return;
+    }
+    if (t.hasAttribute("data-addtip")) { addTip(); return; }
+    if (t.hasAttribute("data-deltip")) { var tid = t.getAttribute("data-deltip"); rTips = rTips.filter(function (x) { return String(x.id) !== tid; }); saveJ("bh-tips", rTips); renderTips(); return; }
+    if (t.hasAttribute("data-tipclear")) { armed(t, "Lista törlése", function () { rTips = []; saveJ("bh-tips", rTips); renderTips(); $("s-fallback").innerHTML = ""; }); return; }
+    if (t.hasAttribute("data-copytips")) {
+      var fb = $("s-fallback"); fb.innerHTML = "";
+      if (!rTips.length) { $("s-msg").textContent = "A lista még üres."; return; }
+      var txt = "Boldogságlista\n" + rTips.map(function (x) { return "- " + x.text + " (" + H[x.k].name + ")"; }).join("\n");
+      var showFallback = function () {
+        fb.innerHTML = '<p class="small">A másolás nem sikerült. Jelöld ki és másold ki a szöveget:</p><textarea class="inp" id="s-ta" rows="6" readonly></textarea>';
+        var ta = $("s-ta"); ta.value = txt; ta.focus(); ta.select();
+      };
+      try { navigator.clipboard.writeText(txt).then(function () { $("s-msg").textContent = "A lista a vágólapra került."; }, showFallback); } catch (err) { showFallback(); }
+      return;
+    }
+    if (t.hasAttribute("data-feel")) { addWord(FEEL[+t.getAttribute("data-feel")]); return; }
+    if (t.hasAttribute("data-addword")) { var cw = $("c-word"); addWord(cw.value); cw.value = ""; cw.focus(); return; }
+    if (t.hasAttribute("data-emo")) { var n = t.getAttribute("data-emo"); rEmo[n] = (rEmo[n] || 0) + 1; saveJ("bh-emo", rEmo); renderClose(); return; }
+    if (t.hasAttribute("data-emom")) { var m = t.getAttribute("data-emom"); rEmo[m] = Math.max(0, (rEmo[m] || 0) - 1); saveJ("bh-emo", rEmo); renderClose(); return; }
+    if (t.hasAttribute("data-resetclose")) { armed(t, "Szavak és kártyák nullázása", function () { rWords = {}; rEmo = {}; saveJ("bh-words", rWords); saveJ("bh-emo", rEmo); renderClose(); }); return; }
+  });
+  document.addEventListener("input", function (e) { var id = e.target.id; if (id === "r-name" || /^r-(endo|sero|dopa|oxi)$/.test(id)) renderPreview(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter") return;
+    if (e.target.id === "s-text") { e.preventDefault(); addTip(); }
+    if (e.target.id === "c-word") { e.preventDefault(); addWord(e.target.value); e.target.value = ""; }
   });
 
   var start = (location.hash || "").replace("#", "");
