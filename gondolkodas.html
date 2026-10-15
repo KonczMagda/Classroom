@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gondolkodás</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F4FB; --ink:#16163A; --muted:#4F5279; --card:#FFFFFF; --line:#D5D8EE;
+  --accent:#D42A68; --blue:#3550F5; --teal:#0B7F72; --sun:#FFC533; --sun-ink:#33240A;
+  --good:#0B7A4E; --bad:#B8263F;
+  --display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --body:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12122B; --ink:#EEEFFC; --muted:#A9ACD6; --card:#1D1E42; --line:#34376B;
+    --accent:#FF5C93; --blue:#6F86FF; --teal:#2CC7B4; --sun:#FFC533; --sun-ink:#33240A;
+    --good:#4BD99A; --bad:#FF7A90;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12122B; --ink:#EEEFFC; --muted:#A9ACD6; --card:#1D1E42; --line:#34376B;
+  --accent:#FF5C93; --blue:#6F86FF; --teal:#2CC7B4; --sun:#FFC533; --sun-ink:#33240A;
+  --good:#4BD99A; --bad:#FF7A90;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:clamp(1.02rem,1.5vw,1.28rem);line-height:1.5;overflow:hidden}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em;line-height:1.06;margin:0 0 .45em}
+h1{font-size:clamp(2.6rem,7.5vw,5.6rem)}
+h2{font-size:clamp(1.9rem,4.2vw,3.2rem)}
+h3{font-size:clamp(1.15rem,2vw,1.5rem);font-weight:600;letter-spacing:-.01em}
+h1:focus,h2:focus{outline:none}
+p{margin:0 0 .8em}
+.lead{color:var(--muted);max-width:62ch;font-size:1.08em}
+.small{font-size:.86em;color:var(--muted)}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+.deck{height:100%;display:flex;flex-direction:column}
+.stage{flex:1;min-height:0;position:relative}
+.slide{position:absolute;inset:0;overflow-y:auto;display:flex;padding:clamp(18px,3.5vw,48px) clamp(18px,6vw,88px)}
+.slide[hidden]{display:none!important}
+.slide-inner{width:100%;max-width:1120px;margin:auto}
+
+.bar{display:flex;align-items:center;gap:12px;padding:10px clamp(12px,3vw,32px);border-top:1px solid var(--line);background:var(--bg)}
+.nav{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none}
+.nav:disabled{opacity:.35;cursor:default}
+.nav svg{width:22px;height:22px}
+.track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.fill{height:100%;width:0;background:var(--accent);border-radius:inherit;transition:width .3s}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:500;min-width:4.2em;text-align:right}
+.pill{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:.5em 1em;min-height:46px;cursor:pointer;font-weight:500;flex:none}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.btn{font-weight:700;padding:.7em 1.35em;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer;min-height:46px;font-size:1rem}
+.btn.hot{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.55;cursor:default}
+
+.notes{display:none;margin-top:1.6em;padding:14px 18px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);font-size:.9rem}
+.notes b{color:var(--ink)}
+body.notes-on .notes{display:block}
+
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:20px 22px}
+.card h3{margin-bottom:.3em}
+.card p{margin:0;color:var(--muted)}
+
+.flip{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px 20px;min-height:132px;cursor:pointer}
+.flip .back{display:none}
+.flip.is-open{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.flip.is-open .front{display:none}
+.flip.is-open .back{display:block}
+.flip .hint{display:block;margin-top:.7em;font-size:.82em;color:var(--muted)}
+.flip .t{font-family:var(--display);font-weight:600;font-size:1.25em;line-height:1.2;display:block}
+.flip .back b{display:block;font-family:var(--display);font-size:1.2em;margin-bottom:.25em}
+.flip .back .q{display:block;margin-top:.6em;font-size:.92em;opacity:.9}
+
+.box{border-left:6px solid var(--sun);background:var(--card);border-radius:0 16px 16px 0;padding:16px 20px;margin-top:20px}
+.box p{margin:0 0 .5em}
+ul.plain{margin:0;padding-left:1.1em}
+ul.plain li{margin-bottom:.35em}
+.big-say{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.02em;max-width:26ch;margin:0 0 .6em}
+
+.hero{display:grid;gap:32px;align-items:center}
+@media (min-width:900px){.hero{grid-template-columns:1.05fr .95fr}}
+.cloud{display:flex;flex-wrap:wrap;gap:12px 10px;align-items:center;justify-content:center}
+.chip{display:inline-block;padding:.45em 1em;border-radius:999px;font-weight:700;font-size:var(--s,1.1rem);transform:rotate(var(--r,0deg));animation:rise .7s both;animation-delay:var(--d,0s);border:2px solid transparent}
+.c1{background:var(--accent);color:#fff}
+.c2{background:var(--blue);color:#fff}
+.c3{background:var(--teal);color:#fff}
+.c4{background:var(--sun);color:var(--sun-ink)}
+.c5{border-color:var(--ink);color:var(--ink)}
+@keyframes rise{from{opacity:0;transform:translateY(28px) rotate(var(--r,0deg))}to{opacity:1;transform:translateY(0) rotate(var(--r,0deg))}}
+
+.panel{background:#1A1A2E;color:#F2F3FF;border-radius:24px;padding:24px 26px}
+.panel p{color:#DADCF5}
+.panel h3{color:#fff}
+.panel .btn.light{background:#F2F3FF;color:#1A1A2E;border-color:#F2F3FF}
+.panel .small{color:#A9ACD6}
+
+/* chain */
+.chain{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0}
+.chain .step{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:14px 18px;min-width:130px;text-align:center;opacity:.35;transition:opacity .3s, transform .3s, border-color .3s;cursor:pointer}
+.chain .step.on{opacity:1;border-color:var(--accent);transform:translateY(-3px)}
+.chain .step b{display:block;font-family:var(--display);font-size:1.02em;margin-bottom:.2em}
+.chain .step span{font-size:.8em;color:var(--muted)}
+.chain .arrow{color:var(--line);font-size:1.3em}
+.chain .arrow.on{color:var(--accent)}
+.chain-desc{min-height:3.2em;font-size:.98em;color:var(--muted)}
+
+/* quiz */
+.stmt{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.stmt.ok{border-color:var(--good);border-width:2.5px}
+.stmt.no{border-color:var(--bad);border-width:2.5px}
+.stmt-t{font-weight:700;margin:0;font-size:1.05em}
+.ans{display:flex;gap:8px;flex-wrap:wrap}
+.ans button{font-size:.9em;padding:.5em 1em}
+.fb{margin:0;font-size:.95em;color:var(--muted)}
+.stmt.ok .fb strong{color:var(--good)}
+.stmt.no .fb strong{color:var(--bad)}
+
+/* fields */
+.field{font:inherit;padding:.6em .9em;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.status{color:var(--muted);min-height:1.5em;margin:10px 0 0}
+
+/* nine dots */
+.nd-wrap{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.nd-svg{width:min(360px,100%);height:auto;background:var(--card);border:1.5px solid var(--line);border-radius:18px;cursor:crosshair;touch-action:manipulation}
+.nd-side{flex:1;min-width:240px}
+
+/* timer / ideas */
+.timer{font-family:var(--display);font-weight:800;font-size:2.4rem;color:var(--sun);min-height:1.2em}
+.ideas{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.idea{background:#EEF0FF;color:#16163A;border-radius:999px;padding:.3em .85em;font-weight:600;font-size:.92em}
+
+/* glasses */
+.glass-svg{width:min(320px,100%);height:auto}
+
+/* gardner */
+.pick-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.pick-grid button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:.7em 1em;cursor:pointer;font-weight:600;text-align:left}
+.pick-grid button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* wheel + banana */
+.wheel-wrap{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.wheel-svg{width:min(360px,100%);height:auto;flex:none}
+.wseg{cursor:pointer}
+.wseg path{stroke:#16163A;stroke-width:2;transition:filter .2s}
+.wseg:hover path,.wseg:focus path{filter:brightness(.93)}
+.wseg.sel path{stroke:#D42A68;stroke-width:5}
+.wheel-side{flex:1;min-width:260px}
+.legend{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));margin-top:14px}
+.legend button{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:.5em .8em;cursor:pointer;font-weight:600;text-align:left;font-size:.92em}
+.legend button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.bias-panel{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:16px 18px;min-height:150px}
+.bias-panel h3{margin-bottom:.3em}
+.bn-svg{width:min(340px,100%);height:auto;background:var(--card);border:1.5px solid var(--line);border-radius:18px}
+/* wason cards */
+.wgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));max-width:600px;margin:16px 0}
+.wcard{aspect-ratio:3/4;border:2px solid var(--line);background:var(--card);border-radius:18px;font-family:var(--display);font-weight:800;font-size:3rem;color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0}
+.wcard[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent) inset}
+.wcard.flipped{background:#1A1A2E;color:#F2F3FF;border-color:#1A1A2E}
+.wcard:disabled{cursor:default}
+/* three mountains + coins */
+.mt-opts{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin:12px 0}
+.mt-opt{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:10px;cursor:pointer;color:var(--ink);font:inherit;text-align:center}
+.mt-opt.ok{border-color:var(--good);border-width:3px}
+.mt-opt.no{border-color:var(--bad);border-width:3px}
+.mt-opt:disabled{cursor:default}
+.coin-svg{width:min(340px,100%);height:auto;background:var(--card);border:1.5px solid var(--line);border-radius:16px}
+
+@media (prefers-reduced-motion:reduce){
+  .chip{animation:none}
+  .chain .step{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+<main class="stage" id="stage">
+
+<!-- 1. Cím -->
+<section class="slide" aria-label="Cím">
+  <div class="slide-inner hero">
+    <div>
+      <h1 tabindex="-1">Gondolkodás</h1>
+      <p class="lead">Rávágsz a válaszra, mégis tévedsz? Ma kiderítjük, hogyan gondolkodunk valójában – kísérleteken, filmeken és regényeken keresztül.</p>
+      <button class="btn hot" data-next>Kezdjük</button>
+      <aside class="notes"><b>Tanári jegyzet (kb. 1 perc).</b> A lecke a tankönyv 6. fejezete (Gândirea) alapján épül fel: a gondolkodás fogalma és jellemzői, belső szerkezete (fogalom, ítélet, következtetés; műveletek; Guilford modellje), problémamegoldás, a gondolkodás típusai, valamint Piaget és Gardner az intelligenciáról. Minden témához tartozik egy kipróbálható feladat. A Wason-kártyafeladat, az „Öt hiba”, a Piaget-diák, a Köhler–Tolman dia és a torzítások kereke a tanár által fotózott könyvoldalak (53., 58–59., 63., 69. oldal) nyomán, átfogalmazva készültek. A lecke két órára is bontható (az 1–12. és a 13–25. dia között).</aside>
+    </div>
+    <div class="cloud" aria-hidden="true">
+      <span class="chip c1" style="--d:.05s;--r:-4deg;--s:1.6rem">gondolkodás</span>
+      <span class="chip c5" style="--d:.15s;--r:3deg;--s:1.1rem">fogalom</span>
+      <span class="chip c2" style="--d:.25s;--r:-2deg;--s:1.3rem">következtetés</span>
+      <span class="chip c4" style="--d:.35s;--r:4deg;--s:1.5rem">probléma</span>
+      <span class="chip c3" style="--d:.45s;--r:-3deg;--s:1.15rem">heurisztika</span>
+      <span class="chip c5" style="--d:.55s;--r:2deg;--s:1.4rem">algoritmus</span>
+      <span class="chip c1" style="--d:.65s;--r:-5deg;--s:1.1rem">ítélet</span>
+      <span class="chip c2" style="--d:.75s;--r:3deg;--s:1.5rem">ötlet</span>
+      <span class="chip c4" style="--d:.85s;--r:-2deg;--s:1.15rem">logika</span>
+      <span class="chip c3" style="--d:.95s;--r:2deg;--s:1.3rem">intelligencia</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Ütő és labda -->
+<section class="slide" aria-label="Gyors kérdés" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Gyors kérdés – ne számolgass!</h2>
+    <p class="lead">Válaszolj az első ösztönöd szerint, aztán nézd meg, mit mutat a megoldás.</p>
+    <div class="grid two" id="crt-quiz"></div>
+    <div class="box">
+      <p><strong>Mit mutat ez?</strong> A gondolkodás nem egyetlen, mindig logikus gépezet. Van egy gyors, megérzésszerű működése, és egy lassabb, tudatos. Ebben az órában mindkettőt megfigyeljük.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Kérj előbb kézfelnyújtást: ki mondta azt, hogy 1 lej? A legtöbb felnőtt is ezt mondja, ez nem az intelligencia hiánya. A feladat Shane Frederick 2005-ös kognitív reflexió tesztjéből származik, a „gyors és lassú” gondolkodás megkülönböztetését Daniel Kahneman tette széles körben ismertté.</aside>
+  </div>
+</section>
+
+<!-- 3. Mi a gondolkodás -->
+<section class="slide" aria-label="Mi a gondolkodás?" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Mi a gondolkodás?</h2>
+    <p class="lead">Kattints sorban a négy lépésre: mit tesz hozzá az előzőhöz minden szint?</p>
+    <div class="chain" id="think-chain">
+      <div class="step" data-i="0"><b>Érzékelés</b><span>egy inger jele</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="1"><b>Észlelés</b><span>egységes kép, itt és most</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="2"><b>Képzet</b><span>kép a fejünkben</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="3"><b>Gondolkodás</b><span>általánosít, következtet</span></div>
+    </div>
+    <p class="chain-desc" id="think-chain-desc"></p>
+    <div class="box">
+      <p><strong>Tankönyvi meghatározás:</strong> a gondolkodás a valóság <em>közvetett</em> és <em>általánosító-elvont</em> tükrözése, fogalmak, ítéletek és következtetések formájában, amely a dolgok közös, lényeges tulajdonságait és az okozati kapcsolatokat ragadja meg.</p>
+    </div>
+    <div class="grid three" style="margin-top:14px">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Közvetett</span><span class="hint">Kattints</span></span><span class="back"><b>Közvetett</b>Nem közvetlenül a valóságon dolgozik, hanem az észlelések és képzetek, vagy az emlékezetből előhívott információ feldolgozásán.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Általános és elvont</span><span class="hint">Kattints</span></span><span class="back"><b>Általános és elvont</b>Az egyes esetekből kiemeli a közös, lényeges vonásokat: elvekhez, törvényekhez, fogalmakhoz jut.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Múlt, jelen, jövő</span><span class="hint">Kattints</span></span><span class="back"><b>Múlt, jelen, jövő</b>Az észlelés az „itt és most” érzékelése, a gondolkodás viszont a múltból magyaráz, és a jövőt is megjósolja. Gyakorlatilag a problémamegoldó képesség, ezért kapcsolódik az intelligenciához.</span></button>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> Ez köti össze a sorozat eddigi óráit. Kérd meg a diákokat, hogy egy saját példán (pl. egy csengő hangja) végigvezessék a négy lépést.</aside>
+  </div>
+</section>
+
+<!-- 4. Fogalom, ítélet, következtetés -->
+<section class="slide" aria-label="Fogalom" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">A fogalom nem kép</h2>
+    <p class="lead">A gondolkodás alapegysége a <strong>fogalom</strong>: nem hasonlít a tárgyra, és mindig általános. Lépj végig a „létrán" felfelé.</p>
+    <div class="chain" id="ladder">
+      <div class="step" data-i="0"><b>fülemüle</b><span>A</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="1"><b>madár</b><span>B</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="2"><b>állat</b><span>C</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="3"><b>élőlény</b><span>D</span></div>
+    </div>
+    <p class="chain-desc" id="ladder-desc"></p>
+    <div class="grid two">
+      <div class="card"><h3>Ítélet</h3><p>Összetettebb gondolati szerkezet: egy tárgyat más tárgyakkal kapcsolatban mutat meg. Például: „A fülemüle madár.”</p></div>
+      <div class="card"><h3>Következtetés</h3><p>Meglévő állításokból (premisszákból) új állításhoz (következtetéshez) jutunk el.</p></div>
+    </div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="card"><h3>Empirikus és tudományos fogalom</h3><p>Az empirikus fogalom a mindennapi tapasztalatból épül, korlátozottabb, személyesebb. A tudományos a lényeges tulajdonságokat foglalja össze, ezért definíciót is lehet adni hozzá.</p></div>
+      <div class="card"><h3>Konkrét és elvont fogalom</h3><p>A konkrét fogalom közel marad az érzékelhetőhöz („szék”). Az elvont fogalom már elszakad a képektől, csak az eszme marad meg („igazságosság”).</p></div>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> A létra a tankönyv példája (A = fülemüle, B = madár, C = állat, D = élőlény). Kérdezd meg, mi „veszik el” minden lépésnél, és mit nyerünk helyette.</aside>
+  </div>
+</section>
+
+<!-- 5. Következtetés kvíz -->
+<section class="slide" aria-label="Következik-e?" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Következik-e?</h2>
+    <p class="lead">Nem az számít, hogy igaz-e a végkövetkeztetés, hanem hogy tényleg <em>következik</em>-e az állításokból.</p>
+    <div class="grid two" id="syl-quiz"></div>
+    <div class="box">
+      <p><strong>Sherlock Holmes</strong> a híres „dedukcióját” szívesen emlegeti, a szakirodalom azonban gyakran megjegyzi, hogy a legtöbb, amit tesz, inkább a legvalószínűbb magyarázat megkeresése. Pont úgy, mint a nedves utcánál: sok magyarázat lehetséges.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> A második feladat a hétköznapi gondolkodás gyakori hibája: a „ha p, akkor q; q, tehát p” érvelés.</aside>
+  </div>
+</section>
+
+<!-- 5b. Wason kártyarejtvény -->
+<section class="slide" aria-label="Kártyarejtvény" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Kártyarejtvény: melyiket fordítsd meg?</h2>
+    <p class="lead">Egy játékmester négy kártyát tesz eléd. Mindegyik egyik oldalán betű, a másikon kép van. Ő ezt állítja: <strong>„Ha egy kártya egyik oldalán magánhangzó van, akkor a másik oldalán koponya van.”</strong> Melyik kártyá(ka)t kell megfordítanod, hogy kiderüljön, igazat mond-e? Jelöld ki őket, aztán fordítsd meg.</p>
+    <div class="wgrid" id="wason-cards"></div>
+    <div class="row">
+      <button class="btn hot" id="wason-flip">Megfordítom a kijelölteket</button>
+      <button class="btn ghost" id="wason-reset">Újra</button>
+    </div>
+    <p class="status" id="wason-result"></p>
+    <div class="box">
+      <p><strong>A logika:</strong> egy „ha p, akkor q” állítást egyetlen eset cáfol meg: amikor p igaz, de q nem. Itt ez azt jelenti: <em>magánhangzó, mögötte koponya nélkül</em>. Ezért két kártya számít: amelyik magánhangzó (mögötte kell lennie koponyának), és amelyik nem koponya (mögött nem lehet magánhangzó).</p>
+      <p><strong>Miért hibázik a legtöbb ember?</strong> A koponyás kártyát szeretnénk megfordítani, mert olyan bizonyítékot keresünk, ami igazat ad az állításnak. Ez a <strong>megerősítési torzítás</strong>: hajlamosak vagyunk azt keresni, ami alátámasztja, amit már gondolunk, ahelyett hogy azt, ami megcáfolhatná.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 6 perc).</b> Ez a Peter Wason brit pszichológusról elnevezett híres kártyaszelekciós feladat egy változata (a feltöltött könyv 3. gyakorlata nyomán, átfogalmazva). Előbb szavaztasd meg a diákokat kézfelnyújtással, csak utána fordítsd meg a kártyákat. A pillangó hátoldalán E betű van, ez az, ami leleplezi a hamis állítást.</aside>
+  </div>
+</section>
+
+<!-- 6. Műveletek -->
+<section class="slide" aria-label="A gondolkodás műveletei" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Mit csinál az agyad egy székkel?</h2>
+    <p class="lead">A gondolkodás hat alapműveletét egyetlen tárgyon követjük végig. Kattints sorban.</p>
+    <div class="chain" id="ops-chain">
+      <div class="step" data-i="0"><b>Elemzés</b><span>részekre bontás</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="1"><b>Szintézis</b><span>összerakás</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="2"><b>Összehasonlítás</b><span>hasonló és eltérő</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="3"><b>Absztrahálás</b><span>kiemelés, elhagyás</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="4"><b>Általánosítás</b><span>kiterjesztés</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="5"><b>Konkretizálás</b><span>alkalmazás</span></div>
+    </div>
+    <p class="chain-desc" id="ops-chain-desc"></p>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> Kérd meg a diákokat, hogy cseréljék le a „széket” egy másik tárgyra (pl. telefon, bicikli), és mondják végig a hat lépést.</aside>
+  </div>
+</section>
+
+<!-- 7. Algoritmus és heurisztika -->
+<section class="slide" aria-label="Algoritmus és heurisztika" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Biztos út, vagy mentális rövidítés?</h2>
+    <p class="lead">A tankönyv kétféle gondolkodási eljárást különböztet meg.</p>
+    <div class="grid two">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Algoritmus</span><span class="hint">Kattints</span></span><span class="back"><b>Algoritmus</b>Szigorúan meghatározott lépéssor. Ha betartod, szükségszerűen eléred a várt eredményt. Példa: a matematikai számítási műveletek.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Heurisztika</span><span class="hint">Kattints</span></span><span class="back"><b>Heurisztika</b>„Mentális rövidítés”: elágazó keresés, ahol minden lépésnél több út közül választasz. Gyors, de tévedhet.</span></button>
+    </div>
+    <p class="lead" style="margin-top:20px">Két gyakori rövidítés. Próbáld ki magadon!</p>
+    <div class="grid two" id="heur-quiz"></div>
+    <div class="box">
+      <p>Kahneman és Tversky szerint döntéseinkben „ökölszabályokra” támaszkodunk, amelyek főleg a saját tapasztalatainkon alapulnak. Gyorsítanak, de ha nem vizsgáljuk meg a statisztikai bizonyítékot, könnyen irracionális döntésekre visznek, miközben meg vagyunk győződve róla, hogy észszerűen döntöttünk.</p>
+      <p><strong>Reprezentativitási heurisztika:</strong> ha valami hasonlít egy kategória elemére, hajlamosak vagyunk azt hinni, hogy oda is tartozik, a statisztikai adatoktól függetlenül.<br><strong>Hozzáférhetőségi heurisztika:</strong> ha valamit könnyebben tudunk felidézni, gyakoribbnak gondoljuk.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A Linda-feladat Tversky és Kahneman nevéhez fűződik (a mi változatunk környezetvédő szervezettel). Mindkét kérdésnél előbb szavazzanak kézfelnyújtással, csak utána kattints.</aside>
+  </div>
+</section>
+
+<!-- 7b. Öt hiba a gondolkodásban -->
+<section class="slide" aria-label="Öt gondolkodási torzítás" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Öt hiba a gondolkodásodban</h2>
+    <p class="lead">Szeretjük racionális lényeknek gondolni magunkat, de a gyors, rövidítő gondolkodás miatt számos <strong>torzításnak</strong> vagyunk kitéve. Olvasd el a mondatokat: melyik ismerős? Kattints a magyarázatért.</p>
+    <div class="grid">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">„Jövő hónaptól sokkal szorgalmasabb leszek.”</span><span class="hint">Milyen csapda ez?</span></span><span class="back"><b>Idegen vagy önmagadnak</b>Ma olyan dolgokra vállalunk kötelezettséget, amiket majd a „jövőbeli énünk” végez el, mintha az türelmesebb és elkötelezettebb lenne. Fordítva is tévedünk: alábecsüljük, mennyire birkózunk majd meg a nehézségekkel. Súlyos krónikus betegek hangulata például hasonló volt az egészségesekéhez, pedig az egészségesek sokkal rosszabbra számítottak.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">„Rám ez nem vonatkozik, én biztos jól járok.”</span><span class="hint">Milyen csapda ez?</span></span><span class="back"><b>Indokolatlan optimizmus</b>Szerintünk a rossz dolgok inkább másokkal történnek. A diákok azt hiszik, rájuk az átlagosnál kisebb eséllyel vár alkoholprobléma vagy korai szívroham. A frissen házasok pontosan tudják a válások arányát, mégis biztosak benne, hogy az övék tartós lesz. Persze nem lehet mindenki az átlag felett.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">„Egy gyerek története megráz, a statisztika nem.”</span><span class="hint">Milyen csapda ez?</span></span><span class="back"><b>Egyetlen ember vs. tömeg</b>Egyetlen, megismerhető áldozat sorsa jobban megindít, mint sok ezer névtelené. Deborah Small kísérletében többet adományoztak egy hétéves kislánynak, mint milliók megsegítésére. Amikor felhívták a figyelmet erre a torzításra, a különbség eltűnt, de nem azért, mert többet adtak a sokaknak, hanem mert kevesebbet a kislánynak.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">„Egy adag az egy adag.”</span><span class="hint">Milyen csapda ez?</span></span><span class="back"><b>Az „egy” hatalma</b>Az egy egység megfelelő mennyiségnek érződik. Aki nagyobb kanállal szed, többet eszik. Egész perecből ugyanannyi mennyiségnél többet vittek el, mint félbevágottból. Ezért fizetünk inkább egyetlen hosszabb filmért, mint dupla jegyért.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">„Ennek a cégnek olyan jól hangzik a neve.”</span><span class="hint">Milyen csapda ez?</span></span><span class="back"><b>Az egyszerű nevek csábítása</b>A könnyen kiejthető, könnyen feldolgozható információt jobbnak és megbízhatóbbnak érezzük. Alter és Oppenheimer vizsgálatában a könnyen kiejthető nevű cégek részvényei rövid távon jobban teljesítettek, mint a nehéz nevűeké, pedig a név semmit sem mond a cég értékéről.</span></button>
+    </div>
+    <div class="box">
+      <p><strong>Mi a közös bennük?</strong> Mind a gyors, megérzésszerű gondolkodás (Kahneman „1. rendszere”) melléktermékei. A jó hír: aki tud a torzításról, kevésbé dől be neki. Ahogy az adományozási kísérletben is látszott: a tudatosság megváltoztatja a döntést.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A feltöltött könyv „Öt hiba a gondolkodásodban” fejezete nyomán, átfogalmazva. Kérd meg a diákokat, hogy mindegyikhez találjanak ki egy saját, hétköznapi példát. Az egyetlen-áldozat kártyánál érzékeny hangnemben beszélj: nem az a tanulság, hogy ne segítsünk, hanem hogy észrevegyük, mi mozgat minket.</aside>
+  </div>
+</section>
+
+<!-- 7c. Kognitív előítéletek kereke -->
+<section class="slide" aria-label="Kognitív előítéletek kereke" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Döntések, döntések, döntések: a torzítások rulettkereke</h2>
+    <p class="lead">Kahneman és Tversky izraeli pszichológusok kimutatták: a döntéseinkben „ökölszabályokra” támaszkodunk, amelyek gyorsítanak, de gyakran tévútra visznek. A gondolkodás ilyen kiszámítható hibáit nevezzük <strong>kognitív előítéleteknek</strong> (torzításoknak). Tizenhárom torzítás van a kerékben. Pörgesd meg, vagy kattints egy szeletre!</p>
+    <div class="wheel-wrap">
+      <div>
+        <svg class="wheel-svg" id="wheel-svg" viewBox="0 0 320 332" role="img" aria-label="Rulettkerék tizenhárom kognitív torzítással"></svg>
+        <div class="row" style="justify-content:center"><button class="btn hot" id="wheel-spin">Pörgess!</button></div>
+      </div>
+      <div class="wheel-side">
+        <div class="bias-panel" id="bias-panel" aria-live="polite"><p class="small">Pörgesd meg a kereket, és megtudod, melyik torzítás jön ki.</p></div>
+        <div class="legend" id="wheel-legend"></div>
+      </div>
+    </div>
+    <h3 style="margin-top:26px">Próbáld ki: a rulettkerék kérdése</h3>
+    <div class="grid two" id="roulette-quiz"></div>
+    <div class="box">
+      <p><strong>Tudtad?</strong> A könyv szerint, ha egy éjszakát nem alszunk át, hajlamosak vagyunk a szokásosnál sokkal kockázatosabb döntéseket hozni.</p>
+      <p><strong>Miért fontos ez?</strong> A kognitív előítéletek nagyrészt a személyes tapasztalatainkon alapulnak, ezért a mindennapokban gyakran segítenek. Fontos döntéseknél viszont, főleg új, még nem tapasztalt helyzetben, tudnunk kell, hogy félrevezethetnek. Az érvelés általános hibáinak megértése segít elkerülni a veszélyes vagy költséges hibákat.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 6 perc).</b> A feltöltött könyv „Döntések, döntések, döntések” oldalpárja nyomán (58–59. oldal), átfogalmazva; az első nyolc szelet ikonjait a könyv kereke adja (horgony, birka, pohár, kocka, homokóra, repülő, mérleg, %), az utolsó öt szelet az „Öt hiba a gondolkodásodban” oldalpárból (52–53. oldal) jött (edzőterem, napszemüveg, gyerek, perec, grafikon). Az „Öt hiba” dia kártyái ugyanezeket részletesebben mutatják. A pörgetés véletlenszerűen választ szeletet, kérd meg a diákokat, hogy a kihúzott torzításhoz mondjanak saját példát.</aside>
+  </div>
+</section>
+
+<!-- 7d. Melyik torzítás? -->
+<section class="slide" aria-label="Melyik torzítás?" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Melyik torzítás működik?</h2>
+    <p class="lead">Olvasd el a helyzeteket, és találd ki, melyik kognitív előítélet áll a háttérben.</p>
+    <div class="grid two" id="bias-quiz"></div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> Kézfelnyújtással előbb szavazzanak, aztán kattints. Minden helyzethez kérdezd meg: mit lehetne tenni a torzítás ellen?</aside>
+  </div>
+</section>
+
+<!-- 8. Probléma + Apollo 13 -->
+<section class="slide" aria-label="Probléma és megoldás" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Mi az a probléma?</h2>
+    <div class="grid three">
+      <div class="card"><h3>Kezdőállapot</h3><p>Honnan indulsz? Mit tudsz?</p></div>
+      <div class="card"><h3>Cél</h3><p>Hová szeretnél eljutni?</p></div>
+      <div class="card"><h3>Műveletek</h3><p>Mit kell tenned, hogy a kezdőállapotból eljuss a célhoz?</p></div>
+    </div>
+    <div class="box">
+      <p>Probléma akkor van, ha célt tűzöl ki, de akadályba ütközöl, és <strong>nincs kész válaszod</strong>. A problémák lehetnek jól és rosszul meghatározottak, és lehet bennük átrendezni, szerkezetet építeni vagy átalakítani.</p>
+    </div>
+    <h3 style="margin-top:22px">Egy valódi példa: Apollo 13 (1970)</h3>
+    <p class="lead">Egy robbanás után a három űrhajós a holdmodulban kényszerült visszatérni a Föld felé, ahol a levegő szén-dioxid-szintje veszélyesen nőtt. Kattints végig a megoldás lépésein.</p>
+    <div class="chain" id="prob-chain">
+      <div class="step" data-i="0"><b>1. A probléma</b><span>kezdőállapot és cél</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="1"><b>2. Újrafogalmazás</b><span>mi a valódi kérdés?</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="2"><b>3. Hipotézis</b><span>ötletek</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="3"><b>4. Kipróbálás</b><span>tesztelés</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="4"><b>5. Ellenőrzés</b><span>működik-e?</span></div>
+    </div>
+    <p class="chain-desc" id="prob-chain-desc"></p>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A tankönyv megoldási modelljét követi: újrafogalmazás, hipotézisek, tesztelés, ellenőrzés, szükség esetén újrakezdés. Az Apollo 13 (film, 1995, rendező: Ron Howard) valós eseményeket dolgoz fel. Ha működik, a megoldás nem „bevillanó ötlet”, hanem lépésenként felépített folyamat.</aside>
+  </div>
+</section>
+
+<!-- 8b. Köhler csimpánzai és Tolman -->
+<section class="slide" aria-label="Köhler csimpánzai" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Gondolatban oldják meg: Köhler csimpánzai</h2>
+    <p class="lead">1913 és 1920 között Wolfgang Köhler német pszichológus egy kutatóintézetben csimpánzokat vizsgált. Banánokat tett nehezen elérhető helyekre, és azt figyelte, hogyan találnak megoldást. Segíts a csimpánznak: hány dobozt kell egymásra tenni?</p>
+    <div class="nd-wrap">
+      <svg class="bn-svg" id="bn-svg" viewBox="0 0 320 250" role="img" aria-label="A csimpánz és a magasan lógó banán"></svg>
+      <div class="nd-side">
+        <div class="row">
+          <button class="btn ghost" id="bn-add">+ Doboz</button>
+          <button class="btn ghost" id="bn-del">− Doboz</button>
+          <button class="btn hot" id="bn-try">Nyúl a banánért!</button>
+        </div>
+        <p class="status" id="bn-status">A banán magasan lóg. Mit teszel?</p>
+        <div class="box" style="margin-top:14px">
+          <p>A csimpánzok különféle módszereket próbáltak (dobozokra álltak, botot használtak), aztán megálltak, és mintha gondolkodtak volna. Köhler szerint az állatok a problémákat először <strong>fejben oldják meg</strong>.</p>
+        </div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:20px">Háromféle magyarázat arra, hogyan tanulunk és oldunk meg problémákat. Kattints mindegyikre.</p>
+    <div class="grid three">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Inger és válasz</span><span class="hint">Behaviorizmus</span></span><span class="back"><b>Inger és válasz</b>A viselkedéskutatók (behavioristák) szerint mi, emberek és más állatok is egyszerűen az inger és az arra adott válasz útján tanulunk.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Belátás</span><span class="hint">Köhler</span></span><span class="back"><b>Belátás</b>A csimpánzok a próbálkozások után átgondolták, mi működött és mi nem. Felismertek mintákat, amelyekből összefüggéseket építettek a jövő hasonló problémáihoz.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Szellemi térkép</span><span class="hint">Tolman</span></span><span class="back"><b>Szellemi térkép</b>Edward Tolman szerint próbálkozás és kudarc útján tanuljuk meg, mely cselekvések vezetnek jó eredményhez, de közben gondolkodunk is róluk, és a környezetünkről egyfajta „szellemi térképet” hozunk létre. Később ezt használjuk problémák megoldására és döntésekhez.</span></button>
+    </div>
+    <div class="box">
+      <p><strong>Próbáld ki a szellemi térképedet:</strong> képzeld el az utat otthonról az iskoláig, térkép nélkül. Most gondold végig: ha a megszokott utat lezárnák, hogyan jutnál el másképp? Ezt a „térképet” a fejedben építetted fel, nem egyetlen mozdulatsorból.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A feltöltött könyv „Banánok nehezen elérhető helyeken” és „Szellemi térképek a megoldások kereséséhez” szakasza nyomán, átfogalmazva. A „belátás” szó a szakirodalomban a Köhler-féle megoldás jelölése. Kérd meg a diákokat, hogy próbálják rajzban is felvázolni a saját szellemi térképüket.</aside>
+  </div>
+</section>
+
+<!-- 9. Kilenc pont -->
+<section class="slide" aria-label="Kilenc pont kísérlet" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Kísérlet: a kilenc pont</h2>
+    <p class="lead">Kösd össze mind a kilenc pontot <strong>négy egyenes szakasszal</strong>, úgy, hogy közben nem emeled fel a tollat (a szakaszok egymáshoz csatlakoznak). Kattints a rács pontjaira a szakaszok csúcsainak kijelöléséhez.</p>
+    <div class="nd-wrap">
+      <svg class="nd-svg" id="nd-svg" viewBox="0 0 320 320" role="img" aria-label="Kilenc pont, kattintható rács"></svg>
+      <div class="nd-side">
+        <p class="status" id="nd-status">Kattints az első csúcsra.</p>
+        <div class="row">
+          <button class="btn ghost" id="nd-reset">Újra</button>
+          <button class="btn ghost" id="nd-hint">Tipp</button>
+          <button class="btn ghost" id="nd-solve">Megoldás</button>
+        </div>
+        <p class="status" id="nd-hint-txt"></p>
+        <div class="box" style="margin-top:14px">
+          <p>A tankönyv is megemlíti ezt a feladatot: a megoldáshoz le kell mondanunk a megszokott rutinról. Az a gondolat, hogy a vonalnak a pontokból álló négyzeten belül kell maradnia, nem szerepel a feladatban, csak mi tesszük hozzá.</p>
+        </div>
+      </div>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> Hagyj 2–3 percet a próbálkozásra. A nehézség lényege a „négyzeten kívülre lépés”. A feladat kapcsolódik a lenti Duncker-féle gyertyaproblémához is.</aside>
+  </div>
+</section>
+
+<!-- 10. Gyertyaprobléma -->
+<section class="slide" aria-label="Gyertyaprobléma" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Amikor a megszokás gátol</h2>
+    <p class="lead"><strong>Duncker gyertyaproblémája (1945).</strong> Az asztalon van egy gyertya, egy doboz rajzszög és egy doboz gyufa. Hogyan erősíted a gyertyát a falra úgy, hogy a viasz ne csöpögjön az asztalra?</p>
+    <div class="row">
+      <button class="btn hot" id="candle-btn">Mutasd a megoldást</button>
+    </div>
+    <div id="candle-reveal" hidden style="margin-top:16px">
+      <svg width="240" height="170" viewBox="0 0 240 170" role="img" aria-label="A rajzszögesdoboz a falra tűzve, benne a gyertya">
+        <rect width="240" height="170" fill="#EAF3FF"/>
+        <rect x="0" y="140" width="240" height="30" fill="#8B5E3C"/>
+        <rect x="75" y="95" width="90" height="32" fill="#E7C98F" stroke="#16163A" stroke-width="2.5"/>
+        <circle cx="85" cy="102" r="3.5" fill="#16163A"/>
+        <circle cx="155" cy="102" r="3.5" fill="#16163A"/>
+        <rect x="114" y="52" width="12" height="43" fill="#FFFFFF" stroke="#16163A" stroke-width="2"/>
+        <ellipse cx="120" cy="44" rx="6" ry="9" fill="#FFC533"/>
+      </svg>
+      <p class="box">A rajzszögesdobozt <strong>kitűzzük a falra</strong>, és a gyertyát beleállítjuk. A nehézség oka a <em>funkcionális rögzültség</em>: a dobozt „csak tartónak” látjuk, nem eszköznek. Ugyanaz a gondolkodási csapda, mint a kilenc pontnál.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> Hagyj időt a találgatásra a megoldás előtt. Kérdezd meg: milyen hétköznapi tárgyat használtál már valami egészen másra?</aside>
+  </div>
+</section>
+
+<!-- 11. Tégla: divergens -->
+<section class="slide" aria-label="Ötletgyár" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Kísérlet: ötletgyár</h2>
+    <p class="lead">Írj <strong>60 másodperc</strong> alatt minél több felhasználási módot egyetlen téglára. Nyomj Entert minden ötlet után.</p>
+    <div class="panel">
+      <div class="timer" id="brick-timer">60</div>
+      <div class="row">
+        <button class="btn light" id="brick-start">Indítás</button>
+        <input class="field" id="brick-input" type="text" placeholder="pl. könyvtámasz…" disabled style="flex:1;min-width:180px">
+        <button class="btn light" id="brick-add" disabled>Hozzáad</button>
+      </div>
+      <div class="ideas" id="brick-ideas"></div>
+      <p class="status" id="brick-result" style="color:#DADCF5"></p>
+    </div>
+    <p class="lead" style="margin-top:18px">Guilford szerint a gondolkodás négy fő vonása. Hol erős a tiéd?</p>
+    <div class="grid">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Folyékonyság</span><span class="hint">Kattints</span></span><span class="back"><b>Folyékonyság</b>Hány ötlet jut eszedbe adott idő alatt? (A tiéd: az ötleteid száma.)</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Rugalmasság</span><span class="hint">Kattints</span></span><span class="back"><b>Rugalmasság</b>Mennyire tudsz gyorsan másik szemszögből nézni egy problémát? (A tiéd: hány különböző <em>kategóriába</em> esnek az ötleteid?)</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Eredetiség</span><span class="hint">Kattints</span></span><span class="back"><b>Eredetiség</b>Mennyire új, szokatlan az ötlet? (A tiéd: hányat mondott rajtad kívül más is?)</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Kidolgozottság</span><span class="hint">Kattints</span></span><span class="back"><b>Kidolgozottság</b>Mennyire részletes, teljes az ötlet? (A tiéd: melyiket tudnád egy percig magyarázni?)</span></button>
+    </div>
+    <div class="box">
+      <p>Guilford modelljében a gondolkodás 5 művelet × 4 tartalom × 6 termék = <strong>120</strong> kisebb szerkezetből áll. Műveletek: értékelés, konvergens és divergens gondolkodás, emlékezet, megismerés.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 6 perc).</b> Az idő lejárta után hasonlítsák össze a listákat a padtársukkal: hány ötlet ugyanaz? Ez adja az eredetiséget. Ez a feladat a „divergens” gondolkodás klasszikus mérése (Guilford).</aside>
+  </div>
+</section>
+
+<!-- 12. Konvergens -->
+<section class="slide" aria-label="Közös szó feladat" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Az ellenpár: egyetlen jó megoldás</h2>
+    <p class="lead">Itt nem sok ötlet kell, hanem egy: keress olyan szót, amely mindhárom szóhoz hozzáilleszthető <em>(összetett szóként)</em>. Ez a <strong>konvergens</strong> gondolkodás.</p>
+    <div class="grid" id="rat-grid"></div>
+    <div class="box">
+      <p><strong>Divergens gondolkodás:</strong> szabadon engedi a képzeletet, sok ötletet és megoldást szül, ez a kreativitás. <strong>Konvergens gondolkodás:</strong> már kijelölt vonalat követ, logikára épülő megoldásokhoz jut. Hogy melyik áll közelebb hozzád, genetikai és nevelési hatásoktól is függ.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 3 perc).</b> A feladat Mednick „távoli asszociációs” tesztjén alapul (saját magyar tételekkel). Kérdezd meg: melyik feladat esett jobban, az ötletgyár vagy a közös szó?</aside>
+  </div>
+</section>
+
+<!-- 13. Típusok kvíz -->
+<section class="slide" aria-label="A gondolkodás típusai" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Melyik gondolkodástípus?</h2>
+    <p class="lead">A tankönyv három szempont szerint különít el típusokat: analitikus és szintetikus, intuitív-konkrét és absztrakt-formális, divergens és konvergens. Döntsd el a helyzeteknél, melyik dominál.</p>
+    <div class="grid two" id="type-quiz"></div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> Hangsúlyozd, hogy egyik típus sem „jobb”: a legtöbb ember a helyzettől függően váltogat.</aside>
+  </div>
+</section>
+
+<!-- 14a. Piaget profil -->
+<section class="slide" aria-label="Jean Piaget" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Jean Piaget: aki a gyerekeket hallgatta</h2>
+    <p class="lead">A 20. század egyik legbefolyásosabb gondolkodója, a fejlődéslélektan megalapozója. Kattints sorban az életútjára.</p>
+    <div class="chain" id="piaget-chain">
+      <div class="step" data-i="0"><b>1896</b><span>Neuchâtel</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="1"><b>11 évesen</b><span>első cikk</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="2"><b>1918</b><span>doktori fokozat</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="3"><b>1919</b><span>Párizs</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="4"><b>1923</b><span>saját gyerekek</span></div>
+      <div class="arrow">→</div>
+      <div class="step" data-i="5"><b>1955</b><span>Genf</span></div>
+    </div>
+    <p class="chain-desc" id="piaget-chain-desc"></p>
+    <p class="lead" style="margin-top:14px">A gondolkodás négy szakasza Piaget szerint. Kattints mindegyikre.</p>
+    <div class="grid">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Érzékszervi-mozgásos</span><span class="hint">kb. a születéstől 2 éves korig</span></span><span class="back"><b>Érzékszervi-mozgásos</b>A baba érzékeléssel és mozgással ismeri meg a világot: megfog, megkóstol, ledob.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Műveletek előtti</span><span class="hint">kb. 2–7 éves korig</span></span><span class="back"><b>Műveletek előtti</b>Már beszél és képzel, de még egocentrikus, és nem érti a mennyiség megmaradását.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Konkrét műveleti</span><span class="hint">kb. 7–12 éves korig</span></span><span class="back"><b>Konkrét műveleti</b>Logikusan gondolkodik, de még konkrét, megfogható helyzetekhez kötve.</span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Formális műveleti</span><span class="hint">kb. 12 éves kortól</span></span><span class="back"><b>Formális műveleti</b>Elvont, hipotetikus gondolkodás: „mi lenne, ha…”, szimbólumok, elméletek.</span></button>
+    </div>
+    <div class="box">
+      <p><strong>Érdekesség:</strong> Piaget munkamániás volt. A könyv szerint a kollégái „le Patron”-nak (a Főnöknek) hívták, reggelente írt, még külföldi előadói körúton is, Amerikában pedig az európai időbeosztást tartotta.</p>
+      <p><strong>Kritika:</strong> Piaget nem mentes a kritikáktól. Újabb kutatások szerint a gyerekek hibáit néha nem a fogalmi megértés hiánya, hanem a fizikai koordinációjuk korlátai okozzák.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 5 perc).</b> A Piaget-profil a feltöltött könyv fejezete nyomán, átfogalmazva. A szakaszok korhatárai a könyv szerint; más források kissé eltérő határokat adnak (pl. 11–12 év).</aside>
+  </div>
+</section>
+
+<!-- 14. Piaget -->
+<section class="slide" aria-label="Piaget kísérlete" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Hogyan fejlődik a gondolkodás? Piaget kísérlete</h2>
+    <p class="lead">Piaget híres <strong>konzervációs (megmaradási) problémái</strong> közül kettőt kipróbálhatsz. Az óvodás gyerek nem fogja fel, hogy az anyag megjelenésének felületes változása nem befolyásolja az alapvető tulajdonságait. Először: <strong>ugyanannyi víz</strong> van két egyforma pohárban. Mit mond egy 5 éves, ha az egyiket egy magas, keskeny pohárba öntjük?</p>
+    <div class="row" style="align-items:flex-start;gap:24px">
+      <svg class="glass-svg" id="glass-svg" viewBox="0 0 300 190" role="img" aria-label="Két pohár víz"></svg>
+      <div style="flex:1;min-width:240px">
+        <button class="btn hot" id="pour-btn">Öntsd át a B poharat</button>
+        <p class="status" id="pour-txt"></p>
+        <div class="grid" id="pour-quiz"></div>
+      </div>
+    </div>
+    <h3 style="margin-top:22px">Ugyanez érmékkel</h3>
+    <p class="lead">Két sorban ugyanannyi érme van. Mit mond egy óvodás, ha az alsó sort szétterítjük az asztalon?</p>
+    <div class="row" style="align-items:flex-start;gap:24px">
+      <svg class="coin-svg" id="coin-svg" viewBox="0 0 320 110" role="img" aria-label="Két sor érme"></svg>
+      <div style="flex:1;min-width:240px">
+        <button class="btn hot" id="coin-btn">Húzd szét az alsó sort</button>
+        <p class="status" id="coin-txt"></p>
+        <div class="grid" id="coin-quiz"></div>
+      </div>
+    </div>
+    <div class="box">
+      <p>A műveletek előtti szakaszban lévő gyerekek (kb. 2–7 éves korban) általában a magasabb vízszintre figyelnek, és azt mondják, hogy a magas pohárban <strong>több</strong> a víz. A megmaradás megértése kb. 7 éves kor körül jelenik meg: ekkor már képesek logikus lépésekben gondolkodni.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> A pohár- és az éremfeladat a feltöltött könyv konzervációs példái. A kísérletet kisebb testvérrel vagy rokonnal otthon is ki lehet próbálni.</aside>
+  </div>
+</section>
+
+<!-- 14b. Három hegy -->
+<section class="slide" aria-label="Három hegy feladat" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">A „három hegy”-feladat</h2>
+    <p class="lead">A genfi táj, a tó túloldalán magasodó hegyek ihlették Piagetet. Egy háromdimenziós hegymodell elé ültette a gyerekeket, és megkérte őket, hogy képzeljék el a látványt <em>más nézőpontból</em>. Próbáld ki az egyszerűsített változatát!</p>
+    <p><strong>Te ezt látod innen:</strong></p>
+    <div id="mt-yours" style="max-width:300px"></div>
+    <p style="margin-top:12px">A játékbaba <span aria-hidden="true">🧸</span> <strong>szemben ül</strong>, a hegyek túloldalán. Melyik képet látja a baba?</p>
+    <div class="mt-opts" id="mt-opts"></div>
+    <p class="status" id="mt-fb"></p>
+    <div class="box">
+      <p>Piaget azt találta, hogy a négyévesnél fiatalabb gyerekek nem értik, mit kérnek tőlük. A négy és hat év közöttiek értik a kérést, de nem képesek felvenni más ember nézőpontját: azt a képet választják, amit <strong>ők maguk látnak</strong>. Ezt nevezte <strong>egocentrizmusnak</strong>.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> A feltöltött könyv három hegy feladata nyomán, egyszerűsített, kétdimenziós változatban (a valódi modellen a nézőpontok bonyolultabbak). Kérdezd meg a diákokat: te melyiket választottad elsőre, és miért?</aside>
+  </div>
+</section>
+
+<!-- 15. Gardner -->
+<section class="slide" aria-label="Többféle intelligencia" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Egyféle vagy többféle intelligencia?</h2>
+    <p class="lead">Howard Gardner szerint nincs egyetlen intelligencia, hanem több, egymástól eltérő, mind fejleszthető. Jelöld meg (legfeljebb) <strong>kettőt</strong>, ahol szerinted a leginkább otthon vagy.</p>
+    <div class="pick-grid" id="gard-grid"></div>
+    <p class="status" id="gard-result"></p>
+    <div class="box">
+      <p><strong>Fontos megjegyzés:</strong> az elmélet az oktatásban nagy hatású, de a kutatók többsége vitatja, hogy ezek önálló „intelligenciák” lennének. Ez nem teszt, és nem címke, inkább gondolkodásra és önismeretre ösztönző.</p>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> A nyolc intelligencia (a tankönyv felsorolása szerint): nyelvi, logikai-matematikai, zenei, téri, naturalista, testi-mozgásos, interperszonális és intraperszonális. Gardner szerint ez nem mond ellent Piagetnek, hanem diverzifikálja az elképzeléseit.</aside>
+  </div>
+</section>
+
+<!-- 16. Mozi és irodalom -->
+<section class="slide" aria-label="Gondolkodás a moziban és a könyvekben" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Gondolkodás a moziban és a könyvekben</h2>
+    <p class="lead">Néhány film és könyv, ahol a mai órán tanult fogalmak „működés közben” láthatók. Kattints egy címre.</p>
+    <div class="grid">
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Tizenkét dühös ember</span><span class="hint">film, 1957, Sidney Lumet</span></span><span class="back"><b>Ítélet, következtetés</b>Esküdtek egyetlen kételytől vezérelve újragondolják az „egyértelmű” bizonyítékokat.<span class="q">Kérdés: melyik ponton változott meg valaki véleménye: érv vagy hangulat hatására?</span></span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Sherlock Holmes</span><span class="hint">regény, Arthur Conan Doyle</span></span><span class="back"><b>Analitikus gondolkodás</b>Apró részletekből épít fel magyarázatot. Ami „dedukciónak” tűnik, az gyakran a legvalószínűbb magyarázat keresése.<span class="q">Kérdés: egy sáros cipőből mit lehet és mit nem lehet biztosan kikövetkeztetni?</span></span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">A kis herceg</span><span class="hint">regény, Saint-Exupéry, 1943</span></span><span class="back"><b>Divergens szemlélet</b>Az elbeszélő rajzán a felnőttek kalapot látnak, ő egy elefántot lenyelő kígyót ábrázolt. Megszokás kontra képzelet.<span class="q">Kérdés: mikor „látsz kalapot”, ahol valaki más elefántot látna?</span></span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Apollo 13</span><span class="hint">film, 1995, Ron Howard</span></span><span class="back"><b>Problémamegoldás</b>Korlátozott eszközökből kell megoldani egy életveszélyes helyzetet. A megoldási folyamat lépései jól követhetők.<span class="q">Kérdés: hol volt kulcsfontosságú a probléma újrafogalmazása?</span></span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">A marsi</span><span class="hint">regény: Andy Weir (2011), film: 2015</span></span><span class="back"><b>Hipotézis és próba</b>Egyedül maradt űrhajós problémáról problémára halad: hipotézist állít fel, kipróbálja, ellenőrzi.<span class="q">Kérdés: melyik megoldása volt inkább algoritmus, melyik heurisztika?</span></span></button>
+      <button class="flip" aria-expanded="false"><span class="front"><span class="t">Gyors és lassú gondolkodás</span><span class="hint">könyv: Daniel Kahneman, 2011</span></span><span class="back"><b>Két gondolkodásmód</b>Gyors, megérzésszerű és lassú, megfontolt gondolkodás, valamint a heurisztikák világa (eredeti cím: Thinking, Fast and Slow).<span class="q">Kérdés: mikor érdemes a megérzésedre hallgatni, és mikor nem?</span></span></button>
+    </div>
+    <aside class="notes"><b>Tanári jegyzet (kb. 4 perc).</b> Nem kell megnézni az egész filmet: egy-egy jelenet vagy részlet is elég. Kérj meg 2–3 diákot, hogy egy címet válasszanak, és mutassák be, melyik mai fogalom köthető hozzá.</aside>
+  </div>
+</section>
+
+<!-- 17. Igaz/hamis -->
+<section class="slide" aria-label="Igaz vagy hamis" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Igaz vagy hamis? Gondolkodás</h2>
+    <div class="grid two" id="tf-quiz"></div>
+  </div>
+</section>
+
+<!-- 18. Záró -->
+<section class="slide" aria-label="Összegzés" hidden>
+  <div class="slide-inner">
+    <h2 tabindex="-1">Amit ma megtanultunk</h2>
+    <p class="big-say">A gondolkodás a legmagasabb szintű információfeldolgozás: fogalmakkal, ítéletekkel és következtetésekkel dolgozik, és bármikor tévedhet, de tanulható, hogyan tévedjünk kevesebbet.</p>
+    <div class="grid two">
+      <div class="card">
+        <h3>Kilépőjegy (füzetbe, 2 perc)</h3>
+        <ul class="plain">
+          <li>Egy dolog, ami ma meglepett.</li>
+          <li>Melyik gondolkodási torzítást ismerted fel magadon (megerősítési torzítás, indokolatlan optimizmus, egyéb)?</li>
+          <li>Egy kérdés, amit még feltennél a témáról.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Házi feladat: gondolkodási napló</h3>
+        <p>Egy napig jegyezz fel egy helyzetet, amikor a megérzésedre hagyatkoztál, és egyet, amikor tudatosan, lépésről lépésre gondolkodtál. Mindkettőnél írd le az eredményt is. Közben figyeld meg, mikor keresed azt, ami igazat ad neked, és mikor azt, ami megcáfolhat. Ezenfelül válassz egy filmet vagy könyvet a listáról, és nevezz meg benne egy mai fogalmat.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="bar" aria-label="Diák közötti lépegetés">
+  <button class="nav" id="prev" aria-label="Előző dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+  <span class="count" id="count">1 / 25</span>
+  <button class="pill" id="notes-btn" aria-pressed="false">Jegyzetek</button>
+  <button class="nav" id="next" aria-label="Következő dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+</nav>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var cur=0;
+  var prevBtn=document.getElementById('prev'), nextBtn=document.getElementById('next');
+  var fill=document.getElementById('fill'), count=document.getElementById('count');
+
+  function show(n){
+    n=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,k){ s.hidden=(k!==n); });
+    cur=n;
+    slides[cur].scrollTop=0;
+    var h=slides[cur].querySelector('h1,h2');
+    if(h&&n>0) h.focus({preventScroll:true});
+    fill.style.width=((cur/(slides.length-1))*100)+'%';
+    count.textContent=(cur+1)+' / '+slides.length;
+    prevBtn.disabled=cur===0; nextBtn.disabled=cur===slides.length-1;
+  }
+  prevBtn.addEventListener('click',function(){show(cur-1)});
+  nextBtn.addEventListener('click',function(){show(cur+1)});
+  document.querySelectorAll('[data-next]').forEach(function(b){b.addEventListener('click',function(){show(cur+1)})});
+
+  var notesBtn=document.getElementById('notes-btn');
+  notesBtn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('notes-on');
+    notesBtn.setAttribute('aria-pressed',on);
+  });
+
+  document.addEventListener('keydown',function(e){
+    var t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return;
+    if(e.ctrlKey||e.metaKey||e.altKey) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();show(cur+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1)}
+    else if(e.key==='Home'){show(0)}
+    else if(e.key==='End'){show(slides.length-1)}
+    else if(e.key==='n'||e.key==='N'){notesBtn.click()}
+  });
+
+  var sx=0, sy=0, tracking=false;
+  var stage=document.getElementById('stage');
+  stage.addEventListener('touchstart',function(e){
+    if(e.target.closest('button,a,input,textarea,svg')){tracking=false;return}
+    tracking=true; sx=e.touches[0].clientX; sy=e.touches[0].clientY;
+  },{passive:true});
+  stage.addEventListener('touchend',function(e){
+    if(!tracking) return; tracking=false;
+    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){ show(dx<0?cur+1:cur-1); }
+  },{passive:true});
+
+  document.querySelectorAll('.flip').forEach(function(b){
+    b.addEventListener('click',function(){
+      var o=b.classList.toggle('is-open');
+      b.setAttribute('aria-expanded',o?'true':'false');
+    });
+  });
+
+  /* ---------- általános kvíz-építő ---------- */
+  function buildQuiz(wrapId, data){
+    var wrap=document.getElementById(wrapId);
+    if(!wrap) return;
+    data.forEach(function(d){
+      var el=document.createElement('div'); el.className='stmt';
+      var p=document.createElement('p'); p.className='stmt-t'; p.textContent=d.t; el.appendChild(p);
+      var ans=document.createElement('div'); ans.className='ans'; el.appendChild(ans);
+      var fb=document.createElement('p'); fb.className='fb'; fb.hidden=true; el.appendChild(fb);
+      var btns=[];
+      d.opts.forEach(function(o){
+        var b=document.createElement('button'); b.className='btn ghost'; b.textContent=o;
+        b.addEventListener('click',function(){
+          var ok=(o===d.a);
+          el.classList.add(ok?'ok':'no');
+          btns.forEach(function(x){x.disabled=true});
+          fb.hidden=false;
+          fb.innerHTML='<strong>'+(ok?'Jó válasz.':'Nem egészen.')+'</strong> '+(ok?'':'A helyes válasz: <strong>'+d.a+'</strong>. ')+d.e;
+        });
+        btns.push(b); ans.appendChild(b);
+      });
+      wrap.appendChild(el);
+    });
+  }
+
+  /* ---------- általános lépésenkénti lánc ---------- */
+  function buildChain(rootId, descId, texts){
+    var root=document.getElementById(rootId); if(!root) return;
+    var steps=[].slice.call(root.querySelectorAll('.step'));
+    var arrows=[].slice.call(root.querySelectorAll('.arrow'));
+    var desc=document.getElementById(descId);
+    var i=-1;
+    function next(){
+      i++;
+      if(i>=steps.length){
+        i=-1;
+        steps.forEach(function(s){s.classList.remove('on')});
+        arrows.forEach(function(a){a.classList.remove('on')});
+        desc.textContent='';
+        return;
+      }
+      steps[i].classList.add('on');
+      if(arrows[i-1]) arrows[i-1].classList.add('on');
+      desc.textContent=texts[i];
+    }
+    steps.forEach(function(s){ s.addEventListener('click', next); });
+  }
+
+  /* ---------- 2. ütő és labda ---------- */
+  buildQuiz('crt-quiz',[
+    { t:'Egy ütő és egy labda együtt 11 lejbe kerül. Az ütő 10 lejjel drágább, mint a labda. Mennyibe kerül a labda?',
+      opts:['50 bani','1 lej','5 lej'], a:'50 bani',
+      e:'Ha a labda 50 bani, az ütő 10,50 lej, együtt 11 lej, és a különbségük 10 lej. A legtöbben a gyors, megérzésszerű 1 lejt mondják: ez a „gyors” gondolkodás tipikus csapdája. Ide lassabb, tudatos számolás kellene.' }
+  ]);
+
+  /* ---------- 3. lánc ---------- */
+  buildChain('think-chain','think-chain-desc',[
+    'Egy inger (pl. fény, hang) jelét kapjuk meg a receptorainkon keresztül.',
+    'Az érzékleteket egységes képpé szervezzük, de ez mindig az „itt és most” kapcsolódik.',
+    'Fizikai jelenlét nélkül is előhívunk egy képet: a tárgy nincs jelen, mégis a fejünkben van.',
+    'A gondolkodás ebből általánosít, összehasonlít, következtet, így múltról és jövőről is tud.'
+  ]);
+
+  /* ---------- 4. létra ---------- */
+  buildChain('ladder','ladder-desc',[
+    'A fülemüle: éjszakai énekes madár, barna tollazat. Még sok egyedi vonás.',
+    'A madár: elvész az énekhang és a szín, megmarad: tollak, szárnyak, csőr. Általánosabb.',
+    'Az állat: elvesznek a tollak és a szárny, megmarad: mozog, táplálkozik. Még általánosabb.',
+    'Az élőlény: csak az marad, hogy él és anyagcserét folytat. Ez már nem hasonlít semmire, csak „gondolni” lehet rá.'
+  ]);
+
+  /* ---------- 5. következtetések ---------- */
+  buildQuiz('syl-quiz',[
+    { t:'Minden madár tojást rak. A fecske madár. Tehát a fecske tojást rak.',
+      opts:['Következik','Nem következik'], a:'Következik',
+      e:'Ez érvényes következtetés: ha az első két állítás igaz, a harmadik szükségszerűen is igaz.' },
+    { t:'Ha esik az eső, vizes az utca. Az utca vizes. Tehát esett az eső.',
+      opts:['Következik','Nem következik'], a:'Nem következik',
+      e:'Az utca más okból is lehet vizes (locsolták, mosták). A „ha esik, akkor vizes” nem fordítható meg.' },
+    { t:'Minden kutya emlős. Egyes emlősök vízben élnek. Tehát egyes kutyák vízben élnek.',
+      opts:['Következik','Nem következik'], a:'Nem következik',
+      e:'Az „egyes emlősök” nem feltétlenül kutyák. A következtetés hibás, még ha a végén kimondott tény véletlenül igaz is lehet.' }
+  ]);
+
+  /* ---------- 6. műveletek ---------- */
+  buildChain('ops-chain','ops-chain-desc',[
+    'Elemzés: a széket részekre bontod: ülőlap, négy láb, háttámla, és mérlegeled, melyik mire jó.',
+    'Szintézis: a részeket fejben újra összeraktad egyetlen egésszé, egy székké.',
+    'Összehasonlítás: összeveted a taburettel és a kanapéval: mi közös, mi eltérő (háttámla, láb).',
+    'Absztrahálás: kiemelsz néhány lényeges vonást (ülésre való, megtartja a testet), a többit (szín, anyag) elhagyod.',
+    'Általánosítás: a kapott fogalmat kiterjeszted minden hasonló tárgyra: ülőbútor.',
+    'Konkretizálás: alkalmazod egy konkrét esetre: eltört a konyhai székem lába, mit tegyek vele?'
+  ]);
+
+  /* ---------- 7. heurisztikák ---------- */
+  buildQuiz('heur-quiz',[
+    { t:'Linda 31 éves, egyedülálló, tudatos és nagyon okos. Filozófiát tanult, diákként sokat foglalkozott a környezetvédelem és az igazságosság kérdéseivel. Melyik valószínűbb?',
+      opts:['Linda bankpénztáros','Linda bankpénztáros és aktív tagja egy környezetvédő szervezetnek'],
+      a:'Linda bankpénztáros',
+      e:'A második állítás az elsőnek csak egy része: ha a kettő együtt igaz, akkor az első is igaz, tehát az első nem lehet kevésbé valószínű. A leírás „illik” a környezetvédőre, ezért tűnik a második valószínűbbnek (reprezentativitási heurisztika).' },
+    { t:'Szerinted a világban évente jóval több ember hal meg…',
+      opts:['légi balesetben','közúti balesetben'],
+      a:'közúti balesetben',
+      e:'Közúti balesetben évente több mint egymillió ember hal meg, légi balesetben jellemzően legfeljebb néhány száz. A repülőszerencsétlenségek azért tűnnek gyakoribbnak, mert a híradások miatt könnyen felidézzük őket (hozzáférhetőségi heurisztika).' }
+  ]);
+
+  /* ---------- 8. Apollo 13 ---------- */
+  buildChain('prob-chain','prob-chain-desc',[
+    'A kezdőállapot: a levegő szén-dioxid-szintje nő, a holdmodul szűrőpatronjai kerekek, a parancsnoki modulé négyszögletesek. A cél: tiszta levegő a Földig.',
+    'Újrafogalmazás: a kérdés nem az, hogy „hogy lesz új szűrőnk”, hanem az, hogy „hogyan illesszünk négyszögletes patront kerek nyílásba a fedélzeten lévő tárgyakból?”.',
+    'Hipotézisek: milyen tárgyak vannak a fedélzeten (műanyag zsák, ragasztószalag, kartonlap, tömlők), és hogyan lehet belőlük adaptert építeni?',
+    'Kipróbálás: a földi mérnökök ugyanazokból az eszközökből megépítették a megoldást, és lépésről lépésre elmondták az űrhajósoknak.',
+    'Ellenőrzés: a szén-dioxid-szint csökken-e? Ha nem, akkor a ciklus újrakezdődik. Itt működött.'
+  ]);
+
+  /* ---------- 9. kilenc pont ---------- */
+  var ND={ox:70, oy:70, step:60, min:-1, max:4};
+  var ndVerts=[];
+  var ndSvg=document.getElementById('nd-svg');
+  var ndStatus=document.getElementById('nd-status');
+  var ndHintTxt=document.getElementById('nd-hint-txt');
+  var SOLUTION=[[0,0],[3,0],[0,3],[0,0],[2,2]];
+
+  function ndCovered(i,j,verts){
+    for(var k=0;k<verts.length-1;k++){
+      var a=verts[k], b=verts[k+1];
+      var cross=(b[0]-a[0])*(j-a[1])-(b[1]-a[1])*(i-a[0]);
+      if(cross!==0) continue;
+      if(i>=Math.min(a[0],b[0]) && i<=Math.max(a[0],b[0]) && j>=Math.min(a[1],b[1]) && j<=Math.max(a[1],b[1])) return true;
+    }
+    return false;
+  }
+  function ndCount(verts){
+    var c=0;
+    for(var i=0;i<3;i++) for(var j=0;j<3;j++) if(ndCovered(i,j,verts)) c++;
+    return c;
+  }
+  function px(u){return ND.ox+ND.step*u;}
+  function ndDraw(){
+    var s='';
+    for(var u=ND.min;u<=ND.max;u++){
+      for(var v=ND.min;v<=ND.max;v++){
+        var isDot=(u>=0&&u<=2&&v>=0&&v<=2);
+        if(!isDot) s+='<circle cx="'+px(u)+'" cy="'+px(v)+'" r="3" fill="#C9CCEA"/>';
+      }
+    }
+    for(var k=0;k<ndVerts.length-1;k++){
+      var a=ndVerts[k], b=ndVerts[k+1];
+      s+='<line x1="'+px(a[0])+'" y1="'+px(a[1])+'" x2="'+px(b[0])+'" y2="'+px(b[1])+'" stroke="#D42A68" stroke-width="4" stroke-linecap="round"/>';
+    }
+    for(var i=0;i<3;i++){
+      for(var j=0;j<3;j++){
+        s+='<circle cx="'+px(i)+'" cy="'+px(j)+'" r="8" fill="'+(ndCovered(i,j,ndVerts)?'#0B7F72':'#16163A')+'"/>';
+      }
+    }
+    ndVerts.forEach(function(p,idx){
+      s+='<circle cx="'+px(p[0])+'" cy="'+px(p[1])+'" r="5" fill="#FFC533" stroke="#16163A" stroke-width="2"/>';
+    });
+    ndSvg.innerHTML=s;
+  }
+  function ndUpdate(){
+    ndDraw();
+    var segs=Math.max(0,ndVerts.length-1), c=ndCount(ndVerts);
+    if(ndVerts.length===0){ ndStatus.textContent='Kattints az első csúcsra.'; return; }
+    if(ndVerts.length===5){
+      if(c===9) ndStatus.textContent='Megvan! Mind a 9 pontot összekötötted 4 szakasszal.';
+      else ndStatus.textContent='4 szakasz elfogyott, '+c+'/9 pontot érintettél. Próbáld újra: kattints az Újra gombra.';
+    } else {
+      ndStatus.textContent='Szakaszok: '+segs+'/4 · érintett pontok: '+c+'/9';
+    }
+  }
+  ndSvg.addEventListener('click',function(e){
+    if(ndVerts.length>=5) return;
+    var r=ndSvg.getBoundingClientRect();
+    var x=(e.clientX-r.left)*(320/r.width), y=(e.clientY-r.top)*(320/r.height);
+    var u=Math.max(ND.min,Math.min(ND.max,Math.round((x-ND.ox)/ND.step)));
+    var v=Math.max(ND.min,Math.min(ND.max,Math.round((y-ND.oy)/ND.step)));
+    var last=ndVerts[ndVerts.length-1];
+    if(last && last[0]===u && last[1]===v) return;
+    ndVerts.push([u,v]);
+    ndUpdate();
+  });
+  document.getElementById('nd-reset').addEventListener('click',function(){ ndVerts=[]; ndHintTxt.textContent=''; ndUpdate(); });
+  document.getElementById('nd-hint').addEventListener('click',function(){
+    ndHintTxt.textContent='Tipp: a vonalnak nem kell a pontok által alkotott négyzeten belül maradnia. Lépj ki belőle!';
+  });
+  document.getElementById('nd-solve').addEventListener('click',function(){
+    ndVerts=SOLUTION.map(function(p){return [p[0],p[1]];});
+    ndHintTxt.textContent='Egy megoldás: a bal felső sarokból indulva: jobbra, ki a négyzetből, majd átlósan vissza, egyenesen fel, végül átlósan a jobb alsó pontig.';
+    ndUpdate();
+  });
+  ndUpdate();
+
+  /* ---------- 10. gyertya ---------- */
+  document.getElementById('candle-btn').addEventListener('click',function(){
+    document.getElementById('candle-reveal').hidden=false;
+  });
+
+  /* ---------- 11. ötletgyár ---------- */
+  (function(){
+    var startBtn=document.getElementById('brick-start'), addBtn=document.getElementById('brick-add');
+    var input=document.getElementById('brick-input'), timerEl=document.getElementById('brick-timer');
+    var list=document.getElementById('brick-ideas'), result=document.getElementById('brick-result');
+    var ideas=[], left=60, timer=null, running=false;
+    function render(){
+      list.innerHTML='';
+      ideas.forEach(function(t){
+        var s=document.createElement('span'); s.className='idea'; s.textContent=t; list.appendChild(s);
+      });
+    }
+    function add(){
+      var v=input.value.trim();
+      if(!v) return;
+      ideas.push(v); render(); input.value=''; input.focus();
+    }
+    function finish(){
+      clearInterval(timer); running=false;
+      input.disabled=true; addBtn.disabled=true;
+      startBtn.disabled=false; startBtn.textContent='Újra';
+      timerEl.textContent='Vége!';
+      result.textContent='Az ötleteid száma: '+ideas.length+'. Ez a folyékonyságod. Most csoportosítsd őket kategóriákba (rugalmasság), és számold meg, melyik volt egyedi (eredetiség).';
+    }
+    startBtn.addEventListener('click',function(){
+      if(running) return;
+      ideas=[]; render(); result.textContent='';
+      left=60; timerEl.textContent=left; running=true;
+      input.disabled=false; addBtn.disabled=false; input.focus();
+      startBtn.disabled=true;
+      timer=setInterval(function(){
+        left--; timerEl.textContent=left;
+        if(left<=0) finish();
+      },1000);
+    });
+    addBtn.addEventListener('click',add);
+    input.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); add(); } });
+  })();
+
+  /* ---------- 12. közös szó ---------- */
+  (function(){
+    var items=[
+      { w:['fény','óra','szemüveg'], a:'nap', ex:'napfény, napóra, napszemüveg' },
+      { w:['fal','ház','híd'], a:'kő', ex:'kőfal, kőház, kőhíd' },
+      { w:['ember','labda','esés'], a:'hó', ex:'hóember, hólabda, hóesés' }
+    ];
+    function norm(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+    var grid=document.getElementById('rat-grid');
+    items.forEach(function(it){
+      var card=document.createElement('div'); card.className='card';
+      var h=document.createElement('h3'); h.textContent=it.w.join(' – '); card.appendChild(h);
+      var row=document.createElement('div'); row.className='row';
+      var inp=document.createElement('input'); inp.className='field'; inp.type='text'; inp.placeholder='Egy szó…'; inp.style.flex='1';
+      var chk=document.createElement('button'); chk.className='btn ghost'; chk.textContent='Ellenőrzés';
+      row.appendChild(inp); row.appendChild(chk); card.appendChild(row);
+      var fb=document.createElement('p'); fb.className='status'; card.appendChild(fb);
+      function check(){
+        var v=norm(inp.value);
+        if(!v){ fb.textContent='Írj be egy szót!'; return; }
+        if(v===norm(it.a)) fb.textContent='Helyes! '+it.ex+'.';
+        else fb.textContent='Még nem. Gondolj arra, mi illik mindhárom szó elé. Ha feladnád, a megoldás: „'+it.a+'” ('+it.ex+').';
+      }
+      chk.addEventListener('click',check);
+      inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); check(); } });
+      grid.appendChild(card);
+    });
+  })();
+
+  /* ---------- 13. gondolkodástípusok ---------- */
+  buildQuiz('type-quiz',[
+    { t:'Egy kirakós előtt először a doboz fedelén lévő teljes képet nézed, az egészből indulsz ki, a részletek később érdekelnek.',
+      opts:['Analitikus','Szintetikus'], a:'Szintetikus',
+      e:'A szintetikus gondolkodás az egészre, a rendszerre figyel, és a részleteket háttérbe szorítja.' },
+    { t:'Egy hibás eszközt úgy javítasz meg, hogy elemenként végigmérsz mindent, és a részletekben keresed a hibát.',
+      opts:['Analitikus','Szintetikus'], a:'Analitikus',
+      e:'Az analitikus gondolkodás a részletekre és az egymást követő felbontásokra épít.' },
+    { t:'Egy matematikai feladatnál mindig rajzot készítesz, mert a képről látod, mi történik.',
+      opts:['Intuitív-konkrét','Absztrakt-formális'], a:'Intuitív-konkrét',
+      e:'Az intuitív-konkrét gondolkodás képekre, megfigyelhető helyzetekre támaszkodik.' },
+    { t:'Egy feladatra egyszerre tíz különböző megoldást is kitalálsz.',
+      opts:['Divergens','Konvergens'], a:'Divergens',
+      e:'A divergens gondolkodás szabadon sokszorozza az ötleteket és megoldásokat, ez a kreativitás.' }
+  ]);
+
+  /* ---------- 14. Piaget pohár ---------- */
+  (function(){
+    var svg=document.getElementById('glass-svg');
+    var txt=document.getElementById('pour-txt');
+    var poured=false;
+    function draw(){
+      var s='<rect width="300" height="190" fill="#EAF3FF"/>';
+      s+='<rect x="30" y="60" width="90" height="100" fill="none" stroke="#16163A" stroke-width="3"/>';
+      s+='<rect x="30" y="110" width="90" height="50" fill="#6FA8FF"/>';
+      s+='<text x="75" y="182" text-anchor="middle" font-size="16" fill="#16163A" font-weight="700">A</text>';
+      if(!poured){
+        s+='<rect x="170" y="60" width="90" height="100" fill="none" stroke="#16163A" stroke-width="3"/>';
+        s+='<rect x="170" y="110" width="90" height="50" fill="#6FA8FF"/>';
+        s+='<text x="215" y="182" text-anchor="middle" font-size="16" fill="#16163A" font-weight="700">B</text>';
+      } else {
+        s+='<rect x="192" y="20" width="45" height="140" fill="none" stroke="#16163A" stroke-width="3"/>';
+        s+='<rect x="192" y="60" width="45" height="100" fill="#6FA8FF"/>';
+        s+='<text x="215" y="182" text-anchor="middle" font-size="16" fill="#16163A" font-weight="700">B</text>';
+      }
+      svg.innerHTML=s;
+    }
+    draw();
+    var quizBuilt=false;
+    document.getElementById('pour-btn').addEventListener('click',function(){
+      poured=true; draw();
+      txt.textContent='Ugyanannyi víz van mindkét pohárban, csak a B pohár alakja változott. Melyikben van több?';
+      if(!quizBuilt){
+        quizBuilt=true;
+        buildQuiz('pour-quiz',[
+          { t:'Szerinted melyikben van több víz?',
+            opts:['Az A pohárban','A B pohárban','Ugyanannyi'], a:'Ugyanannyi',
+            e:'A vízmennyiség nem változott, csak az alakja. Egy kisebb gyerek (kb. 7 év alatt) viszont jellemzően a magasabb vízszintre figyel, és a B poharat választja.' }
+        ]);
+      }
+    });
+  })();
+
+  /* ---------- 15. Gardner ---------- */
+  (function(){
+    var names=['Nyelvi','Logikai-matematikai','Zenei','Téri (vizuális)','Naturalista','Testi-mozgásos','Társas (interperszonális)','Önismereti (intraperszonális)'];
+    var grid=document.getElementById('gard-grid'), result=document.getElementById('gard-result');
+    var sel=[];
+    var btns=names.map(function(n,idx){
+      var b=document.createElement('button'); b.textContent=n; b.setAttribute('aria-pressed','false');
+      b.addEventListener('click',function(){
+        var p=sel.indexOf(idx);
+        if(p>-1){ sel.splice(p,1); }
+        else { sel.push(idx); if(sel.length>2) sel.shift(); }
+        btns.forEach(function(x,k){ x.setAttribute('aria-pressed', sel.indexOf(k)>-1?'true':'false'); });
+        if(sel.length===2) result.textContent='Most a(z) '+names[sel[0]]+' és a(z) '+names[sel[1]]+' területet jelölted meg erősnek. Gondold végig: milyen helyzetekben veszed ezt észre magadon, és hol tudnád tudatosan fejleszteni?';
+        else if(sel.length===1) result.textContent='Jelölj meg még egy területet.';
+        else result.textContent='';
+      });
+      grid.appendChild(b);
+      return b;
+    });
+  })();
+
+  /* ---------- torzítások kereke ---------- */
+  var BIASES=[
+    { e:'⚓', n:'Horgonyzás', d:'Döntéseinket túlságosan arra az információra alapozzuk, amelyet elsőként kapunk.', x:'Egy termék mellett áthúzott „eredeti” ár áll: utána az akciós ár jónak tűnik, akkor is, ha az eredeti ár kitalált.' },
+    { e:'🐑', n:'Csordaszellem', d:'Valamit azért tartunk helyesnek, mert sok ember szerint az: „nem téveszthet mindenki”.', x:'Egy tömött étterem szerintünk biztosan jobb, mint az üres.' },
+    { e:'🥛', n:'Keretezés', d:'Az is számít, milyen „csomagolásban” kapjuk ugyanazt az információt: pozitív vagy negatív érvekkel.', x:'„A betegek 90%-a meggyógyul” és „a betegek 10%-a nem gyógyul meg” ugyanazt jelenti, mégis másként döntünk.' },
+    { e:'🎲', n:'Szerencsejátékos tévedése', d:'Azt hisszük, hogy egy véletlen sorozat „kiegyenlíti” magát, és ami eddig történt, az megváltoztatja a jövő esélyét.', x:'Ha a rulettnél sokáig piros jött ki, a legtöbben azt hiszik, hogy most a fekete jön, pedig minden pörgetés független.' },
+    { e:'⏳', n:'Most akarom', d:'Az azonnali előnyöket túlértékeljük a későbbiekhez képest (hiperbolikus diszkontálás).', x:'Inkább elköltjük most, mint hogy később többet kapjunk, vagy halogatjuk a tanulást, mert a haszna csak később látszik.' },
+    { e:'✈️', n:'Megérzés a statisztika helyett', d:'Bizonytalanságban hajlamosak vagyunk a megérzésünkre hallgatni, és figyelmen kívül hagyni a statisztikát.', x:'Sokan félnek a repüléstől, az autózást viszont nyugodtan választják, pedig a statisztikák szerint az utóbbi a veszélyesebb.' },
+    { e:'⚖️', n:'A már ismert rossz (status quo)', d:'A „status quo” szerint döntünk: inkább hagyjuk, ahogy van, mert a változás kockázatot jelent, akkor is, ha a megszokott rosszabb.', x:'Évek óta ugyanannál a drágább szolgáltatónál maradunk, mert „megszoktuk”.' },
+    { e:'%', n:'A tények figyelmen kívül hagyása', d:'Egyetlen hasonló esetre alapozzuk a döntést, és nem nézzük meg, mi történik valójában a legtöbb esetben.', x:'„A nagypapám naponta dohányzott és 90 évig élt, tehát a dohányzás nem ártalmas.”' },
+    { e:'🏋️', n:'Idegen vagy önmagadnak', d:'Ma olyan dolgokra vállalunk kötelezettséget, amiket majd a „jövőbeli énünk” végez el, mintha az türelmesebb és elkötelezettebb lenne. Közben alá is becsüljük, mennyire birkózunk majd meg a nehézségekkel.', x:'Befizetünk egy edzőterem-bérletre, aztán alig használjuk. Fordítva is igaz: a súlyos vesebetegek hangulata a kutatásban hasonló volt az egészségesekéhez, pedig az egészségesek sokkal rosszabbra számítottak.' },
+    { e:'😎', n:'Indokolatlan optimizmus', d:'Szerintünk a rossz dolgok inkább másokkal történnek meg, mint velünk. Az átlagosnál kisebb esélyt gondolunk magunknak a bajra, pedig nem lehet mindenki az átlag felett.', x:'A diákok azt hiszik, hogy rájuk az átlagosnál kisebb eséllyel vár alkoholprobléma vagy korai szívroham. A frissen házasok pontosan tudják a válások arányát, mégis biztosak benne, hogy az övék tartós lesz.' },
+    { e:'🧒', n:'Egyetlen áldozat hatása', d:'Egyetlen, megismerhető ember története jobban megindít, mint sok ezer névtelené.', x:'Deborah Small kísérletében többet adományoztak egy hétéves kislánynak, mint az afrikai éhezők millióinak. Amikor felhívták a figyelmet erre a torzításra, a különbség eltűnt, de nem azért, mert többet adtak a sokaknak, hanem mert kevesebbet a kislánynak.' },
+    { e:'🥨', n:'Az „egy” hatalma', d:'Az egy egység (egy adag, egy darab, egy film) megfelelő mennyiségnek érződik, akkor is, ha az egységek mérete nagyon különböző.', x:'Aki nagyobb kanállal szed a közös tálból, többet eszik. A járókelők több perecet vittek el, ha 60 egész perec volt a tálban, mint ha 120 fél perec. Ezért fizetünk inkább egyetlen hosszabb filmért, mint dupla jegyért.' },
+    { e:'📈', n:'Az egyszerű nevek csábítása', d:'A könnyen kiejthető, könnyen feldolgozható információt jobbnak és megbízhatóbbnak érezzük.', x:'Alter és Oppenheimer vizsgálatában a könnyen kiejthető nevű cégek (például „Barnings Inc.”) új részvényei általában jobban teljesítettek, mint a nehezen kiejthető nevűek (például „Aegeadux Inc.”), pedig a név semmit sem mond a cég értékéről.' }
+  ];
+  (function(){
+    var svg=document.getElementById('wheel-svg');
+    var panel=document.getElementById('bias-panel');
+    var legend=document.getElementById('wheel-legend');
+    var spinBtn=document.getElementById('wheel-spin');
+    var cx=160, cy=176, R=150, A=360/BIASES.length;
+    var fills=['#F7C6D6','#C9D3FF','#BFE8E2','#FFE9A8','#E3D4F7'];
+    function polar(r,deg){ var a=deg*Math.PI/180; return [cx+r*Math.sin(a), cy-r*Math.cos(a)]; }
+    var cur=0, sel=-1, spinning=false;
+    var html='<g id="wheel-g" style="transform-origin:'+cx+'px '+cy+'px">';
+    BIASES.forEach(function(b,i){
+      var p0=polar(R,i*A), p1=polar(R,(i+1)*A), pe=polar(104,i*A+A/2);
+      html+='<g class="wseg" data-i="'+i+'" role="button" tabindex="0" aria-label="'+b.n+'"><path d="M'+cx+' '+cy+' L'+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A'+R+' '+R+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+' Z" fill="'+fills[i%5]+'"/>'
+          +'<text x="'+pe[0].toFixed(2)+'" y="'+pe[1].toFixed(2)+'" text-anchor="middle" dominant-baseline="central" font-size="26" font-weight="700" fill="#16163A">'+b.e+'</text></g>';
+    });
+    html+='</g><circle cx="'+cx+'" cy="'+cy+'" r="20" fill="#16163A"/><polygon points="146,2 174,2 160,34" fill="#D42A68" stroke="#16163A" stroke-width="2"/>';
+    svg.innerHTML=html;
+    var g=document.getElementById('wheel-g');
+    var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var legBtns=BIASES.map(function(b,i){
+      var el=document.createElement('button'); el.textContent=b.e+' '+b.n; el.setAttribute('aria-pressed','false');
+      el.addEventListener('click',function(){ rotateTo(i,0); });
+      legend.appendChild(el); return el;
+    });
+    function show(i){
+      sel=i;
+      var b=BIASES[i];
+      panel.innerHTML='<h3>'+b.e+' '+b.n+'</h3><p>'+b.d+'</p><p class="small"><strong>Példa:</strong> '+b.x+'</p>';
+      [].forEach.call(svg.querySelectorAll('.wseg'),function(sg,k){ sg.classList.toggle('sel',k===i); });
+      legBtns.forEach(function(l,k){ l.setAttribute('aria-pressed',k===i?'true':'false'); });
+    }
+    function rotateTo(i,extra){
+      if(spinning) return;
+      var ac=i*A+A/2;
+      var delta=(((-ac-cur)%360)+360)%360 + 360*extra;
+      cur+=delta;
+      var dur=reduce?0:(extra?3000:900);
+      spinning=true; spinBtn.disabled=true;
+      g.style.transition=dur?('transform '+dur+'ms cubic-bezier(.17,.67,.2,1)'):'none';
+      g.style.transform='rotate('+cur+'deg)';
+      setTimeout(function(){ spinning=false; spinBtn.disabled=false; show(i); }, dur+30);
+    }
+    [].forEach.call(svg.querySelectorAll('.wseg'),function(sg){
+      var i=+sg.getAttribute('data-i');
+      sg.addEventListener('click',function(){ rotateTo(i,0); });
+      sg.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); rotateTo(i,0); } });
+    });
+    spinBtn.addEventListener('click',function(){ rotateTo(Math.floor(Math.random()*BIASES.length),4); });
+  })();
+
+  buildQuiz('roulette-quiz',[
+    { t:'A rulettkeréken hatszor egymás után piros jött ki. Mit gondolsz, mi jön a következő pörgetésnél?',
+      opts:['Nagyobb eséllyel fekete','Nagyobb eséllyel piros','Egyforma eséllyel piros vagy fekete'],
+      a:'Egyforma eséllyel piros vagy fekete',
+      e:'A kerék nem „emlékszik” a korábbi pörgetésekre, minden pörgetés független. A legtöbben mégis azt hiszik, hogy „eljött a fekete ideje”: ez a szerencsejátékos tévedése. (A zöld mező miatt egyik szín esélye sem pontosan 50%, de egymáshoz képest egyformák.)' }
+  ]);
+
+  buildQuiz('bias-quiz',[
+    { t:'A boltban egy cipő mellett áthúzott 400 lej áll, alatta: „most csak 250 lej”. Szerinted nagyon jó ár, pedig a cipő igazi értéke 200 lej.',
+      opts:['Horgonyzás','Csordaszellem','Keretezés','A már ismert rossz (status quo)'], a:'Horgonyzás',
+      e:'Az első információ (az áthúzott ár) „horgonyt vet”, és ehhez képest ítéljük meg a többit.' },
+    { t:'Két orvos ugyanarról a műtétről beszél: az egyik szerint a betegek 90%-a meggyógyul, a másik szerint 10%-uk nem gyógyul meg. Az elsőtől sokkal bizakodóbb leszel.',
+      opts:['Keretezés','Szerencsejátékos tévedése','Horgonyzás','Most akarom'], a:'Keretezés',
+      e:'Ugyanaz az információ, más „csomagolásban”: a pozitív keret másként hat ránk, mint a negatív.' },
+    { t:'Azért nézed meg a sorozatot, mert az egész osztály nézi, és úgy gondolod, hogy nem téveszthet mindenki.',
+      opts:['Csordaszellem','Megérzés a statisztika helyett','Keretezés','Most akarom'], a:'Csordaszellem',
+      e:'Valamit azért tartunk jónak, mert sokan gondolják így, nem azért, mert utánanéztünk.' },
+    { t:'Tudod, hogy a vizsgára most kellene tanulni, de inkább játszol: a játék öröme azonnal jön, a tanulás haszna csak hetek múlva.',
+      opts:['Most akarom','A már ismert rossz (status quo)','Megérzés a statisztika helyett','A tények figyelmen kívül hagyása'], a:'Most akarom',
+      e:'Az azonnali előnyöket túlértékeljük a későbbiekhez képest (hiperbolikus diszkontálás).' },
+    { t:'Évek óta a drágább mobilszolgáltatónál vagy, és látod, hogy máshol olcsóbb lenne, de nem váltasz, mert „így megszoktad”.',
+      opts:['A már ismert rossz (status quo)','Horgonyzás','Csordaszellem','Megérzés a statisztika helyett'], a:'A már ismert rossz (status quo)',
+      e:'A változás kockázatnak tűnik, ezért a megszokott marad, akkor is, ha rosszabb.' },
+    { t:'Azt mondod, a napi cigaretta nem ártalmas, mert az ismerősöd nagyapja így is 90 évig élt.',
+      opts:['A tények figyelmen kívül hagyása','Keretezés','Szerencsejátékos tévedése','Most akarom'], a:'A tények figyelmen kívül hagyása',
+      e:'Egyetlen esetre alapozol, miközben a legtöbb esetben a statisztika mást mutat.' },
+    { t:'A híradóban egyetlen beteg gyerek története megkönnyeztet, és azonnal adományt küldesz. A hírekben említett több ezer ismeretlen rászoruló viszont szinte hidegen hagy.',
+      opts:['Egyetlen áldozat hatása','Csordaszellem','Horgonyzás','Keretezés'], a:'Egyetlen áldozat hatása',
+      e:'Egy megismerhető áldozat sorsa jobban megindít, mint sok névtelené. A jó hír: ha tudsz róla, tudatosabban dönthetsz.' },
+    { t:'Egy nagy tál ropit szívesen megeszel egyedül, mert „az is csak egy adag”, és észre sem veszed, hogy a szokásosnál sokkal többet ettél.',
+      opts:['Az „egy” hatalma','Most akarom','A tények figyelmen kívül hagyása','Szerencsejátékos tévedése'], a:'Az „egy” hatalma',
+      e:'Az egy egység megfelelő mennyiségnek érződik, függetlenül attól, mekkora az egység.' },
+    { t:'Két ismeretlen cég részvényei közül azt választod, amelyiknek könnyen kiejthető, jól hangzó neve van. A névből persze semmit sem tudsz a cég értékéről.',
+      opts:['Az egyszerű nevek csábítása','Megérzés a statisztika helyett','Csordaszellem','A már ismert rossz (status quo)'], a:'Az egyszerű nevek csábítása',
+      e:'A könnyen feldolgozható információt jobbnak és megbízhatóbbnak érezzük.' }
+  ]);
+
+  /* ---------- Köhler: banán és dobozok ---------- */
+  (function(){
+    var svg=document.getElementById('bn-svg'), st=document.getElementById('bn-status');
+    var n=0, done=false;
+    var BOX=50, REACH=90, BANANA=168; // magasságok a talajtól
+    function draw(){
+      var s='<rect width="320" height="250" fill="#EAF3FF"/><rect y="230" width="320" height="20" fill="#8FCB8F"/>';
+      s+='<line x1="160" y1="0" x2="160" y2="'+(230-BANANA-24)+'" stroke="#16163A" stroke-width="2"/>';
+      for(var k=0;k<n;k++){
+        s+='<rect x="130" y="'+(230-BOX*(k+1))+'" width="60" height="'+BOX+'" fill="#E7C98F" stroke="#16163A" stroke-width="2.5"/>';
+      }
+      var topY=230-BOX*n;
+      s+='<text x="160" y="'+(topY-6)+'" text-anchor="middle" font-size="56">🐒</text>';
+      var by=done?(topY-REACH+8):(230-BANANA);
+      s+='<text x="'+(done?190:160)+'" y="'+by+'" text-anchor="middle" font-size="34">🍌</text>';
+      svg.innerHTML=s;
+    }
+    draw();
+    document.getElementById('bn-add').addEventListener('click',function(){ if(n<3){ n++; done=false; draw(); st.textContent=n+' doboz van egymáson.'; } });
+    document.getElementById('bn-del').addEventListener('click',function(){ if(n>0){ n--; done=false; draw(); st.textContent=n+' doboz van egymáson.'; } });
+    document.getElementById('bn-try').addEventListener('click',function(){
+      var reach=BOX*n+REACH;
+      if(reach>=BANANA){
+        done=true; draw();
+        st.textContent='Megvan! A csimpánz elérte a banánt. Nem azonnal jött rá: előbb próbálkozott, aztán „megállt gondolkodni”: ez a belátás.';
+      } else if(n===0){
+        st.textContent='Így nem éri el, a banán túl magasan van. Próbálj meg valamit hozzátenni!';
+      } else {
+        st.textContent='Közelebb van, de még mindig kevés. Mit lehetne még tenni?';
+      }
+    });
+  })();
+
+  /* ---------- Piaget profil lánc ---------- */
+  buildChain('piaget-chain','piaget-chain-desc',[
+    'Jean Piaget a svájci Neuchâtelben született. A könyv szerint a 20. század egyik legbefolyásosabb gondolkodója.',
+    'Alig múlt 11 éves, amikor megjelent az első cikke egy albínó veréb megfigyeléséről. Csodagyerek volt.',
+    'Tizenévesen fizetés nélküli asszisztensként dolgozott a helyi természettudományi múzeumban. A puhatestűekről folytatott kutatásáért doktori fokozatot kapott, majd Zürichben Carl Gustav Junggal, a pszichoanalitikussal dolgozott.',
+    'Meghívták a Binet-féle párizsi laboratóriumba, ahol különböző korú gyerekek intelligenciateszt-eredményeit számolta. Itt kezdték lenyűgözni a gyerekek hibái: arra jutott, hogy a gyerekek alapvetően másképp gondolkodnak, mint a felnőttek.',
+    'Feleségül vette Valentine Châtenay-t, és közösen tanulmányozták a saját gyerekeiket: Jacqueline-t, Lucienne-t és Laurent-t.',
+    'Genfben létrehozta a Genetikai Episztemológiai Nemzetközi Központot, amelynek 1980-ban bekövetkezett haláláig igazgatója volt.'
+  ]);
+
+  /* ---------- Wason kártyák ---------- */
+  (function(){
+    var faces=['A','M','💀','🦋'];
+    var backs=['💀','🦋','H','E'];
+    var names=['A betűs kártya','M betűs kártya','koponyás kártya','pillangós kártya'];
+    var wrap=document.getElementById('wason-cards');
+    var res=document.getElementById('wason-result');
+    var sel=[], flipped=false;
+    var btns=faces.map(function(f,i){
+      var b=document.createElement('button'); b.className='wcard'; b.setAttribute('aria-pressed','false'); b.setAttribute('aria-label',names[i]);
+      b.textContent=f;
+      b.addEventListener('click',function(){
+        if(flipped) return;
+        var k=sel.indexOf(i);
+        if(k>-1) sel.splice(k,1); else sel.push(i);
+        b.setAttribute('aria-pressed', sel.indexOf(i)>-1?'true':'false');
+      });
+      wrap.appendChild(b); return b;
+    });
+    function has(i){return sel.indexOf(i)>-1;}
+    document.getElementById('wason-flip').addEventListener('click',function(){
+      if(flipped) return;
+      if(sel.length===0){ res.textContent='Előbb jelölj ki legalább egy kártyát.'; return; }
+      flipped=true;
+      sel.forEach(function(i){ btns[i].textContent=backs[i]; btns[i].classList.add('flipped'); });
+      btns.forEach(function(b){ b.disabled=true; });
+      var m=[];
+      var correct=(sel.length===2 && has(0) && has(3));
+      m.push(correct ? '<strong>Pontosan: az A és a pillangó!</strong>' : '<strong>Nem egészen.</strong> A helyes választás: az A betűs és a pillangós kártya.');
+      if(has(3)) m.push('A pillangó mögött E betű van: magánhangzó koponya nélkül, tehát a játékmester állítása <strong>hamis</strong>. Ezt csak ez a kártya tudta kideríteni.');
+      else m.push('A csalást a pillangós kártya hátoldala (E betű) leplezte volna le, de azt nem fordítottad meg.');
+      if(has(0)) m.push('Az A mögött koponya van: itt ellenőrizted, hogy az állítás legalább ebben az esetben igaz.');
+      else m.push('Az A kártyát is meg kellett volna fordítani: itt kell ellenőrizni, hogy tényleg koponya van-e mögötte.');
+      if(has(2)) m.push('A koponyás kártya mögött H betű van. Ez nem cáfolja az állítást (az állítás nem mondta, hogy koponya mögött csak magánhangzó lehet). Ha magánhangzó lett volna ott, az is csak megerősített volna: ez a megerősítési torzítás.');
+      if(has(1)) m.push('Az M mássalhangzó: az állítás róla nem mond semmit, felesleges volt megfordítani.');
+      res.innerHTML=m.join('<br>');
+    });
+    document.getElementById('wason-reset').addEventListener('click',function(){
+      sel=[]; flipped=false; res.textContent='';
+      btns.forEach(function(b,i){ b.textContent=faces[i]; b.classList.remove('flipped'); b.disabled=false; b.setAttribute('aria-pressed','false'); });
+    });
+  })();
+
+  /* ---------- érmék ---------- */
+  (function(){
+    var svg=document.getElementById('coin-svg'), txt=document.getElementById('coin-txt');
+    var spread=false, quizBuilt=false;
+    function draw(){
+      var s='';
+      for(var i=0;i<6;i++){
+        s+='<circle cx="'+(30+i*52)+'" cy="30" r="15" fill="#FFC533" stroke="#16163A" stroke-width="2.5"/>';
+        var x=spread?(20+i*56):(30+i*52);
+        s+='<circle cx="'+x+'" cy="80" r="15" fill="#FFC533" stroke="#16163A" stroke-width="2.5"/>';
+      }
+      svg.innerHTML=s;
+    }
+    draw();
+    document.getElementById('coin-btn').addEventListener('click',function(){
+      spread=true; draw();
+      txt.textContent='Az alsó sor érméit szétterítettük, de mindkét sorban ugyanannyi érme van. Melyikben van több?';
+      if(!quizBuilt){
+        quizBuilt=true;
+        buildQuiz('coin-quiz',[
+          { t:'Szerinted melyik sorban van több érme?',
+            opts:['A felsőben','Az alsóban','Ugyanannyi'], a:'Ugyanannyi',
+            e:'Az érmék száma nem változott, csak az elrendezés. Egy óvodás gyerek viszont gyakran az alsó sort mondja, mert az hosszabb: szerinte „több lett belőle”.' }
+        ]);
+      }
+    });
+  })();
+
+  /* ---------- három hegy ---------- */
+  (function(){
+    var spec={G:{c:'#2E9E8E',h:45,w:70},B:{c:'#3550F5',h:100,w:80},Y:{c:'#FFC533',h:70,w:70}};
+    function mtSvg(order){
+      var x=10, s='<svg viewBox="0 0 250 120" width="100%" role="img" aria-label="Három hegy"><rect width="250" height="120" fill="#EAF3FF"/><rect y="108" width="250" height="12" fill="#8FCB8F"/>';
+      order.forEach(function(k){
+        var m=spec[k];
+        s+='<polygon points="'+x+',108 '+(x+m.w/2)+','+(108-m.h)+' '+(x+m.w)+',108" fill="'+m.c+'" stroke="#16163A" stroke-width="2" stroke-linejoin="round"/>';
+        x+=m.w+5;
+      });
+      return s+'</svg>';
+    }
+    document.getElementById('mt-yours').innerHTML=mtSvg(['G','B','Y']);
+    var opts=[
+      { order:['G','B','Y'], ok:false },
+      { order:['Y','B','G'], ok:true },
+      { order:['B','G','Y'], ok:false }
+    ];
+    for(var i=opts.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=opts[i]; opts[i]=opts[j]; opts[j]=t; }
+    var wrap=document.getElementById('mt-opts'), fb=document.getElementById('mt-fb');
+    var btns=[];
+    opts.forEach(function(o,idx){
+      var b=document.createElement('button'); b.className='mt-opt'; b.setAttribute('aria-label',(idx+1)+'. kép');
+      b.innerHTML=mtSvg(o.order)+'<div class="small">'+(idx+1)+'. kép</div>';
+      b.addEventListener('click',function(){
+        btns.forEach(function(x){x.disabled=true});
+        b.classList.add(o.ok?'ok':'no');
+        if(!o.ok){ btns[opts.findIndex(function(q){return q.ok;})].classList.add('ok'); }
+        fb.innerHTML=o.ok
+          ? '<strong>Jó válasz.</strong> A baba a szemközti oldalról néz, ezért a hegyek sorrendje megfordul: ami nálad balra van, az nála jobbra.'
+          : '<strong>Nem egészen.</strong> A baba a szemközti oldalról néz, ezért a sorrend megfordul (a helyes kép be van jelölve). Ha a saját látványodat választottad, a kisgyerekek tipikus hibáját követted el: ez az egocentrizmus.';
+      });
+      btns.push(b); wrap.appendChild(b);
+    });
+  })();
+
+  /* ---------- 17. igaz/hamis ---------- */
+  buildQuiz('tf-quiz',[
+    { t:'A gondolkodás közvetlenül a valóságon dolgozik, az információt nem használja fel előzőleg az észlelésből vagy az emlékezetből.',
+      opts:['Igaz','Hamis'], a:'Hamis',
+      e:'A gondolkodás közvetett: az észlelések, képzetek vagy az emlékezetből előhívott információ feldolgozásán alapul.' },
+    { t:'Az algoritmikus eljárás mindig a várt eredményhez vezet, ha betartjuk a lépéseit.',
+      opts:['Igaz','Hamis'], a:'Igaz',
+      e:'Az algoritmus szigorúan meghatározott lépéssor: betartása szükségszerűen a várt eredményhez vezet. A heurisztika ezzel szemben gyors, de tévedhet.' },
+    { t:'Köhler csimpánzai kizárólag vak próbálkozással jutottak el a megoldásig, gondolkodás nélkül.',
+      opts:['Igaz','Hamis'], a:'Hamis',
+      e:'Köhler megfigyelése szerint a próbálkozások után megálltak, és mintha átgondolták volna, mi működött és mi nem: ezt belátásnak nevezik.' },
+    { t:'A kártyarejtvényben (ha magánhangzó, akkor koponya) a koponyás kártya megfordítása segít a legjobban kideríteni, hogy hamis-e az állítás.',
+      opts:['Igaz','Hamis'], a:'Hamis',
+      e:'A koponyás kártya mögött nem cáfolhatja semmi az állítást. A cáfolatot a magánhangzót rejtő, koponya nélküli kártya adná, ezért a pillangót kell megfordítani. Ez a megerősítési torzítás.' },
+    { t:'Piaget szerint a 4–6 éves gyerekek már értik, mit kérnek tőlük a három hegy feladatban, de nehezen veszik át más nézőpontját.',
+      opts:['Igaz','Hamis'], a:'Igaz',
+      e:'Pontosan ez az egocentrizmus: értik a kérést, de a saját látványukat választják a más nézőpontjából látott helyett.' },
+    { t:'Gardner elmélete szerint egyetlen, mindent átfogó intelligencia létezik.',
+      opts:['Igaz','Hamis'], a:'Hamis',
+      e:'Gardner szerint többféle, egymástól eltérő intelligencia létezik (az elmélet neve: többszörös intelligencia elmélete).' }
+  ]);
+
+  show(0);
+})();
+</script>
+</body>
+</html>
