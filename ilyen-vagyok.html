@@ -1,0 +1,820 @@
+<title>Ilyen vagyok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout concept: one long guide. Hero with a clickable 16-type "cabinet", four dimension colours used as the page's navigation and as the colour of every code letter, then tabs, finder, filterable type grid and a detail sheet. */
+:root{
+  --bg:#F5F4FB; --surface:#FFFFFF; --surface2:#ECEAF7; --fg:#1B1A33; --muted:#5A5878; --line:#D9D6EC;
+  --ei:#E5533D; --ei-ink:#B3361F;
+  --ka:#14A085; --ka-ink:#0B6E5C;
+  --eg:#7C5CE0; --eg-ink:#5A3CC2;
+  --rl:#2D7FF9; --rl-ink:#1558C9;
+  --shadow:0 1px 2px rgba(27,26,51,.06),0 8px 24px rgba(27,26,51,.07);
+  --font-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --font-body:'Figtree','Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12112A; --surface:#1C1B3A; --surface2:#26244A; --fg:#F0EFFC; --muted:#B2B0D4; --line:#34325E;
+    --ei:#FF7A63; --ei-ink:#FF9A86; --ka:#3DD6B5; --ka-ink:#6FE6CB; --eg:#A58BFF; --eg-ink:#BDA9FF; --rl:#5DA2FF; --rl-ink:#8DBDFF;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12112A; --surface:#1C1B3A; --surface2:#26244A; --fg:#F0EFFC; --muted:#B2B0D4; --line:#34325E;
+  --ei:#FF7A63; --ei-ink:#FF9A86; --ka:#3DD6B5; --ka-ink:#6FE6CB; --eg:#A58BFF; --eg-ink:#BDA9FF; --rl:#5DA2FF; --rl-ink:#8DBDFF;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.28);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px))}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.12;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--eg);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1120px;margin-inline:auto;padding-inline:20px}
+section{padding-block:56px}
+.d1{--col:var(--ei);--ink:var(--ei-ink)}
+.d2{--col:var(--ka);--ink:var(--ka-ink)}
+.d3{--col:var(--eg);--ink:var(--eg-ink)}
+.d4{--col:var(--rl);--ink:var(--rl-ink)}
+.tile{display:inline-grid;place-items:center;width:2.1em;height:2.1em;border-radius:9px;font-family:var(--font-display);font-weight:700;font-size:.95rem;background:color-mix(in srgb,var(--col) 16%,var(--surface));color:var(--ink);border:1.5px solid color-mix(in srgb,var(--col) 55%,transparent)}
+.codes{display:inline-flex;gap:5px}
+.eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sec-head{display:grid;gap:10px;margin-bottom:28px;max-width:46rem}
+.sec-head h2{font-size:clamp(1.8rem,4.2vw,2.7rem)}
+.sec-head p{color:var(--muted)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:18px;height:56px}
+.brand{font-family:var(--font-display);font-weight:800;font-size:1.1rem;white-space:nowrap;text-decoration:none;color:var(--fg)}
+.nav ul{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav ul::-webkit-scrollbar{display:none}
+.nav a.lnk{display:block;padding:8px 12px;border-radius:999px;font-weight:600;font-size:.92rem;color:var(--muted);text-decoration:none;white-space:nowrap}
+.nav a.lnk:hover{background:var(--surface2);color:var(--fg)}
+
+/* hero */
+.hero{padding-block:48px 40px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(3.2rem,9vw,6.4rem);font-weight:800;letter-spacing:-.03em}
+.hero h1 span{display:inline-block;background:linear-gradient(90deg,var(--ei),var(--eg) 50%,var(--rl));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:1.2rem;color:var(--muted);max-width:34rem;margin-top:18px}
+.dimchips{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.dimchip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);text-decoration:none;color:var(--fg);font-weight:600;font-size:.92rem;box-shadow:var(--shadow)}
+.dimchip .tile{width:1.9em;height:1.9em;font-size:.8rem}
+.stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:28px}
+.stat b{display:block;font-family:var(--font-display);font-size:1.9rem;line-height:1}
+.stat span{font-size:.85rem;color:var(--muted)}
+.cabinet{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:18px;border-radius:24px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+.cabinet-title{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:2px}
+.cabinet-title b{font-family:var(--font-display);font-size:1.05rem}
+.cabinet-title span{font-size:.8rem;color:var(--muted)}
+.cab{display:grid;gap:4px;justify-items:center;padding:12px 4px;border-radius:14px;background:var(--surface2);border:1px solid transparent;transition:transform .15s,border-color .15s}
+.cab:hover{transform:translateY(-3px);border-color:var(--line)}
+.cab .codes{gap:2px}
+.cab .codes i{font-style:normal;font-family:var(--font-display);font-weight:800;font-size:1.05rem;color:var(--ink)}
+.cab small{font-size:.66rem;line-height:1.15;color:var(--muted);text-align:center;overflow-wrap:anywhere}
+
+/* basics */
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;gap:10px;align-content:start;min-width:0}
+.card h3{font-size:1.25rem}
+.card p{color:var(--muted)}
+.card .tag{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.origin{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin-top:22px}
+.origin>div{flex:1 1 220px;padding:18px 20px;border-radius:18px;background:var(--surface2);min-width:0}
+.origin b{font-family:var(--font-display);display:block;font-size:1.05rem;margin-bottom:4px}
+.origin p{color:var(--muted);font-size:.95rem}
+.origin .arrow{flex:0 0 auto;align-self:center;background:none;padding:0;color:var(--muted);font-size:1.4rem}
+.note{margin-top:22px;padding:18px 20px;border-radius:18px;border:1px dashed var(--line);color:var(--muted)}
+.note b{color:var(--fg)}
+
+/* dimension tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.tab{display:inline-flex;align-items:center;gap:10px;padding:10px 16px 10px 10px;border-radius:16px;background:var(--surface);border:1.5px solid var(--line);font-weight:700;text-align:left}
+.tab .tile{width:2.3em;height:2.3em}
+.tab small{display:block;font-weight:500;color:var(--muted);font-size:.78rem}
+.tab[aria-selected="true"]{border-color:var(--col);background:color-mix(in srgb,var(--col) 12%,var(--surface))}
+.panel{display:grid;gap:22px}
+.panel[hidden]{display:none}
+.question{font-family:var(--font-display);font-size:clamp(1.5rem,3.4vw,2.2rem);font-weight:700}
+.spectrum{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px 22px;display:grid;gap:12px}
+.spectrum .ends{display:flex;justify-content:space-between;gap:10px;font-weight:700;font-size:.95rem}
+.spectrum .ends span:last-child{text-align:right}
+.spectrum input[type=range]{width:100%;accent-color:var(--col);height:28px}
+.spectrum .read{color:var(--muted);font-size:.95rem;min-height:3.1em}
+.poles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.pole{border-radius:22px;padding:24px;background:color-mix(in srgb,var(--col) 9%,var(--surface));border:1.5px solid color-mix(in srgb,var(--col) 40%,var(--line));display:grid;gap:14px;align-content:start;min-width:0}
+.pole header{display:flex;gap:14px;align-items:center}
+.pole header .tile{width:3.2em;height:3.2em;font-size:1.4rem;border-radius:14px}
+.pole h3{font-size:1.45rem}
+.pole header p{color:var(--muted);font-size:.95rem}
+.pole h4{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-family:var(--font-body);font-weight:700}
+.pole li{position:relative;padding-left:20px;margin-top:6px}
+.pole li::before{content:"";position:absolute;left:0;top:.72em;width:9px;height:9px;border-radius:3px;background:var(--col)}
+.pole .shadow{font-size:.95rem;color:var(--muted)}
+.example{display:grid;gap:6px;padding:20px 22px;border-radius:20px;background:var(--surface2)}
+.example b{font-family:var(--font-display);font-size:1.1rem}
+.example p{color:var(--muted)}
+
+/* test */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;counter-reset:s}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;display:grid;gap:8px;align-content:start}
+.step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--fg);color:var(--bg);font-family:var(--font-display);font-weight:700}
+.step h3{font-size:1.1rem}
+.step p{color:var(--muted);font-size:.95rem}
+.score-demo{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.callout{padding:22px;border-radius:20px;background:var(--surface);border:1px solid var(--line);display:grid;gap:8px;align-content:start}
+.callout h3{font-size:1.15rem}
+.callout p,.callout li{color:var(--muted);font-size:.97rem}
+.callout li{margin-top:6px;padding-left:18px;position:relative}
+.callout li::before{content:"";position:absolute;left:0;top:.7em;width:8px;height:8px;border-radius:50%;background:var(--eg)}
+
+/* finder */
+.finder{margin-top:34px;border-radius:26px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:26px;display:grid;grid-template-columns:1.05fr .95fr;gap:28px}
+.finder h3{font-size:1.5rem;margin-bottom:6px}
+.finder .sub{color:var(--muted);font-size:.95rem;margin-bottom:16px}
+.pick{display:grid;gap:12px}
+.pickrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pickrow button{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--surface2);border:1.5px solid transparent;text-align:left;font-weight:600;line-height:1.25}
+.pickrow button .tile{flex:0 0 auto}
+.pickrow button[aria-pressed="true"]{border-color:var(--col);background:color-mix(in srgb,var(--col) 14%,var(--surface))}
+.pickrow small{display:block;font-weight:500;color:var(--muted);font-size:.78rem}
+details.pts{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+details.pts summary{cursor:pointer;font-weight:600;color:var(--muted)}
+.ptsgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px;margin-top:12px}
+.ptsgrid label{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--muted)}
+.ptsgrid input{width:4.2em;padding:6px 8px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:inherit}
+.ptsnote{margin-top:10px;font-size:.92rem;color:var(--ink);min-height:1.4em}
+.ptsnote{--ink:var(--eg-ink)}
+.result{border-radius:22px;padding:24px;background:var(--surface2);display:grid;gap:14px;align-content:start}
+.result .codes .tile{width:2.7em;height:2.7em;font-size:1.15rem}
+.result h4{font-size:1.9rem}
+.result p{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border-radius:999px;background:var(--fg);color:var(--bg);font-weight:700;border:0;width:max-content}
+.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+
+/* types */
+.filters{display:grid;gap:12px;margin-bottom:22px}
+.fgroup{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fchip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 8px;border-radius:999px;background:var(--surface);border:1.5px solid var(--line);font-weight:600;font-size:.9rem}
+.fchip .tile{width:1.75em;height:1.75em;font-size:.78rem}
+.fchip[aria-pressed="true"]{border-color:var(--col);background:color-mix(in srgb,var(--col) 14%,var(--surface))}
+.fbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;color:var(--muted);font-size:.92rem}
+.linkbtn{background:none;border:0;color:var(--eg-ink);font-weight:700;padding:4px 2px;text-decoration:underline}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.tcard{display:grid;gap:12px;align-content:start;text-align:left;padding:20px;border-radius:20px;background:var(--surface);border:1px solid var(--line);transition:transform .15s,box-shadow .15s;min-width:0}
+.tcard:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.tcard h3{font-size:1.3rem}
+.tcard .ess{color:var(--muted);font-size:.95rem}
+.kw{display:flex;flex-wrap:wrap;gap:6px}
+.kw span{font-size:.78rem;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--surface2);color:var(--muted)}
+.tcard .more{font-size:.85rem;font-weight:700;color:var(--eg-ink)}
+
+/* dynamics */
+.dyn{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.dcard{padding:22px;border-radius:20px;background:var(--surface);border:1px solid var(--line);display:grid;gap:10px;align-content:start;min-width:0}
+.dcard .codes .tile{width:1.9em;height:1.9em;font-size:.82rem}
+.dcard h3{font-size:1.1rem}
+.dcard p{color:var(--muted);font-size:.95rem}
+
+footer{padding-block:40px 64px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+footer .wrap{display:grid;gap:8px}
+
+/* sheet */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(14,13,32,.62);display:grid;place-items:center;padding:16px;overflow-y:auto}
+.overlay[hidden]{display:none}
+.sheet{width:100%;max-width:780px;max-height:calc(100vh - 32px);overflow-y:auto;background:var(--bg);border-radius:26px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.35);padding:28px;display:grid;gap:20px;position:relative}
+.sheet-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.sheet h2{font-size:clamp(1.7rem,4vw,2.4rem);margin-top:12px}
+.sheet .ess{font-size:1.1rem;color:var(--muted)}
+.xbtn{flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:var(--surface2);border:0;font-size:1.3rem;line-height:1}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.box{padding:18px 20px;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:grid;gap:8px;align-content:start;min-width:0}
+.box h3{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;font-family:var(--font-body);font-weight:700;color:var(--muted)}
+.box li{position:relative;padding-left:18px}
+.box li::before{content:"";position:absolute;left:0;top:.7em;width:8px;height:8px;border-radius:3px;background:var(--col,var(--eg))}
+.box.good{--col:var(--ka)}
+.box.hard{--col:var(--ei)}
+.box.tips{background:color-mix(in srgb,var(--eg) 9%,var(--surface))}
+.nbrs{display:flex;flex-wrap:wrap;gap:8px}
+.nbr{display:inline-flex;gap:8px;align-items:center;padding:6px 12px 6px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:.88rem}
+.nbr .codes .tile{width:1.6em;height:1.6em;font-size:.72rem;border-radius:7px}
+.nbr small{color:var(--muted);font-weight:500}
+body.lock{overflow:hidden}
+
+@media (max-width:860px){
+  .hero-grid,.finder,.score-demo{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  section{padding-block:44px}
+  .poles,.two{grid-template-columns:1fr}
+  .cabinet{grid-template-columns:repeat(4,minmax(0,1fr));padding:12px;gap:6px}
+  .cab .codes i{font-size:.9rem}
+  .cab small{display:none}
+  .finder{padding:18px}
+  .sheet{padding:20px}
+  .brand{font-size:1rem}
+}
+</style>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#fent">Ilyen vagyok</a>
+    <nav aria-label="Szakaszok">
+      <ul>
+        <li><a class="lnk" href="#alapok">Alapgondolat</a></li>
+        <li><a class="lnk" href="#dimenziok">Dimenziók</a></li>
+        <li><a class="lnk" href="#teszt">Teszt</a></li>
+        <li><a class="lnk" href="#tipusok">16 típus</a></li>
+        <li><a class="lnk" href="#parosok">Párosítások</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="fent">
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Stefanie Stahl · Park Kiadó, 2022</p>
+      <h1 style="margin-top:14px"><span>Ilyen</span> vagyok</h1>
+      <p class="lead">Négy pszichológiai dimenzió, tizenhat személyiségtípus és egy teszt, amely megmutatja, hogyan működünk, és hogyan érthetjük meg jobban a másikat.</p>
+      <div class="dimchips">
+        <a class="dimchip d1" href="#dimenziok" data-go="0"><span class="tile">E/I</span>Energia</a>
+        <a class="dimchip d2" href="#dimenziok" data-go="1"><span class="tile">K/A</span>Észlelés</a>
+        <a class="dimchip d3" href="#dimenziok" data-go="2"><span class="tile">É/G</span>Döntés</a>
+        <a class="dimchip d4" href="#dimenziok" data-go="3"><span class="tile">R/L</span>Életmód</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>4</b><span>dimenzió</span></div>
+        <div class="stat"><b>16</b><span>miniszter</span></div>
+        <div class="stat"><b>40</b><span>tesztkérdés</span></div>
+        <div class="stat"><b>2005</b><span>első kiadás</span></div>
+      </div>
+    </div>
+    <div class="cabinet" id="cabinet" aria-label="A tizenhat miniszter kabinetje">
+      <div class="cabinet-title"><b>A kabinet</b><span>Kattints egy típusra</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="alapok">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Alapgondolat</p>
+      <h2>Személyes kezelési útmutató, iránytűnek</h2>
+      <p>Stahl szerint senkihez sem lehet tökéletes használati utasítást mellékelni. A típuselmélet mégis ad egy iránytűt, amely sok félreértéstől és bosszúságtól óvhat meg.</p>
+    </div>
+    <div class="cards3">
+      <div class="card d1"><span class="tag">Hajlam, nem skatulya</span><h3>Preferenciák, mint a kezesség</h3><p>Mindkét pólus ott van bennünk, de az egyiket jobban gyakoroljuk. Olyan ez, mint a jobb- és balkezesség: a másik kezünket is használjuk, csak ügyetlenebbül.</p></div>
+      <div class="card d2"><span class="tag">Velünk született</span><h3>Korán rögzül, nehezen változik</h3><p>A típusvonások nagyrészt öröklöttek. Az extraverzió–introverzió hozzávetőleg 90 százalékban genetikai. A nevelés erősíthet vagy gátolhat, az irányt nem fordítja meg.</p></div>
+      <div class="card d3"><span class="tag">Egyenrangúak</span><h3>Egyik sem jobb a másiknál</h3><p>Mindegyik típus ad valamit a közösségnek. Ezért kapta mindegyik miniszteri címet: együtt egy kabinetet alkotnak, amelyre a társadalomnak szüksége van.</p></div>
+    </div>
+    <div class="origin" aria-label="A típustan eredete">
+      <div><b>C. G. Jung</b><p>Az első három dimenzió alapgondolata: honnan merítünk energiát, hogyan érzékelünk, hogyan döntünk.</p></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div><b>Myers és Briggs</b><p>Az 1960-as években továbbfejlesztették, és hozzáadták a negyedik dimenziót, a rendezett–laza tengelyt.</p></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div><b>Stefanie Stahl</b><p>A könyv első kiadása 2005-ös. Új, pontosabb neveket adott: konkrét–absztrakt és rendezett–laza.</p></div>
+    </div>
+    <p class="note"><b>Fontos:</b> senki sem csak extravertált vagy csak introvertált, csak konkrét vagy csak absztrakt. A skálán fokozatok vannak, és sokan valamelyik dimenzióban középen állnak.</p>
+  </div>
+</section>
+
+<section id="dimenziok">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">A négy dimenzió</p>
+      <h2>Négy kérdés, amelyből tizenhat típus lesz</h2>
+      <p>Válassz egy dimenziót. Minden pólusnál ott vannak a jellemzők, az árnyoldal és a rövid „kezelési útmutató” is.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Dimenziók" id="dimtabs"></div>
+    <div id="dimpanels"></div>
+  </div>
+</section>
+
+<section id="teszt">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Teszt és eredmény</p>
+      <h2>Melyik miniszter vagy?</h2>
+      <p>A könyvben 40 kérdés áll, mindegyiknél két állítás közül kell választani. Az eredmény négy betű, amely egy típusleíráshoz vezet.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>Spontán válaszolj</h3><p>Azt az állítást jelöld, amelyik első pillantásra találóbb. A kérdések hajlamokra kérdeznek, ezért nem baj, ha nehéz a döntés.</p></div>
+      <div class="step"><h3>A magánéletedre gondolj</h3><p>A magánéletben viselkedünk a legközelebb a valódi hajlamainkhoz. A tanult szokások helyett az eredeti viselkedésedet jelöld.</p></div>
+      <div class="step"><h3>Jegyezd külön lapra</h3><p>Írd fel a válaszokat (1. a, 2. b stb.). Így később újra kitöltheted, és mások is kipróbálhatják.</p></div>
+      <div class="step"><h3>Számolj pontokat</h3><p>Minden válasz 1 pontot ér egy tulajdonságra. Végül nyolc pontszámod lesz, dimenziónként két versengő pólussal.</p></div>
+      <div class="step"><h3>Fűzd össze a betűket</h3><p>Dimenziónként az a pólus nyer, amelyik több pontot kapott. A négy betű együtt adja a típuskódot.</p></div>
+    </div>
+    <div class="score-demo">
+      <div class="callout">
+        <h3>Ha szoros az eredmény</h3>
+        <p>Ha egy dimenzióban majdnem döntetlen a pontszám (például 6 az E-re és 5 az I-re), olvasd el a szomszédos profilt is. A rád legjobban illő leírás a helyes.</p>
+        <p>Ha két dimenzióban is határeset vagy, valóban lehetsz kevert típus. Ez ritkán fordul elő minden dimenzióban.</p>
+      </div>
+      <div class="callout">
+        <h3>Mikor jó az eredmény?</h3>
+        <ul>
+          <li>A leírás nagyjából 90 százalékban illik rád, vagyis olyan, mint egy jó négyes.</li>
+          <li>Ha bizonytalan vagy, kérdezz meg egy közeli barátot vagy a társadat.</li>
+          <li>Ne a vágyaidat jelöld, hanem azt, ahogyan valóban vagy.</li>
+          <li>A betűk egymásra is hatnak, ezért egy típus több, mint négy összeadott jegy.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="finder" id="finder">
+      <div>
+        <h3>Típuskereső</h3>
+        <p class="sub">Nem a könyv kérdései, hanem egy gyors kereső. Kattints arra a pólusra, amely inkább jellemez. Alapból egy példa van kiválasztva.</p>
+        <div class="pick" id="pick"></div>
+        <details class="pts">
+          <summary>A könyv tesztjéből már megvannak a pontszámaim</summary>
+          <div class="ptsgrid" id="ptsgrid"></div>
+          <p class="ptsnote" id="ptsnote" aria-live="polite"></p>
+        </details>
+      </div>
+      <div class="result" id="result" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section id="tipusok">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">A tizenhat miniszter</p>
+      <h2>Mindegyik típus külön szerepet visz</h2>
+      <p>Szűrj dimenzió szerint, majd kattints egy kártyára a teljes profilért: erősségek, nehézségek, munka, kapcsolatok, szülői stílus és tippek.</p>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="fbar"><span id="fcount"></span><button class="linkbtn" id="fclear" type="button" hidden>Szűrők törlése</button></div>
+    <div class="tgrid" id="tgrid" style="margin-top:16px"></div>
+  </div>
+</section>
+
+<section id="parosok">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Több, mint négy betű</p>
+      <h2>Hogyan hatnak egymásra a dimenziók?</h2>
+      <p>A jegyek nem egyszerűen összeadódnak. Ugyanaz a betű másként viselkedik más betűk mellett. Néhány párosítás a könyv példái nyomán.</p>
+    </div>
+    <div class="dyn" id="dyn"></div>
+    <p class="note" style="margin-top:28px"><b>Ne feledd:</b> a típus útmutató, nem ítélet. A cél az önismeret és a megértés, nem az önigazolás. A nehezebben elfogadható oldalakra is érdemes ránézni.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Összefoglaló Stefanie Stahl Ilyen vagyok című könyve alapján (Park Kiadó, 2022, fordította Malyáta Eszter), saját megfogalmazásban.</p>
+    <p>A teljes típusleírások, az eredeti tesztkérdések és az értékelési útmutató a könyvben olvashatók.</p>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+var LET={E:'extravertált',I:'introvertált',A:'absztrakt',K:'konkrét','G':'gondolkodó döntéshozó','É':'érző döntéshozó',R:'rendezett',L:'laza'};
+var GROUPS=[['E','I'],['A','K'],['G','É'],['R','L']];
+
+var DIMS=[
+ {id:'ei',cls:'d1',name:'Extraverzió – introverzió',short:'Energia',q:'Honnan töltődsz fel?',
+  fact:'Az extra- és introverzió hozzávetőleg 90 százalékban genetikai. Az extráknál a dopamin és a jutalmazó rendszer, az intróknál az acetilkolin és a félelemközpont játssza a főszerepet.',
+  example:{t:'Erik és Inge',p:'Az extravertált Erik és az introvertált Inge vonzódik egymáshoz, később mégis összeütköznek: ő társaságot akar, ő otthon maradna. A megoldás: közös otthoni este, taxi, ha Inge haza akar menni, és a vita folytatása másnap, ha Ingének gondolkodni kell.'},
+  hint:'Stahl hőmérőhöz hasonlítja a skálát, amely +50 és –50 fok között mozog. Aki középen áll, azt újabban „centrovertáltnak” hívják.',
+  poles:[
+   {L:'E',name:'Extravertált',tag:'Kifelé fordul',traits:['A világból és a kapcsolataiból merít energiát','Erős külső ingerek kellenek a motivációhoz','Hangosan gondolkodik, gyorsan válaszol','Bátor, kockázatvállaló, jó önérvényesítő'],
+    tips:['Adj időt, hogy hangosan gondolkodhasson','Nyugodtan kérdezz személyeset, ez érdeklődésnek hat nála','Az őszinte kritikát általában jól bírja'],
+    shadow:'Árnyoldal: felületes lehet, sokat beszél, és impulzív.'},
+   {L:'I',name:'Introvertált',tag:'Befelé fordul',traits:['A belső életéből szerez ösztönzést','Kevés inger is elég, hamar túlstimulálódik','Előbb átgondolja, aztán megszólal','Jó megfigyelő, elmélyülten képes dolgozni'],
+    tips:['Adj időt a válaszra, a gondolat többnyire megéri','Az egyedüllétét ne vedd személyes elutasításnak','Kérdezz az érdeklődési köréről, arról szívesen mesél'],
+    shadow:'Árnyoldal: elveszhet a belső világában, zárkózottsága elutasítónak hathat.'}]},
+ {id:'ka',cls:'d2',name:'Konkrét – absztrakt',short:'Észlelés',q:'Mit veszel észre a világból?',
+  fact:'Ez az egyetlen dimenzió, amely összefügg az intelligenciával: az absztraktak átlagosan valamivel magasabb intelligenciahányadossal rendelkeznek. Ez nem jelenti, hogy a konkrétak kevésbé okosak, az orvosok között például több a konkrét.',
+  example:{t:'A fák és az erdő',p:'Ha egy rózsáról kell beszélni, a konkrét az illatot, a színt és a levelek formáját sorolja. Az absztrakt az első randevúról mesél. Egy omladozó házban a konkrét a hibákat és a költségeket látja, az absztrakt a felújított épületet.'},
+  hint:'A konkrét a fákat látja, az absztrakt az erdőt. Az absztrakt a jövőbeli lehetőségekre figyel, a konkrét a jelen lehetőségeire.',
+  poles:[
+   {L:'K',name:'Konkrét',tag:'A tények embere',traits:['A látható, tapintható valóságban otthonos','Kitűnő megfigyelő, szinte semmi sem kerüli el','Gyakorlatias, a bevált módszereket szereti','Remek emlékezet a részletekre'],
+    tips:['Konkrét kérdésre konkrét választ adj','Mutasd meg a gyakorlati hasznot','Tapasztalatról és tényekről beszélj, ne vízióról','Vedd komolyan a részletekre vonatkozó ellenvetéseit'],
+    shadow:'Árnyoldal: szőrszálhasogató lehet, és elvész a részletekben.'},
+   {L:'A',name:'Absztrakt',tag:'A lehetőségek látnoka',traits:['Az összefüggéseket és a mögöttes jelentést keresi','A jövő és az elméletek foglalkoztatják','Nyitott az újra, szereti a változatosságot','Erős tervezési szakaszban, a rutint utálja'],
+    tips:['Kezdd a lényeggel, a részletek nem érdeklik','Ne söpörd le az ötleteit fantazmagóriaként','Ne javítgasd a mellékes részleteket a történetében','Kíméld a csip-csup ügyektől, ha lehet'],
+    shadow:'Árnyoldal: átsiklik a részletek fölött, és a valóságban hibázhat.'}]},
+ {id:'eg',cls:'d3',name:'Érző – gondolkodó döntéshozó',short:'Döntés',q:'Mi vezeti a döntéseidet?',
+  fact:'Ez az egyetlen dimenzió, ahol nemek szerint is eltérés van: a férfiak 65 százaléka gondolkodó döntéshozó, a nőknél ez az arány 35 százalék. Ettől még nem minden férfi gondolkodó, és nem minden nő érző. Mindkét döntési mód racionális.',
+  example:{t:'Két vélemény ugyanarról a krimiről',p:'A gondolkodó Dirk a cselekmény logikai bakugrásait és a sablonos figurákat bírálja. Az érző Frieda személyesen értékel: felbosszantotta a fekete-fehér ábrázolás, és nem ajánlja senkinek. Az egyik a tárgyi síkon marad, a másik érzéseket mond.'},
+  hint:'Az érző először a közöset keresi a másikban, a gondolkodó először a különbséget. Személyes ügyben az érző, tisztán tárgyi döntésben, például autóvételnél, a gondolkodó módszer a jobb.',
+  poles:[
+   {L:'É',name:'Érző döntéshozó',tag:'A harmónia embere',traits:['Személyes értékei alapján ítél, emberközpontú','Barátságos, meleg, sok dicséretet ad','Fontosak az érzelmei, mások érzései is','Kíméletesen, tapintatosan kritizál'],
+    tips:['Adj elismerést és légy közvetlen','Ne siess megoldási javaslattal, előbb hallgasd végig','Kritikánál először azt említsd meg, ami jó','Bátorítsd, hogy nyíltan is kimondja a véleményét'],
+    shadow:'Árnyoldal: konfliktuskerülő, könnyen megbántódik, érzelmei hullámzanak.'},
+   {L:'G',name:'Gondolkodó döntéshozó',tag:'A távolságtartó elemző',traits:['Tárgyilagos, cél- és megoldásorientált','Kritikus távolságból szemléli a világot','Érzelmileg stabilabb, stresszben hidegvérű','Egyenesen, szemtől szemben kritizál'],
+    tips:['A távolságtartását ne vedd magadra','Tárgyilagos, logikus érvekkel győzheted meg','Mondd ki világosan, mit gondolsz, a célozgatást nem érti','Kérj tőle őszinte, konstruktív kritikát'],
+    shadow:'Árnyoldal: takarékos a dicsérettel, és az emberi tényezőt elhanyagolhatja.'}]},
+ {id:'rl',cls:'d4',name:'Rendezett – laza',short:'Életmód',q:'Hogyan közelítesz a dolgokhoz?',
+  fact:'Ezt a dimenziót nem Jung, hanem Myers és Briggs tette hozzá. A rendezetteknél a lezáratlanság okoz belső feszültséget, a lazáknál az, ha idő előtt el kell köteleződniük.',
+  example:{t:'Könyvelők és tűzoltók',p:'Stahl szerint a rendezettek a társadalom könyvelői, a lazák a tűzoltói. A lazák asztalán a „kreatív káosz” uralkodik, a rendezetteknél munka végén üres az asztal. A lazáknál az idő rugalmas, a rendezetteknél 15, 30, 60 perces egységekre osztott.'},
+  hint:'A lazák az utat élvezik, a rendezettek a célt. A határidő a rendezettnek kötelező, a lazának inkább nagyjából szóló megállapodás.',
+  poles:[
+   {L:'R',name:'Rendezett',tag:'A tervező lezáró',traits:['Szeret dönteni, tervezni és lezárni','Listát vezet, és kipipálja az elintézetteket','Fegyelmezett, beosztja az idejét','Határozottan kiáll a véleménye mellett'],
+    tips:['Légy pontos, utál várakozni','Ne tartsd bizonytalanságban, mondj igent vagy nemet','Mondj ellent nyíltan, nyitottabb, mint gondolnád','Ne okozz körülötte felfordulást'],
+    shadow:'Árnyoldal: merev lehet, és az improvizáció nem az erőssége.'},
+   {L:'L',name:'Laza',tag:'A kíváncsi rugalmas',traits:['Nyitva tartja a döntéseket, információt gyűjt','Spontán, alkalmazkodó, kíváncsi','Folyamatorientált, a váratlanra jól reagál','Átlagosan kreatívabb, árnyaltabban véleményez'],
+    tips:['Hagyj időt a döntésre, a nyomás dacot szül','Adj választási lehetőséget','Az elkalandozást ne vedd sértésnek','Mondd el, mennyire fontos neked az elköteleződés'],
+    shadow:'Árnyoldal: halogat, késik, sok mindent az utolsó pillanatra hagy.'}]}
+];
+
+var TYPES=[
+{code:'IAGL',name:'Teóriaminiszter',essence:'Visszahúzódó, kritikus elméleti gondolkodó, aki egy életen át érteni akar, és a gyakorlati megvalósítást másokra hagyja.',kw:['elemző','független','elméleti','önkritikus'],
+ str:['Éles logika, gyorsan kiszúrja a gyenge pontokat','Eredeti, szokatlan gondolatok','Nyitott minden új információra','Száraz, csattanós humor'],
+ ch:['Kritikája lehangolhatja a többieket, gőgösnek tűnhet','A gyakorlati részletek és a megvalósítás elsikkadnak','Az érzéseit elnyomja, ezért váratlanul elborulhat'],
+ work:'Egyedül, szabadon és rugalmasan dolgozik, a szabályozott környezet fojtogatja. Kutatóként vagy elméleti szakemberként jó: természettudomány, mérnöki pálya, informatika, közgazdaság, filozófia.',
+ love:'Ritkán szeret bele, szűk, de mély és tartós baráti köre van, többnyire hozzá hasonló gondolkodókkal. A kezdeti lángolás után visszavonul, ezt nem a szeretet fogyása okozza, csak az autonómiaigénye tér vissza.',
+ par:'Lelkesen válaszolgat a gyerek kérdéseire és szabadon kipróbálni engedi, de kevés a következetes irányítás és a meleg érzelmi közelség.',
+ tips:['Hagyj neki egyedüllétet és szabadságot, ne kérj magyarázkodást','Vitatkozz vele tárgyilagosan, és hallgasd végig az ötleteit','Mondd ki nyíltan, mi zavar, mert nem találgat'],
+ grow:'Tanulja meg időben észrevenni az érzéseit, és a kritikáját előbb elismeréssel, indoklással, finomabban fogalmazza meg.'},
+{code:'EAGL',name:'Jövőminiszter',essence:'Lelkes, társaságkedvelő lehetőségkereső, aki a trendeket korán megérzi, de a kivitelezés és az elköteleződés nem megy neki.',kw:['vízió','lelkesedés','változatosság','szabadság'],
+ str:['Korán felismeri a trendeket és lehetőségeket','Másokat is magával ragad a lelkesedésével','Szórakoztató, nyitott, vidám társaság','Jól érvel és szívesen vitázik'],
+ ch:['Elaprózza magát, túlvállalja a dolgokat, nem viszi végig őket','Nem lát rá a megvalósítás munkájára és a részletekre','Kritikája kíméletlen, és hibáit nehezen ismeri be'],
+ work:'Változatos pályát fut be, gyakran vállalkozik, a rutin és a merev hierarchia taszítja. Trendek felmérésében és új fejlesztések indításában erős: szervezeti és befektetési tanácsadó, marketinges vagy újságíró lehet.',
+ love:'Nagy, színes baráti köre van, de a tartós kapcsolatba nehezen kötelezi el magát, mert fél lemaradni valamiről. Párjától közös érdeklődést és szabadságot vár, kiszámíthatatlansága és pénzügyi kockázatvállalása viszont terhes lehet.',
+ par:'Sokoldalúan támogatja gyerekét és szabadon hagyja nőni, de nem mindig következetes, és az érzelmi törődés háttérbe szorulhat.',
+ tips:['Hallgasd végig, ne ítélkezz azonnal az ötletei felett','Adj neki szabadságot, nyomás vagy elszámoltatás nélkül','Ne kérdőjelezd meg nyilvánosan a hozzáértését'],
+ grow:'Állítson fel prioritásokat, használjon napi és heti tervet, és a saját érzéseire figyelve fejlessze az empátiáját.'},
+{code:'IAGR',name:'Stratégiaminiszter',essence:'Független, önbizalmas stratégaelme, aki a kiérlelt terveit következetesen, a gyakorlati megvalósításig viszi.',kw:['stratéga','céltudatos','logikus','igazságérzet'],
+ str:['Folyamatosan kereshet javítási lehetőségeket','Gondosan kidolgozza és végigviszi terveit','Nem hat rá a rang, a divat és a populizmus','Kiáll az igazság mellett, még személyes kár árán is'],
+ ch:['Makacsul ragaszkodik a kész tervhez, az akadályokat sem veszi észre','Túl későn avatja be másokat, és nyers a kritikája','Magas elvárásai nyomaszthatják a környezetét'],
+ work:'Elemző, tervező, céltudatos és feladatorientált, legszívesebben egyedül és önállóan dolgozik. Tudósként, informatikusként, mérnökként, újságíróként, szervezeti tanácsadóként vagy vezetőként működik jól.',
+ love:'Szűk, válogatott, hosszú távon stabil baráti köre van, és lassan nyílik meg. Szeretetét inkább tettekkel mutatja, hűséges, a társ és a család az élete központja, de a magas elvárásai és a távolságtartása nehézséget okozhat.',
+ par:'Nagyon odaadó, következetesen támogató szülő, aki szabadságot ad, de túl magasra teheti a lécet, és kevés a felhőtlen játék.',
+ tips:['Hallgasd végig a víziót, ne szedd szét az apró részletekkel','Adj neki időt gondolkodni, főleg érzelmi témákban','Szólj időben, ha a tervek változnak, és tiszteld a magányigényét'],
+ grow:'Legyen rugalmasabb, vonja be korán a többieket, és gyakorolja az érzelmek és mások igényeinek figyelembevételét.'},
+{code:'EAGR',name:'Kompetenciaminiszter',essence:'Öntudatos, tettre kész, született vezető, aki kihívásokat keres, és az ötleteit hatékonyan valóra váltja.',kw:['célratörő','vezető','vitatkozó','kitartó'],
+ str:['Villámgyors elemző, megérti a helyzetet','Szervezetten, hatékonyan viszi végig az ötleteit','Jól kommunikál, másokat is lelkesít','Tudja, kiben mi rejlik, kihozza az embereket'],
+ ch:['Túl gyorsan dönt, kevés információ alapján','Az emberi tényezőt alábecsüli, kertelés nélkül megsért','Nehezen enged el, kudarcot személyes vereségnek él meg'],
+ work:'Intellektuális kihívást és önállóságot kér, összetett problémákat elemez, majd hatékonyan megszervezi a megoldást. Leginkább műszaki vagy gazdasági területen, menedzserként találkozhatunk vele, vezetőként a legjobb.',
+ love:'Nagy, színes baráti köre van, a barátságtól is fejlődést és vitát vár. Párkapcsolatban pontos elképzelései vannak, szabadságot igényel, az érzelmeit nehezen fogalmazza meg, és gyakran a munka az első.',
+ par:'Világos szabályokkal és célokkal, odaadóan és vidáman nevel, de túl nagy teljesítményt vagy autoriter hangot követelhet.',
+ tips:['Hallgasd végig, hagyd, hogy hangosan gondolkodjon és vitázzon','Ne vedd magadra a kritikáját, és tartsd be az ígéreteidet','Mondd ki őszintén, ha bánt valami, ne kerüld a vitát'],
+ grow:'Szánjon időt információgyűjtésre, hallgasson másokra, engedjen el, és adjon teret a gyenge érzéseknek és a pihenésnek.'},
+{code:'IAÉL',name:'Erényminiszter',essence:'Csendes, szerény idealista, aki szigorú belső értékrendje szerint él, és közben a világot és másokat is jobbá akarja tenni.',kw:['értékelvű','visszahúzódó','idealista','önkritikus'],
+ str:['Megbízható, lojális és segítőkész','Rugalmas, alkalmazkodó, más életformákkal szemben is nyitott','Mások tehetségének kibontakoztatását támogatja','Kitartóan valóra váltja nagy céljait'],
+ ch:['Konfliktuskerülő: lenyeli a haragját, míg végül kirobban','Perfekcionizmus és önkritika miatt nehezen zár le dolgokat','Elvont ötletei a gyakorlati részletekben könnyen elakadnak'],
+ work:'Olyan munkában érzi jól magát, amely összhangban áll az értékeivel: szociális, segítő pályákon (pszichológus, tanácsadó, tanár, önkéntes, szociális munkás, ápoló). Közepes önállóságot és harmonikus légkört kedvel, a határidő segít neki a perfekcionizmus megfékezésében.',
+ love:'Szűk, válogatott baráti kört tart fenn, ahol mély beszélgetések és közös értékek számítanak. Párkapcsolatban magas igényei vannak, nehezen szerelmesedik, de ha megnyílik, mély, bizalmas, tartós kötődés lehet belőle.',
+ par:'Meleg, partneri, kevéssé autoriter szülő, aki támogatja a gyerek egyéni útját, de a lazasága miatt néha kevés struktúrát ad.',
+ tips:['Légy türelmes, hagyj időt a megnyílásra','Ne kritizáld azonnal, előbb értékeld az igyekezetét','Fogadd el az egyedüllét és a rendetlenség iránti igényét'],
+ grow:'Legyen elnézőbb önmagával, merjen időben szóvá tenni a nézeteltéréseket, és tesztelje korán az ötleteit a valósággal.'},
+{code:'EAÉL',name:'Ötletminiszter',essence:'Lelkes, kreatív és szabadságszerető vizionárius, aki új lehetőségekért él, de a kitartás és a részletek nem az erőssége.',kw:['kreatív','lelkes','spontán','szabad'],
+ str:['Eredeti ötletek és szokatlan megoldások','Magával ragadó, optimista és népszerű','Jó emberismerő, meglátja mások lehetőségeit','Rugalmasan improvizál, szórakoztató társaság'],
+ ch:['A projektek és kapcsolatok elején erős, később elveszti a lendületét','Szervezetlen, pontatlan, a tervezés és az időbeosztás gyenge pontja','Stresszben ingadozó hangulat, impulzivitás, indulatkitörések'],
+ work:'Szabad, kreatív környezetben dolgozik, gyakran önállóként, kerüli a rutint és a merev hierarchiát. Alkotó pályákon, tanárként, tanácsadóként és szolgáltató jellegű hivatásokban találjuk, ahol mások kidolgozzák a részleteket.',
+ love:'Szenvedélyes, romantikus és megértő partner, de elköteleződési nehézségei vannak, a kezdet izgalmát keresi. Barátként nagyvonalú és színes egyéniség, barátságai gyakran tartósabbak a párkapcsolatainál.',
+ par:'Szeretetteljes, nagy szabadságot adó szülő, aki impulzív kifakadásai után hamar megbánja, a gyerek néha mégis kikerül a figyelméből.',
+ tips:['Hallgasd meg az ötleteit anélkül, hogy azonnal leszólnád','Ne firtasd a rendetlenséget és a késéseket','Hagyj neki szabadságot, így fog inkább elköteleződni'],
+ grow:'Vezessen teendőlistát, készítsen reális tervet, és tanulja meg higgadtan, kívülről szemlélni a heves érzelmeit.'},
+{code:'EAÉR',name:'Kapcsolatminiszter',essence:'Melegszívű, szervezett idealista, aki az emberi kapcsolatokat és az értékeket helyezi a középpontba, és szívesen hozza össze az embereket.',kw:['empatikus','szervezett','kommunikatív','idealista'],
+ str:['Kiváló emberismeret és beleérző képesség','Született kommunikátor, meggyőző és lelkesítő','Megbízható, jól szervezett, tartja a határidőket','Jó vezető, mindenkinek megtalálja a helyét'],
+ ch:['Túlértékeli a kapcsolatokat, kritikátlanul lelkesedik emberekért','Függ mások véleményétől, sebezhető a kritikával szemben','Stresszben hullámzó érzelmek, elsietett, megérzésen alapuló döntések'],
+ work:'Hatékonyan, tervezetten dolgozik, különösen emberekkel és emberekért: rendezvényszervezésben, vezetésben, értékeit és kommunikációját kamatoztató segítő pályákon. A részletmunkát és a magányos aprómunkát nem szereti, inkább delegálja.',
+ love:'Romantikus, hűséges és elkötelezett társ, aki mély lelki rokonságra vágyik, de hajlamos túl sokáig kitartani és a párját a saját ideálja szerint formálni. Barátként lojális és megbízható.',
+ par:'Szeretetteljes, empatikus szülő, aki példamutatással adja át az értékeit, de a gyerek problémáit könnyen saját kudarcaként éli meg.',
+ tips:['Beszélj az érzéseidről is, ne csak tényekről','Tartsd be a megállapodásokat, és kritikánál említs pozitívumot is','Mondd ki, hogy értékeled és szereted őt'],
+ grow:'Elemezze a helyzeteket objektív tényekre alapozva, függjön kevésbé mások megítélésétől, és tanulja meg elengedni, akit nem tud megváltoztatni.'},
+{code:'IAÉR',name:'Felismerésminiszter',essence:'Mély gondolkodású, szerény és sokrétű ember, aki az összefüggések és az emberek mögötti jelentést keresi, és vízióit kitartóan követi.',kw:['elmélyült','intuitív','lojális','komoly'],
+ str:['Kiváló, szinte megérző emberismeret és empátia','Találó víziók és szokatlan problémamegoldás','Jól strukturált, kitartó a céljaiért','Figyelmes, tapintatos beszélgetőtárs'],
+ ch:['Idealizálja a helyzeteket és a partnert, a kritikus tényeket kerüli','Konfliktuskerülő, sokáig tűr és nem áll ki magáért','Aggodalmaskodik, pesszimista forgatókönyveket szőhet magában'],
+ work:'Elmélyülten, nyugodt, jól szervezett környezetben dolgozik. A tudományok, a szellemi, filozófiai és pszichológiai területek vagy az emberekkel foglalkozó munkák vonzzák, de az írás is. Ötletorientált, motiváló vezető, aki felismeri a csapattagok erősségeit.',
+ love:'Mély, tartós, hűséges kapcsolatra vágyik, gyengéd, türelmes partner, aki hajlamos túlzottan alkalmazkodni. Barátként lojális, szűk és szoros baráti kört ápol.',
+ par:'Gondoskodó, a gyerek tehetségét intenzíven támogató, toleráns szülő, akinek nehezen megy az elengedés és a határszabás.',
+ tips:['Várd ki, míg végiggondolja és megosztja a gondolatait','Légy megbízható és pontos, jelezd időben a változást','Figyelmesen hallgasd meg, és kérdezz az ötleteiről'],
+ grow:'Szembesítse korán az ideáljait a tényekkel, nyíltan mondja el az igényeit, és racionális, írásos elemzéssel oszlassa a szorongató forgatókönyveket.'},
+{code:'IKÉR',name:'Harmóniaminiszter',essence:'Csendes, szerény segítő, aki a háttérből, megbízhatóan gondoskodik másokról, és mindennél jobban vágyik a békére.',kw:['gondoskodó','szerény','megbízható','békevágyó'],
+ str:['Szavát minden körülmények között megtartja','Kitartó, pontos, a legapróbb részletig gondos','Jól megfigyeli mások mindennapi szükségleteit','Hűséges, szűk, de tartós baráti kört ápol'],
+ ch:['Nehezen mond nemet, ezért kihasználják és túlterheli magát','Borúlátás, kudarctól való félelem miatt ragaszkodik a megszokotthoz','A haragját elfojtja, majd némán bezárkózik'],
+ work:'Lelkiismeretes, rutint kedvelő, perfekcionista, magányosan és csapatban is jól dolgozik, ha a hangulat harmonikus. Jellemző pályák: titkárságvezető, betegápoló, orvos, könyvelő, technikus, tanár.',
+ love:'Ritkán és lassan szerelmesedik, életre szóló, stabil kapcsolatot keres, és a szeretetét apró figyelmességekben mutatja meg. Saját igényeit háttérbe szorítja, ezért rossz társ mellett is sokáig kitart.',
+ par:'Szeretetteli, türelmes, szabályokat adó szülő, aki viszont túlféltheti a gyermekeit, és nehezen engedi el őket.',
+ tips:['Ismerd el a hűségét, és dicsérd meg időnként','Hagyj neki egyedüllétet, és ne faggasd a beszélgetésben','Tartsd be az ígéreteidet, a változásokról szólj előre'],
+ grow:'Merjen nyíltan kiállni önmagáért, tudatosan iktasson be örömöt a naptárába, és a félelmeit ne vegye tényként.'},
+{code:'EKÉR',name:'Szociális miniszter',essence:'Barátságos, társaságkedvelő, gyakorlatias segítő, akinek az élete a kapcsolatai és mások jóléte körül forog.',kw:['empatikus','társaságkedvelő','szervező','segítőkész'],
+ str:['Pontosan érzi, mire van szüksége a másiknak','Jó hangulatot teremt, vendégszerető','Megbízható, a megkezdett munkát befejezi','Remekül szervezi és koordinálja mások munkáját'],
+ ch:['Mások igényeihez igazodik, saját szükségleteit és határait elhanyagolja','Kerüli a konfliktust, a kritikát személyes sértésnek veszi','Nehezen kér és fogad el segítséget, ezért csalódik'],
+ work:'Szívesen dolgozik emberek között, csapatban, jól szervezett, de harmonikus légkörben, vezetőként is a kapcsolatokat tartja szem előtt. Gyakori területei: szolgáltatás, szociális szféra, ápolás, iskola.',
+ love:'Stabil, hosszú kapcsolatot és családot akar, párját apró figyelmességekkel kényezteti, otthonuk nyitott és rendezett. Az egyedülléttől való félelem miatt nehezen enged el egy rossz kapcsolatot.',
+ par:'Meleg, gondoskodó szülő, aki világos elképzelésekkel nevel, de ügyelnie kell, hogy ne kényszerítse rá az akaratát a gyerekre.',
+ tips:['Hallgasd végig, és ne söpörd le az érzéseit','Mondd ki, mutasd ki, hogy fontos neked','Kritizálj óvatosan, és méltányold, mennyit tesz a kapcsolatért'],
+ grow:'Tanuljon meg időben, nyíltan megfogalmazni a saját igényeit, és a döntéseiben a józan mérlegelést is edzze.'},
+{code:'IKGR',name:'Precíziós miniszter',essence:'Zárkózott, alapos és fegyelmezett tényelemző, aki minden hibát észrevesz, és a rendben meg a tervezhetőségben érzi biztonságban magát.',kw:['precíz','megbízható','rendszerető','tartózkodó'],
+ str:['Hibátlanul, határidőre dolgozik, szavát tartja','Kiváló tényemlékezet, logikus és józan elemzés','Előrelátó, takarékos, hosszú távra tervez','Hűvös külső mögött száraz humor és báj'],
+ ch:['Elveszik a részletekben, nehezen próbál ki újat','Állandó teljesítménykényszer, a sikereit nem értékeli','Tapintatlan lehet, és az érzelmeit elfojtja'],
+ work:'Vasfegyelmű, egyedül dolgozik a legszívesebben, biztos és tervezhető munkát keres, vezetőként nehezen delegál. Tipikus pályák: iroda, laboratórium, adminisztráció, könyvvizsgáló, bankár, befektetési tanácsadó, könyvelő.',
+ love:'Nehezen nevez valakit barátnak, kevés, de tartós kapcsolata van. Párkapcsolatban hűséges és megbízható, a szerelmét inkább anyagi biztonsággal bizonyítja, mint szavakkal.',
+ par:'Komolyan vett, szabályokra és felelősségre nevelő szülő, aki tettekkel szeret, de kevéssé játékos, és a gyerekeire teljesítménynyomás nehezedhet.',
+ tips:['Hagyj neki időt gondolkodni és egyedül lenni','Maradj a tényeknél, kerüld a hevesen érzelmes jeleneteket','Ne vedd magadra a bírálatát, és szólj, ha megbántott'],
+ grow:'Vezessen listát a sikereiről, merjen vidámabb és nyitottabb lenni, és fordítson figyelmet a saját érzéseire.'},
+{code:'EKGR',name:'Tervezési miniszter',essence:'Határozott, energikus, társaságkedvelő szervező, aki logikával dönt, terveket követ, és a munkát gyorsan, hatékonyan lezárja.',kw:['határozott','szervező','őszinte','tettrekész'],
+ str:['Gyorsan és racionálisan dönt','Született szervező, kitűnően beosztja az erőforrásokat','Megbízható, lojális barát, szórakoztató társaság','Nem sértődékeny, egyenes beszédű'],
+ ch:['Merev, a tervtől nehezen tér el','Nyers kritika, leereszkedő jótanácsok','Magát hajszolja, saját szükségleteit elnyomja'],
+ work:'Cselekvést, mérhető eredményt és szervezést kívánó munkát választ, csapatban jól érzi magát, vezetőként viszont autoriter. Gyakori területek: jog, biztosítás, közigazgatás, HR, menedzsment.',
+ love:'Szenvedélyesen szeret bele, de a hétköznapokban józan, hűséges, stabil kapcsolatot akar. A szeretetét tettekkel mutatja, ám párkapcsolatban is lehet domináns.',
+ par:'Sok közös programot szervező, játékos, de következetes és szigorú szülő, akinek nehéz elengednie a kamasz gyerekét.',
+ tips:['Érvelj logikusan és tárgyszerűen, ne csak érzelmekkel','Szólj nyíltan, ha bánt valami, hiszen nem gondolatolvasó','Tartsd be az ígéreteidet, ne dobáld az újabb ötleteket'],
+ grow:'Tanuljon rugalmasabban viszonyulni a tervekhez, tapintatosabban kritizálni, és a gyengeség érzéseit is megengedni magának.'},
+{code:'IKÉL',name:'Toleranciaminiszter',essence:'Csendes, megértő, érték- és érzelemvezérelt ember, aki élni és élni hagy, és nyugodt örömöt visz a hétköznapokba.',kw:['toleráns','szerény','érzékeny','spontán'],
+ str:['Mély, szilárd belső értékrend','Gyors felismerés, mire van szüksége a másiknak','Kézügyes, természetes módon kreatív','Lojális, nem versengő, kellemes társ'],
+ ch:['Kritikátlanul bízik, ezért kihasználhatják','Konfliktusokat kerül, a problémákat elhallgatja, majd kihátrál','Halogat, hiányzik a hosszú távú tervezés és kitartás'],
+ work:'Értelmes, önálló, gyakorlatias munkát keres, kevés rutinnal és szabállyal: szociális (segítő, ápoló) vagy kreatív-kézműves pályákon otthonos. Vezetőként nem irányító, dicsérettel és bátorítással motivál.',
+ love:'Ritkán és lassan szeret bele, de akkor teljesen odaadó és hűséges, vonzalmát tettekkel, figyelmességgel mutatja. Barátságban kis, szoros kört ápol, de a kapcsolatban hajlamos túl sok felelősséget vállalni.',
+ par:'Engedékeny, elismerő szülő, aki szabadon hagyja kibontakozni a gyereket, de külső struktúrát és következetes támogatást nehezen ad.',
+ tips:['Fogadd el és tiszteld a belső értékeit','Kritika mellé mondd el azt is, mit szeretsz benne','Hagyj neki időt egyedül, és ne sürgesd a megnyílást'],
+ grow:'Fejlessze a kritikus, racionális ítélőképességet, merjen nyíltan kiállni magáért, és vezessen napirendet a halogatás ellen.'},
+{code:'EKÉL',name:'Szórakozásminiszter',essence:'Nyitott, társaságkedvelő életművész, aki a pillanatnak él, és spontaneitásával másokat is magával ragad.',kw:['spontán','életvidám','társasági','rugalmas'],
+ str:['Mindenkivel megtalálja a hangot, toleráns','Válsághelyzetben kiváló improvizátor','Segítőkész, gyakorlatias tanácsokat ad','Vonzó, vidám hangulatot teremt'],
+ ch:['Nehezen fegyelmezi magát, mindent az utolsó pillanatra hagy','Sok mindenbe belekezd, kevés dolgot visz végig','Kerüli a konfliktusokat, a felelősséget és a hosszú távú tervezést'],
+ work:'Élénk, emberekkel teli, változatos munkát szeret, szolgáltatásban és értékesítésben sikeres, egyedül dolgozni nem bír. Vezetőként partneri, kapcsolatorientált, beosztottként viszont nehezen viseli az autoritást.',
+ love:'Gyorsan és lángolóan szeret bele, kreatívan elhalmozza a párját figyelmességgel, ha megtalálta az Igazit, megbízható. Barátait nagyon fontosnak tartja, széles és sokszínű baráti köre van.',
+ par:'Melegszívű, játékos szülő, aki változatos élményeket ad, de rendezetlen, következetlen és túl engedékeny lehet.',
+ tips:['Hagyd élvezni az életet, ne korlátozd a szabadságát','Ne légy pesszimista az újabb őrült ötletekkel szemben','Kerüld az elvont fejtegetést, és beszélj az érzéseidről'],
+ grow:'Gyakorolja a frusztrációtűrést és a késleltetést, vigyen több rendezettséget az életébe, és tanuljon meg kiállni a saját határaiért.'},
+{code:'EKGL',name:'Válságminiszter',essence:'Tettekre éhes, kockázatkedvelő, hidegfejű pillanatember, aki nyomás alatt nő igazán nagyra, és mindig talpra esik.',kw:['adrenalinos','független','szókimondó','gyakorlatias'],
+ str:['Villámgyors helyzetfelismerés és reakció','Kiváló válságkezelő, hideg fejjel cselekszik','Meggyőző, projekteket indít el','Szórakoztató, nyílt, nem haragtartó'],
+ ch:['Túlbecsüli magát, az apró betűket átugorja','Kockázatvállalása másokat is sújthat, megbízhatatlannak tűnhet','Tapintatlan, elfojtja a saját sebezhetőségét'],
+ work:'Változatosságot és kihívást kér, legjobb tűzoltóként nyomás alatt, gyakorlati, műszaki, látható eredményt adó pályákon, gyakran önállóként. Főnökként pragmatikus és toleráns, de válságban szó nélküli engedelmességet vár.',
+ love:'Gyorsan és hevesen szeret bele, a szabadság és a kötődés egyensúlyára van szüksége, kalandpartnert keres, és bírja a vitát. Szeretetét tettekkel, ajándékokkal mutatja, a kötődéstől néha tart.',
+ par:'Játékos, a gyereket soha nem hagyja unatkozni, reális elvárásokat támaszt, hétköznap viszont szigorú és kevéssé empatikus lehet.',
+ tips:['Hagyj neki szabadságot, és ne sürgesd az elköteleződést','Ne utasítsd el azonnal az új ötleteit','Mondd ki nyíltan, ha valami zavar, ne kerüld a vitát'],
+ grow:'Tervezzen többet, vonja be másokat a döntésekbe, és engedje meg magának a gyengeség érzéseit, hogy empatikusabb legyen.'},
+{code:'IKGL',name:'Szabadságminiszter',essence:'Higgadt, logikus tettek embere, aki a függetlenséget mindenek fölé helyezi, és ügyesen oldja meg a gyakorlati, műszaki problémákat.',kw:['független','racionális','hidegvérű','kézügyes'],
+ str:['Hidegvérű válsághelyzetben, tárgyilagos elemző','Műszaki problémák és szerszámok mestere','Részletek és tények széles tárháza','Nyíltan megmondja, mit vár, megbízható barát'],
+ ch:['Nehezen kötelezi el magát, a szabadság mögé menekül','Kevés önreflexió, az érzelmeket nehezen értelmezi, nyersnek hat','Kaotikus időbeosztás, túlvállalás, késések'],
+ work:'Műszaki és kétkezi szakmákban a legerősebb (például sebész, ács), ahol szerszámokkal dolgozik és logikai kihívást kap. Vezetőként liberális: infót ad, a módszert szabadon hagyja, de az eredményt számon kéri.',
+ love:'Kevés szóval, közös élményekkel és apró figyelmességekkel mutat szeretetet, lassan nyílik meg, és hamar korlátozva érzi magát. Szűk, de stabil baráti kört tart.',
+ par:'Megengedő, kevés szabályt ír elő, jó gyakorlati tanácsadó, de az érzelmi problémákhoz kevésbé tud kapcsolódni.',
+ tips:['Adj neki elég teret és időt','Fogalmazz világosan, mit vársz, ne várd, hogy kitalálja','Ne kontrollálj, és ne kényszeríts merev tervekbe'],
+ grow:'Tanuljon meg beszélni az igényeiről és érzéseiről, finomabban kritizáljon, és tegyen rendet az időbeosztásában, mielőtt vállalást elfogad.'}
+];
+
+var COMBOS=[
+ {c:'EG',t:'Gyorsabban beszél, mint gondolkodik',p:'Az extravertált beszédesség és a gondolkodó távolságtartás együtt közvetlen, nyílt, de olykor úgy vágja valaki arcába a kritikát, hogy az alig kap levegőt.'},
+ {c:'IG',t:'Nehezen közelíthető elemző',p:'Az introvertált zárkózottságot a gondolkodó távolságtartás tovább erősíti. Elutasítónak hathat, de kitűnő elemző, különösen tárgyi témákban.'},
+ {c:'KGR',t:'Szigorú, de igazságos',p:'A konkrét tényekből a gondolkodó személytelen elemzéssel, a rendezett gyorsasággal hoz ítéletet. Strukturált, valóságközpontú, olykor kemény és merev.'},
+ {c:'IAL',t:'A szórakozott professzor',p:'Az absztrakt észlelés a befelé forduló természettel nagyon elvont gondolatmeneteket szül. A lazasággal együtt jön a közmondásos szórakozott professzor.'},
+ {c:'AG',t:'Összetett rendszerek megoldója',p:'Az absztrakt-gondolkodó a jövőre és az elméletekre figyel. A kompetencia a legfőbb értéke, ezért magától és másoktól is sokat vár, és ettől néha arrogánsnak tűnik.'},
+ {c:'IÉ',t:'Néma segítők',p:'Az introvertált érzők figyelnek másokra, észreveszik, ha valakinek támogatás kell, és segítenek anélkül, hogy nagy feneket kerítenének neki.'},
+ {c:'ÉR',t:'Önjelölt kapcsolati tanácsadó',p:'Az extravertált érző-rendezett határozottan kimondja a véleményét, szívesen ad kéretlen tanácsot is, főleg pszichológiai és emberi kérdésekben, de empátiával és finoman.'},
+ {c:'KL',t:'Semmi sem kerüli el a figyelmét',p:'A konkrét észlelés a lazasággal radarszerűvé válik: a rendőrt, a ragadozó madarat és a leszakadófélben lévő kipufogót is észreveszi.'},
+ {c:'AL',t:'Az ötletgyáros',p:'Az absztrakt és a laza együtt a jövőbeli lehetőségekre hangolt, külső benyomásokból új gondolatokat építő kreativitást adja.'},
+ {c:'ÉL',t:'Nélkülük nincs rendes buli',p:'Az érzők szociális érzéke és a lazák fesztelen alkalmazkodása a társas élet és a szórakozás rajongóit adja, különösen, ha még extravertáltak is.'}
+];
+
+function tilesFor(code){
+  return '<span class="codes">'+code.split('').map(function(ch,i){return '<span class="tile d'+(i+1)+'" title="'+LET[ch]+'">'+ch+'</span>'}).join('')+'</span>';
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function byCode(c){for(var i=0;i<TYPES.length;i++){if(TYPES[i].code===c)return TYPES[i]}return null}
+
+/* hero cabinet */
+(function(){
+  var cab=$('#cabinet');
+  TYPES.forEach(function(t){
+    var b=document.createElement('button');
+    b.type='button';b.className='cab';b.setAttribute('data-code',t.code);b.setAttribute('aria-label',t.name+' ('+t.code+')');
+    b.innerHTML='<span class="codes">'+t.code.split('').map(function(ch,i){return '<i class="d'+(i+1)+'">'+ch+'</i>'}).join('')+'</span><small>'+esc(t.name.replace('miniszter',''))+'</small>';
+    b.addEventListener('click',function(){openType(t.code,b)});
+    cab.appendChild(b);
+  });
+})();
+
+/* dimensions */
+var tabsEl=$('#dimtabs'),panelsEl=$('#dimpanels');
+function sliderText(d,v){
+  var a=d.poles[0].name.toLowerCase(),b=d.poles[1].name.toLowerCase();
+  var x=Math.abs(v);
+  if(x<12)return 'Nagyjából középen állsz: mindkét hajlam hasonló súllyal működik benned.';
+  var pole=v<0?a:b;
+  if(x<35)return 'Inkább '+pole+' vagy, de a másik oldalt is jól használod.';
+  return 'Határozottan '+pole+' vagy. Itt a tipikus jellemzők különösen erősen jelennek meg.';
+}
+DIMS.forEach(function(d,i){
+  var tb=document.createElement('button');
+  tb.type='button';tb.className='tab '+d.cls;tb.id='tab-'+d.id;
+  tb.setAttribute('role','tab');tb.setAttribute('aria-controls','panel-'+d.id);
+  tb.innerHTML='<span class="tile">'+d.poles[0].L+'/'+d.poles[1].L+'</span><span>'+esc(d.short)+'<small>'+esc(d.name)+'</small></span>';
+  tb.addEventListener('click',function(){selectDim(i,true)});
+  tabsEl.appendChild(tb);
+
+  var p=document.createElement('div');
+  p.className='panel '+d.cls;p.id='panel-'+d.id;p.setAttribute('role','tabpanel');p.setAttribute('aria-labelledby','tab-'+d.id);
+  p.innerHTML=
+   '<h3 class="question">'+esc(d.q)+'</h3>'+
+   '<div class="spectrum"><div class="ends"><span>'+esc(d.poles[0].name)+'</span><span>'+esc(d.poles[1].name)+'</span></div>'+
+   '<input type="range" min="-50" max="50" value="0" id="sp-'+d.id+'" aria-label="'+esc(d.name)+' skála">'+
+   '<p class="read" id="rd-'+d.id+'">'+esc(sliderText(d,0))+'</p><p class="read" style="min-height:0">'+esc(d.hint)+'</p></div>'+
+   '<div class="poles">'+d.poles.map(function(po){
+      return '<article class="pole"><header><span class="tile">'+po.L+'</span><div><h3>'+esc(po.name)+'</h3><p>'+esc(po.tag)+'</p></div></header>'+
+      '<div><h4>Jellemzők</h4><ul>'+po.traits.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>'+
+      '<div><h4>Hogyan bánjunk vele?</h4><ul>'+po.tips.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>'+
+      '<p class="shadow">'+esc(po.shadow)+'</p></article>';
+   }).join('')+'</div>'+
+   '<div class="example"><b>'+esc(d.example.t)+'</b><p>'+esc(d.example.p)+'</p></div>'+
+   '<p class="note" style="margin:0"><b>Érdekes:</b> '+esc(d.fact)+'</p>';
+  panelsEl.appendChild(p);
+  var sl=$('#sp-'+d.id,p),rd=$('#rd-'+d.id,p);
+  sl.addEventListener('input',function(){rd.textContent=sliderText(d,+sl.value)});
+});
+function selectDim(i,focus){
+  DIMS.forEach(function(d,k){
+    var on=k===i;
+    var t=$('#tab-'+d.id),pn=$('#panel-'+d.id);
+    t.setAttribute('aria-selected',on?'true':'false');
+    t.tabIndex=on?0:-1;
+    pn.hidden=!on;
+  });
+  if(focus)$('#tab-'+DIMS[i].id).focus();
+}
+tabsEl.addEventListener('keydown',function(e){
+  var cur=DIMS.findIndex(function(d){return $('#tab-'+d.id).getAttribute('aria-selected')==='true'});
+  if(e.key==='ArrowRight'){selectDim((cur+1)%4,true);e.preventDefault()}
+  if(e.key==='ArrowLeft'){selectDim((cur+3)%4,true);e.preventDefault()}
+});
+selectDim(0,false);
+$$('[data-go]').forEach(function(a){a.addEventListener('click',function(){selectDim(+a.getAttribute('data-go'),false)})});
+
+/* finder */
+var sel=['E','A','É','R'];
+var PICKS=[
+ [{L:'E',n:'Extravertált',s:'a világból merít'},{L:'I',n:'Introvertált',s:'befelé fordul'}],
+ [{L:'K',n:'Konkrét',s:'tények, jelen'},{L:'A',n:'Absztrakt',s:'összefüggések, jövő'}],
+ [{L:'É',n:'Érző döntéshozó',s:'harmónia, értékek'},{L:'G',n:'Gondolkodó döntéshozó',s:'logika, távolság'}],
+ [{L:'R',n:'Rendezett',s:'tervez, lezár'},{L:'L',n:'Laza',s:'nyitva hagy, spontán'}]
+];
+var pickEl=$('#pick'),resEl=$('#result');
+function renderPick(){
+  pickEl.innerHTML=PICKS.map(function(row,i){
+    return '<div class="pickrow d'+(i+1)+'">'+row.map(function(o){
+      return '<button type="button" data-i="'+i+'" data-l="'+o.L+'" aria-pressed="'+(sel[i]===o.L)+'"><span class="tile">'+o.L+'</span><span>'+o.n+'<small>'+o.s+'</small></span></button>';
+    }).join('')+'</div>';
+  }).join('');
+}
+function neighbors(code){
+  var out=[];
+  for(var i=0;i<4;i++){
+    var g=GROUPS[i],other=g[0]===code[i]?g[1]:g[0];
+    var c=code.slice(0,i)+other+code.slice(i+1);
+    var t=byCode(c);
+    if(t)out.push({t:t,from:code[i],to:other});
+  }
+  return out;
+}
+function renderResult(){
+  var code=sel.join(''),t=byCode(code);
+  resEl.innerHTML='<p class="eyebrow">Az eredményed</p>'+tilesFor(code)+
+   '<h4 style="font-family:var(--font-display)">'+esc(t.name)+'</h4><p>'+esc(t.essence)+'</p>'+
+   '<div class="kw">'+t.kw.map(function(k){return '<span>'+esc(k)+'</span>'}).join('')+'</div>'+
+   '<button class="btn" type="button" id="openres">Teljes profil</button>';
+  $('#openres').addEventListener('click',function(){openType(code,this)});
+}
+pickEl.addEventListener('click',function(e){
+  var b=e.target.closest('button[data-i]');if(!b)return;
+  sel[+b.getAttribute('data-i')]=b.getAttribute('data-l');
+  renderPick();renderResult();
+  var ni=$('button[data-i="'+b.getAttribute('data-i')+'"][data-l="'+b.getAttribute('data-l')+'"]',pickEl);
+  if(ni)ni.focus();
+});
+renderPick();renderResult();
+
+/* points */
+var ptsGrid=$('#ptsgrid'),ptsNote=$('#ptsnote');
+var pts=[[0,0],[0,0],[0,0],[0,0]];
+ptsGrid.innerHTML=PICKS.map(function(row,i){
+  return row.map(function(o,k){
+    return '<label for="pt-'+i+'-'+k+'">'+o.L+' pont <input type="number" min="0" max="10" value="0" id="pt-'+i+'-'+k+'" data-i="'+i+'" data-k="'+k+'" inputmode="numeric"></label>';
+  }).join('');
+}).join('');
+ptsGrid.addEventListener('input',function(e){
+  var inp=e.target;if(!inp.matches('input'))return;
+  var i=+inp.getAttribute('data-i'),k=+inp.getAttribute('data-k');
+  var v=Math.max(0,Math.min(10,parseInt(inp.value,10)||0));
+  pts[i][k]=v;
+  var a=pts[i][0],b=pts[i][1];
+  if(a!==b)sel[i]=a>b?PICKS[i][0].L:PICKS[i][1].L;
+  renderPick();renderResult();
+  var close=[];
+  pts.forEach(function(p,j){if(p[0]+p[1]>0&&Math.abs(p[0]-p[1])<=1)close.push(PICKS[j][0].L+'/'+PICKS[j][1].L)});
+  ptsNote.textContent=close.length?'Szoros eredmény ebben: '+close.join(', ')+'. Olvasd el a szomszédos típus leírását is, és válaszd azt, amelyik jobban illik rád.':'';
+});
+
+/* filters + grid */
+var filt={};
+var fEl=$('#filters'),gEl=$('#tgrid'),cnt=$('#fcount'),clr=$('#fclear');
+fEl.innerHTML=PICKS.map(function(row,i){
+  return '<div class="fgroup d'+(i+1)+'">'+row.map(function(o){
+    return '<button type="button" class="fchip" data-l="'+o.L+'" aria-pressed="false"><span class="tile">'+o.L+'</span>'+o.n+'</button>';
+  }).join('')+'</div>';
+}).join('');
+fEl.addEventListener('click',function(e){
+  var b=e.target.closest('.fchip');if(!b)return;
+  var l=b.getAttribute('data-l');
+  filt[l]=!filt[l];
+  b.setAttribute('aria-pressed',filt[l]?'true':'false');
+  renderGrid();
+});
+clr.addEventListener('click',function(){
+  filt={};
+  $$('.fchip',fEl).forEach(function(b){b.setAttribute('aria-pressed','false')});
+  renderGrid();
+});
+function visible(t){
+  for(var i=0;i<4;i++){
+    var on=GROUPS[i].filter(function(l){return filt[l]});
+    if(on.length===1&&t.code[i]!==on[0])return false;
+  }
+  return true;
+}
+function renderGrid(){
+  var list=TYPES.filter(visible);
+  gEl.innerHTML=list.map(function(t){
+    return '<button type="button" class="tcard" data-code="'+t.code+'">'+tilesFor(t.code)+'<h3>'+esc(t.name)+'</h3><p class="ess">'+esc(t.essence)+'</p>'+
+      '<div class="kw">'+t.kw.map(function(k){return '<span>'+esc(k)+'</span>'}).join('')+'</div><span class="more">Teljes profil →</span></button>';
+  }).join('');
+  cnt.textContent=list.length+' típus a 16-ból látszik';
+  var any=Object.keys(filt).some(function(k){return filt[k]});
+  clr.hidden=!any;
+}
+gEl.addEventListener('click',function(e){
+  var c=e.target.closest('.tcard');if(!c)return;
+  openType(c.getAttribute('data-code'),c);
+});
+renderGrid();
+
+/* combos */
+$('#dyn').innerHTML=COMBOS.map(function(x){
+  var tiles='<span class="codes">'+x.c.split('').map(function(ch){
+    var pos=-1;GROUPS.forEach(function(g,i){if(g.indexOf(ch)>-1)pos=i});
+    return '<span class="tile d'+(pos+1)+'" title="'+LET[ch]+'">'+ch+'</span>';
+  }).join('')+'</span>';
+  return '<article class="dcard">'+tiles+'<h3>'+esc(x.t)+'</h3><p>'+esc(x.p)+'</p></article>';
+}).join('');
+
+/* sheet */
+var ov=$('#overlay'),sheet=$('#sheet'),lastFocus=null;
+function openType(code,from){
+  var t=byCode(code);if(!t)return;
+  lastFocus=from||document.activeElement;
+  var nb=neighbors(code);
+  sheet.innerHTML=
+   '<div class="sheet-top"><div>'+tilesFor(code)+'<h2 id="sheetTitle">'+esc(t.name)+'</h2></div><button type="button" class="xbtn" id="xclose" aria-label="Bezárás">×</button></div>'+
+   '<p class="ess">'+esc(t.essence)+'</p>'+
+   '<div class="kw">'+t.kw.map(function(k){return '<span>'+esc(k)+'</span>'}).join('')+'</div>'+
+   '<div class="two"><div class="box good"><h3>Erősségek</h3><ul>'+t.str.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>'+
+   '<div class="box hard"><h3>Nehézségek</h3><ul>'+t.ch.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div></div>'+
+   '<div class="box"><h3>Munkában</h3><p>'+esc(t.work)+'</p></div>'+
+   '<div class="two"><div class="box"><h3>Barátságban és szerelemben</h3><p>'+esc(t.love)+'</p></div>'+
+   '<div class="box"><h3>Szülőként</h3><p>'+esc(t.par)+'</p></div></div>'+
+   '<div class="box tips"><h3>Hogyan bánjunk vele?</h3><ul>'+t.tips.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>'+
+   '<div class="box"><h3>Fejlődési irány</h3><p>'+esc(t.grow)+'</p></div>'+
+   '<div class="box"><h3>Szomszédos típusok (egy betű eltérés)</h3><div class="nbrs">'+nb.map(function(n){
+      return '<button type="button" class="nbr" data-code="'+n.t.code+'">'+tilesFor(n.t.code)+'<span>'+esc(n.t.name)+'<br><small>'+n.from+' helyett '+n.to+'</small></span></button>';
+   }).join('')+'</div></div>';
+  ov.hidden=false;document.body.classList.add('lock');
+  sheet.scrollTop=0;
+  $('#xclose').focus();
+}
+function closeSheet(){
+  ov.hidden=true;document.body.classList.remove('lock');
+  if(lastFocus&&lastFocus.focus)lastFocus.focus();
+}
+ov.addEventListener('click',function(e){
+  if(e.target===ov||e.target.closest('#xclose')){closeSheet();return}
+  var n=e.target.closest('.nbr');
+  if(n){openType(n.getAttribute('data-code'),lastFocus)}
+});
+document.addEventListener('keydown',function(e){
+  if(ov.hidden)return;
+  if(e.key==='Escape'){closeSheet();return}
+  if(e.key==='Tab'){
+    var f=$$('button',sheet);if(!f.length)return;
+    var first=f[0],last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){last.focus();e.preventDefault()}
+    else if(!e.shiftKey&&document.activeElement===last){first.focus();e.preventDefault()}
+  }
+});
+})();
+</script>
